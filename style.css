@@ -305,4 +305,37 @@ body {
     .table td {
         padding: 6px 8px;
     }
+    /* ИСПРАВЛЕНИЕ ДЛЯ ФОРМ */
+#citizenFormContainer,
+#driverFormContainer, 
+#migrationFormContainer,
+#pdnFormContainer,
+#operationalFormContainer,
+#cuspFormContainer,
+#adminProtocolFormContainer,
+#criminalCaseFormContainer,
+#wantedFormContainer,
+#debtorFormContainer {
+    position: relative;
+    z-index: 100;
+}
+
+/* Кнопки в формах должны быть выше */
+.form-buttons {
+    position: relative;
+    z-index: 101;
+}
+
+/* Убедимся что кнопки кликабельны */
+.btn {
+    position: relative;
+    z-index: 102;
+    cursor: pointer !important;
+}
+
+/* Исправление для перекрывающих элементов */
+.module > *:not([id*="FormContainer"]) {
+    position: relative;
+    z-index: 1;
+}
 }
