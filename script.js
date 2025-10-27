@@ -163,9 +163,29 @@ function showNotification(message, type = 'info') {
     }, 4000);
 }
 
+// === ФУНКЦИЯ ДЛЯ СКРЫТИЯ ВСЕХ ФОРМ ===
+function hideAllForms() {
+    const forms = [
+        'citizenFormContainer', 'driverFormContainer', 'migrationFormContainer',
+        'pdnFormContainer', 'operationalFormContainer', 'cuspFormContainer',
+        'adminProtocolFormContainer', 'criminalCaseFormContainer', 'wantedFormContainer',
+        'debtorFormContainer'
+    ];
+    
+    forms.forEach(formId => {
+        const form = document.getElementById(formId);
+        if (form) form.style.display = 'none';
+    });
+    editingId = null;
+}
+
 // === ОСНОВНЫЕ МОДУЛИ ===
 function showModule(moduleName) {
     currentModule = moduleName;
+    
+    // Скрываем все формы при переключении модулей
+    hideAllForms();
+    
     editingId = null;
     const moduleContent = document.getElementById('moduleContent');
     
@@ -280,8 +300,10 @@ function getCitizensModule() {
                             <input type="checkbox" id="citizenCriminalRecord"> Имеет судимость
                         </label>
                     </div>
-                    <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Сохранить'}</button>
-                    <button type="button" class="btn btn-danger" onclick="hideCitizenForm()">Отмена</button>
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Сохранить'}</button>
+                        <button type="button" class="btn btn-danger" onclick="hideCitizenForm()">Отмена</button>
+                    </div>
                 </form>
             </div>
             
@@ -291,19 +313,24 @@ function getCitizensModule() {
 }
 
 function showCitizenForm() {
+    hideAllForms();
     editingId = null;
-    document.getElementById('citizenFormContainer').style.display = 'block';
-    document.getElementById('citizenNickname').value = '';
-    document.getElementById('citizenFullName').value = '';
-    document.getElementById('citizenBirthDate').value = '';
-    document.getElementById('citizenPassport').value = '';
-    document.getElementById('citizenAddress').value = '';
-    document.getElementById('citizenAdditionalInfo').value = '';
-    document.getElementById('citizenCriminalRecord').checked = false;
+    const form = document.getElementById('citizenFormContainer');
+    if (form) {
+        form.style.display = 'block';
+        document.getElementById('citizenNickname').value = '';
+        document.getElementById('citizenFullName').value = '';
+        document.getElementById('citizenBirthDate').value = '';
+        document.getElementById('citizenPassport').value = '';
+        document.getElementById('citizenAddress').value = '';
+        document.getElementById('citizenAdditionalInfo').value = '';
+        document.getElementById('citizenCriminalRecord').checked = false;
+    }
 }
 
 function hideCitizenForm() {
-    document.getElementById('citizenFormContainer').style.display = 'none';
+    const form = document.getElementById('citizenFormContainer');
+    if (form) form.style.display = 'none';
     editingId = null;
 }
 
@@ -337,21 +364,23 @@ function saveCitizen(event) {
     }
     loadCitizensTable();
     hideCitizenForm();
-    event.target.reset();
 }
 
 function editCitizen(id) {
     const citizen = systemData.citizens.find(c => c.id === id);
     if (citizen) {
         editingId = id;
-        document.getElementById('citizenFormContainer').style.display = 'block';
-        document.getElementById('citizenNickname').value = citizen.nickname;
-        document.getElementById('citizenFullName').value = citizen.fullName;
-        document.getElementById('citizenBirthDate').value = citizen.birthDate;
-        document.getElementById('citizenPassport').value = citizen.passportNumber;
-        document.getElementById('citizenAddress').value = citizen.address;
-        document.getElementById('citizenAdditionalInfo').value = citizen.additionalInfo;
-        document.getElementById('citizenCriminalRecord').checked = citizen.criminalRecord;
+        const form = document.getElementById('citizenFormContainer');
+        if (form) {
+            form.style.display = 'block';
+            document.getElementById('citizenNickname').value = citizen.nickname;
+            document.getElementById('citizenFullName').value = citizen.fullName;
+            document.getElementById('citizenBirthDate').value = citizen.birthDate;
+            document.getElementById('citizenPassport').value = citizen.passportNumber;
+            document.getElementById('citizenAddress').value = citizen.address;
+            document.getElementById('citizenAdditionalInfo').value = citizen.additionalInfo;
+            document.getElementById('citizenCriminalRecord').checked = citizen.criminalRecord;
+        }
     }
 }
 
@@ -490,8 +519,10 @@ function getDriversModule() {
                         <label>Административные штрафы:</label>
                         <textarea id="driverFines" placeholder="Дата, сумма, нарушение..." rows="3"></textarea>
                     </div>
-                    <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Сохранить'}</button>
-                    <button type="button" class="btn btn-danger" onclick="hideDriverForm()">Отмена</button>
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Сохранить'}</button>
+                        <button type="button" class="btn btn-danger" onclick="hideDriverForm()">Отмена</button>
+                    </div>
                 </form>
             </div>
             
@@ -501,15 +532,20 @@ function getDriversModule() {
 }
 
 function showDriverForm() {
+    hideAllForms();
     editingId = null;
-    document.getElementById('driverFormContainer').style.display = 'block';
-    document.getElementById('driverLicenseNumber').value = '';
-    document.getElementById('driverCategories').value = '';
-    document.getElementById('driverFines').value = '';
+    const form = document.getElementById('driverFormContainer');
+    if (form) {
+        form.style.display = 'block';
+        document.getElementById('driverLicenseNumber').value = '';
+        document.getElementById('driverCategories').value = '';
+        document.getElementById('driverFines').value = '';
+    }
 }
 
 function hideDriverForm() {
-    document.getElementById('driverFormContainer').style.display = 'none';
+    const form = document.getElementById('driverFormContainer');
+    if (form) form.style.display = 'none';
     editingId = null;
 }
 
@@ -550,18 +586,20 @@ function saveDriver(event) {
     }
     loadDriversTable();
     hideDriverForm();
-    event.target.reset();
 }
 
 function editDriver(id) {
     const driver = systemData.drivers.find(d => d.id === id);
     if (driver) {
         editingId = id;
-        document.getElementById('driverFormContainer').style.display = 'block';
-        document.getElementById('driverCitizen').value = driver.citizenId;
-        document.getElementById('driverLicenseNumber').value = driver.licenseNumber;
-        document.getElementById('driverCategories').value = driver.categories;
-        document.getElementById('driverFines').value = driver.fines;
+        const form = document.getElementById('driverFormContainer');
+        if (form) {
+            form.style.display = 'block';
+            document.getElementById('driverCitizen').value = driver.citizenId;
+            document.getElementById('driverLicenseNumber').value = driver.licenseNumber;
+            document.getElementById('driverCategories').value = driver.categories;
+            document.getElementById('driverFines').value = driver.fines;
+        }
     }
 }
 
@@ -655,8 +693,10 @@ function getMigrationModule() {
                         <label>Цель визита:</label>
                         <input type="text" id="migrationPurpose">
                     </div>
-                    <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Сохранить'}</button>
-                    <button type="button" class="btn btn-danger" onclick="hideMigrationForm()">Отмена</button>
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Сохранить'}</button>
+                        <button type="button" class="btn btn-danger" onclick="hideMigrationForm()">Отмена</button>
+                    </div>
                 </form>
             </div>
             
@@ -666,18 +706,23 @@ function getMigrationModule() {
 }
 
 function showMigrationForm() {
+    hideAllForms();
     editingId = null;
-    document.getElementById('migrationFormContainer').style.display = 'block';
-    document.getElementById('migrationNickname').value = '';
-    document.getElementById('migrationFullName').value = '';
-    document.getElementById('migrationCitizenship').value = '';
-    document.getElementById('migrationEntryDate').value = '';
-    document.getElementById('migrationExitDate').value = '';
-    document.getElementById('migrationPurpose').value = '';
+    const form = document.getElementById('migrationFormContainer');
+    if (form) {
+        form.style.display = 'block';
+        document.getElementById('migrationNickname').value = '';
+        document.getElementById('migrationFullName').value = '';
+        document.getElementById('migrationCitizenship').value = '';
+        document.getElementById('migrationEntryDate').value = '';
+        document.getElementById('migrationExitDate').value = '';
+        document.getElementById('migrationPurpose').value = '';
+    }
 }
 
 function hideMigrationForm() {
-    document.getElementById('migrationFormContainer').style.display = 'none';
+    const form = document.getElementById('migrationFormContainer');
+    if (form) form.style.display = 'none';
     editingId = null;
 }
 
@@ -711,20 +756,22 @@ function saveMigrationRecord(event) {
     }
     loadMigrationTable();
     hideMigrationForm();
-    event.target.reset();
 }
 
 function editMigration(id) {
     const migration = systemData.migration.find(m => m.id === id);
     if (migration) {
         editingId = id;
-        document.getElementById('migrationFormContainer').style.display = 'block';
-        document.getElementById('migrationNickname').value = migration.nickname;
-        document.getElementById('migrationFullName').value = migration.fullName;
-        document.getElementById('migrationCitizenship').value = migration.citizenship;
-        document.getElementById('migrationEntryDate').value = migration.entryDate;
-        document.getElementById('migrationExitDate').value = migration.exitDate;
-        document.getElementById('migrationPurpose').value = migration.purpose;
+        const form = document.getElementById('migrationFormContainer');
+        if (form) {
+            form.style.display = 'block';
+            document.getElementById('migrationNickname').value = migration.nickname;
+            document.getElementById('migrationFullName').value = migration.fullName;
+            document.getElementById('migrationCitizenship').value = migration.citizenship;
+            document.getElementById('migrationEntryDate').value = migration.entryDate;
+            document.getElementById('migrationExitDate').value = migration.exitDate;
+            document.getElementById('migrationPurpose').value = migration.purpose;
+        }
     }
 }
 
@@ -820,8 +867,10 @@ function getPDNModule() {
                         <label>Дата постановки:</label>
                         <input type="date" id="pdnRegistrationDate" required>
                     </div>
-                    <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Сохранить'}</button>
-                    <button type="button" class="btn btn-danger" onclick="hidePDNForm()">Отмена</button>
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Сохранить'}</button>
+                        <button type="button" class="btn btn-danger" onclick="hidePDNForm()">Отмена</button>
+                    </div>
                 </form>
             </div>
             
@@ -831,18 +880,23 @@ function getPDNModule() {
 }
 
 function showPDNForm() {
+    hideAllForms();
     editingId = null;
-    document.getElementById('pdnFormContainer').style.display = 'block';
-    document.getElementById('pdnNickname').value = '';
-    document.getElementById('pdnFullName').value = '';
-    document.getElementById('pdnBirthDate').value = '';
-    document.getElementById('pdnSchool').value = '';
-    document.getElementById('pdnReason').value = '';
-    document.getElementById('pdnRegistrationDate').value = '';
+    const form = document.getElementById('pdnFormContainer');
+    if (form) {
+        form.style.display = 'block';
+        document.getElementById('pdnNickname').value = '';
+        document.getElementById('pdnFullName').value = '';
+        document.getElementById('pdnBirthDate').value = '';
+        document.getElementById('pdnSchool').value = '';
+        document.getElementById('pdnReason').value = '';
+        document.getElementById('pdnRegistrationDate').value = '';
+    }
 }
 
 function hidePDNForm() {
-    document.getElementById('pdnFormContainer').style.display = 'none';
+    const form = document.getElementById('pdnFormContainer');
+    if (form) form.style.display = 'none';
     editingId = null;
 }
 
@@ -876,20 +930,22 @@ function savePDNRecord(event) {
     }
     loadPDNTable();
     hidePDNForm();
-    event.target.reset();
 }
 
 function editPDN(id) {
     const pdn = systemData.pdn.find(p => p.id === id);
     if (pdn) {
         editingId = id;
-        document.getElementById('pdnFormContainer').style.display = 'block';
-        document.getElementById('pdnNickname').value = pdn.nickname;
-        document.getElementById('pdnFullName').value = pdn.fullName;
-        document.getElementById('pdnBirthDate').value = pdn.birthDate;
-        document.getElementById('pdnSchool').value = pdn.school;
-        document.getElementById('pdnReason').value = pdn.reason;
-        document.getElementById('pdnRegistrationDate').value = pdn.registrationDate;
+        const form = document.getElementById('pdnFormContainer');
+        if (form) {
+            form.style.display = 'block';
+            document.getElementById('pdnNickname').value = pdn.nickname;
+            document.getElementById('pdnFullName').value = pdn.fullName;
+            document.getElementById('pdnBirthDate').value = pdn.birthDate;
+            document.getElementById('pdnSchool').value = pdn.school;
+            document.getElementById('pdnReason').value = pdn.reason;
+            document.getElementById('pdnRegistrationDate').value = pdn.registrationDate;
+        }
     }
 }
 
@@ -998,8 +1054,10 @@ function getOperationalModule() {
                             <option value="Условно-досрочно">Условно-досрочно</option>
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Сохранить'}</button>
-                    <button type="button" class="btn btn-danger" onclick="hideOperationalForm()">Отмена</button>
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Сохранить'}</button>
+                        <button type="button" class="btn btn-danger" onclick="hideOperationalForm()">Отмена</button>
+                    </div>
                 </form>
             </div>
             
@@ -1009,20 +1067,25 @@ function getOperationalModule() {
 }
 
 function showOperationalForm() {
+    hideAllForms();
     editingId = null;
-    document.getElementById('operationalFormContainer').style.display = 'block';
-    document.getElementById('operationalNickname').value = '';
-    document.getElementById('operationalFullName').value = '';
-    document.getElementById('operationalBirthDate').value = '';
-    document.getElementById('operationalAlias').value = '';
-    document.getElementById('operationalSpecialization').value = '';
-    document.getElementById('operationalDescription').value = '';
-    document.getElementById('operationalLastLocation').value = '';
-    document.getElementById('operationalStatus').value = 'Активен';
+    const form = document.getElementById('operationalFormContainer');
+    if (form) {
+        form.style.display = 'block';
+        document.getElementById('operationalNickname').value = '';
+        document.getElementById('operationalFullName').value = '';
+        document.getElementById('operationalBirthDate').value = '';
+        document.getElementById('operationalAlias').value = '';
+        document.getElementById('operationalSpecialization').value = '';
+        document.getElementById('operationalDescription').value = '';
+        document.getElementById('operationalLastLocation').value = '';
+        document.getElementById('operationalStatus').value = 'Активен';
+    }
 }
 
 function hideOperationalForm() {
-    document.getElementById('operationalFormContainer').style.display = 'none';
+    const form = document.getElementById('operationalFormContainer');
+    if (form) form.style.display = 'none';
     editingId = null;
 }
 
@@ -1057,22 +1120,24 @@ function saveOperationalRecord(event) {
     }
     loadOperationalTable();
     hideOperationalForm();
-    event.target.reset();
 }
 
 function editOperational(id) {
     const operational = systemData.operational.find(o => o.id === id);
     if (operational) {
         editingId = id;
-        document.getElementById('operationalFormContainer').style.display = 'block';
-        document.getElementById('operationalNickname').value = operational.nickname;
-        document.getElementById('operationalFullName').value = operational.fullName;
-        document.getElementById('operationalBirthDate').value = operational.birthDate;
-        document.getElementById('operationalAlias').value = operational.alias;
-        document.getElementById('operationalSpecialization').value = operational.specialization;
-        document.getElementById('operationalDescription').value = operational.description;
-        document.getElementById('operationalLastLocation').value = operational.lastLocation;
-        document.getElementById('operationalStatus').value = operational.status;
+        const form = document.getElementById('operationalFormContainer');
+        if (form) {
+            form.style.display = 'block';
+            document.getElementById('operationalNickname').value = operational.nickname;
+            document.getElementById('operationalFullName').value = operational.fullName;
+            document.getElementById('operationalBirthDate').value = operational.birthDate;
+            document.getElementById('operationalAlias').value = operational.alias;
+            document.getElementById('operationalSpecialization').value = operational.specialization;
+            document.getElementById('operationalDescription').value = operational.description;
+            document.getElementById('operationalLastLocation').value = operational.lastLocation;
+            document.getElementById('operationalStatus').value = operational.status;
+        }
     }
 }
 
@@ -1171,8 +1236,10 @@ function getCUSPModule() {
                             <option value="Закрыто">Закрыто</option>
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Сохранить'}</button>
-                    <button type="button" class="btn btn-danger" onclick="hideCUSPForm()">Отмена</button>
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Сохранить'}</button>
+                        <button type="button" class="btn btn-danger" onclick="hideCUSPForm()">Отмена</button>
+                    </div>
                 </form>
             </div>
             
@@ -1182,17 +1249,22 @@ function getCUSPModule() {
 }
 
 function showCUSPForm() {
+    hideAllForms();
     editingId = null;
-    document.getElementById('cuspFormContainer').style.display = 'block';
-    document.getElementById('cuspApplicant').value = '';
-    document.getElementById('cuspContacts').value = '';
-    document.getElementById('cuspStatement').value = '';
-    document.getElementById('cuspDateTime').value = new Date().toISOString().slice(0, 16);
-    document.getElementById('cuspStatus').value = 'Зарегистрировано';
+    const form = document.getElementById('cuspFormContainer');
+    if (form) {
+        form.style.display = 'block';
+        document.getElementById('cuspApplicant').value = '';
+        document.getElementById('cuspContacts').value = '';
+        document.getElementById('cuspStatement').value = '';
+        document.getElementById('cuspDateTime').value = new Date().toISOString().slice(0, 16);
+        document.getElementById('cuspStatus').value = 'Зарегистрировано';
+    }
 }
 
 function hideCUSPForm() {
-    document.getElementById('cuspFormContainer').style.display = 'none';
+    const form = document.getElementById('cuspFormContainer');
+    if (form) form.style.display = 'none';
     editingId = null;
 }
 
@@ -1225,20 +1297,22 @@ function saveCUSPRecord(event) {
     }
     loadCUSPTable();
     hideCUSPForm();
-    event.target.reset();
 }
 
 function editCUSP(id) {
     const cusp = systemData.cusp.find(c => c.id === id);
     if (cusp) {
         editingId = id;
-        document.getElementById('cuspFormContainer').style.display = 'block';
-        document.getElementById('cuspApplicant').value = cusp.applicant;
-        document.getElementById('cuspContacts').value = cusp.contacts;
-        document.getElementById('cuspStatement').value = cusp.statement;
-        document.getElementById('cuspResponsible').value = cusp.responsible;
-        document.getElementById('cuspDateTime').value = cusp.dateTime;
-        document.getElementById('cuspStatus').value = cusp.status;
+        const form = document.getElementById('cuspFormContainer');
+        if (form) {
+            form.style.display = 'block';
+            document.getElementById('cuspApplicant').value = cusp.applicant;
+            document.getElementById('cuspContacts').value = cusp.contacts;
+            document.getElementById('cuspStatement').value = cusp.statement;
+            document.getElementById('cuspResponsible').value = cusp.responsible;
+            document.getElementById('cuspDateTime').value = cusp.dateTime;
+            document.getElementById('cuspStatus').value = cusp.status;
+        }
     }
 }
 
@@ -1344,8 +1418,10 @@ function getAdminProtocolsModule() {
                             <option value="Исполнен">Исполнен</option>
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Сохранить протокол'}</button>
-                    <button type="button" class="btn btn-danger" onclick="hideAdminProtocolForm()">Отмена</button>
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Сохранить протокол'}</button>
+                        <button type="button" class="btn btn-danger" onclick="hideAdminProtocolForm()">Отмена</button>
+                    </div>
                 </form>
             </div>
             
@@ -1355,19 +1431,24 @@ function getAdminProtocolsModule() {
 }
 
 function showAdminProtocolForm() {
+    hideAllForms();
     editingId = null;
-    document.getElementById('adminProtocolFormContainer').style.display = 'block';
-    document.getElementById('protocolViolator').value = '';
-    document.getElementById('protocolViolatorNickname').value = '';
-    document.getElementById('protocolArticle').value = '';
-    document.getElementById('protocolCircumstances').value = '';
-    document.getElementById('protocolLocation').value = '';
-    document.getElementById('protocolDateTime').value = new Date().toISOString().slice(0, 16);
-    document.getElementById('protocolStatus').value = 'Составлен';
+    const form = document.getElementById('adminProtocolFormContainer');
+    if (form) {
+        form.style.display = 'block';
+        document.getElementById('protocolViolator').value = '';
+        document.getElementById('protocolViolatorNickname').value = '';
+        document.getElementById('protocolArticle').value = '';
+        document.getElementById('protocolCircumstances').value = '';
+        document.getElementById('protocolLocation').value = '';
+        document.getElementById('protocolDateTime').value = new Date().toISOString().slice(0, 16);
+        document.getElementById('protocolStatus').value = 'Составлен';
+    }
 }
 
 function hideAdminProtocolForm() {
-    document.getElementById('adminProtocolFormContainer').style.display = 'none';
+    const form = document.getElementById('adminProtocolFormContainer');
+    if (form) form.style.display = 'none';
     editingId = null;
 }
 
@@ -1402,21 +1483,23 @@ function saveAdminProtocol(event) {
     }
     loadAdminProtocolsTable();
     hideAdminProtocolForm();
-    event.target.reset();
 }
 
 function editAdminProtocol(id) {
     const protocol = systemData.adminProtocols.find(p => p.id === id);
     if (protocol) {
         editingId = id;
-        document.getElementById('adminProtocolFormContainer').style.display = 'block';
-        document.getElementById('protocolViolator').value = protocol.violator;
-        document.getElementById('protocolViolatorNickname').value = protocol.violatorNickname;
-        document.getElementById('protocolArticle').value = protocol.article;
-        document.getElementById('protocolCircumstances').value = protocol.circumstances;
-        document.getElementById('protocolLocation').value = protocol.location;
-        document.getElementById('protocolDateTime').value = protocol.dateTime;
-        document.getElementById('protocolStatus').value = protocol.status;
+        const form = document.getElementById('adminProtocolFormContainer');
+        if (form) {
+            form.style.display = 'block';
+            document.getElementById('protocolViolator').value = protocol.violator;
+            document.getElementById('protocolViolatorNickname').value = protocol.violatorNickname;
+            document.getElementById('protocolArticle').value = protocol.article;
+            document.getElementById('protocolCircumstances').value = protocol.circumstances;
+            document.getElementById('protocolLocation').value = protocol.location;
+            document.getElementById('protocolDateTime').value = protocol.dateTime;
+            document.getElementById('protocolStatus').value = protocol.status;
+        }
     }
 }
 
@@ -1522,8 +1605,10 @@ function getCriminalCasesModule() {
                             <option value="Закрыто">Закрыто</option>
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Сохранить дело'}</button>
-                    <button type="button" class="btn btn-danger" onclick="hideCriminalCaseForm()">Отмена</button>
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Сохранить дело'}</button>
+                        <button type="button" class="btn btn-danger" onclick="hideCriminalCaseForm()">Отмена</button>
+                    </div>
                 </form>
             </div>
             
@@ -1533,18 +1618,23 @@ function getCriminalCasesModule() {
 }
 
 function showCriminalCaseForm() {
+    hideAllForms();
     editingId = null;
-    document.getElementById('criminalCaseFormContainer').style.display = 'block';
-    document.getElementById('caseNumber').value = '';
-    document.getElementById('caseArticle').value = '';
-    document.getElementById('caseSuspects').value = '';
-    document.getElementById('caseCircumstances').value = '';
-    document.getElementById('caseStartDate').value = new Date().toISOString().split('T')[0];
-    document.getElementById('caseStatus').value = 'Возбуждено';
+    const form = document.getElementById('criminalCaseFormContainer');
+    if (form) {
+        form.style.display = 'block';
+        document.getElementById('caseNumber').value = '';
+        document.getElementById('caseArticle').value = '';
+        document.getElementById('caseSuspects').value = '';
+        document.getElementById('caseCircumstances').value = '';
+        document.getElementById('caseStartDate').value = new Date().toISOString().split('T')[0];
+        document.getElementById('caseStatus').value = 'Возбуждено';
+    }
 }
 
 function hideCriminalCaseForm() {
-    document.getElementById('criminalCaseFormContainer').style.display = 'none';
+    const form = document.getElementById('criminalCaseFormContainer');
+    if (form) form.style.display = 'none';
     editingId = null;
 }
 
@@ -1578,21 +1668,23 @@ function saveCriminalCase(event) {
     }
     loadCriminalCasesTable();
     hideCriminalCaseForm();
-    event.target.reset();
 }
 
 function editCriminalCase(id) {
     const criminalCase = systemData.criminalCases.find(c => c.id === id);
     if (criminalCase) {
         editingId = id;
-        document.getElementById('criminalCaseFormContainer').style.display = 'block';
-        document.getElementById('caseNumber').value = criminalCase.number;
-        document.getElementById('caseArticle').value = criminalCase.article;
-        document.getElementById('caseSuspects').value = criminalCase.suspects;
-        document.getElementById('caseCircumstances').value = criminalCase.circumstances;
-        document.getElementById('caseInvestigator').value = criminalCase.investigator;
-        document.getElementById('caseStartDate').value = criminalCase.startDate;
-        document.getElementById('caseStatus').value = criminalCase.status;
+        const form = document.getElementById('criminalCaseFormContainer');
+        if (form) {
+            form.style.display = 'block';
+            document.getElementById('caseNumber').value = criminalCase.number;
+            document.getElementById('caseArticle').value = criminalCase.article;
+            document.getElementById('caseSuspects').value = criminalCase.suspects;
+            document.getElementById('caseCircumstances').value = criminalCase.circumstances;
+            document.getElementById('caseInvestigator').value = criminalCase.investigator;
+            document.getElementById('caseStartDate').value = criminalCase.startDate;
+            document.getElementById('caseStatus').value = criminalCase.status;
+        }
     }
 }
 
@@ -1690,8 +1782,10 @@ function getWantedModule() {
                         <label>Инициатор розыска:</label>
                         <input type="text" id="wantedInitiator" value="${currentUser.fullName}" readonly>
                     </div>
-                    <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Объявить в розыск'}</button>
-                    <button type="button" class="btn btn-danger" onclick="hideWantedForm()">Отмена</button>
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Объявить в розыск'}</button>
+                        <button type="button" class="btn btn-danger" onclick="hideWantedForm()">Отмена</button>
+                    </div>
                 </form>
             </div>
             
@@ -1708,17 +1802,22 @@ function getWantedModule() {
 }
 
 function showWantedForm() {
+    hideAllForms();
     editingId = null;
-    document.getElementById('wantedFormContainer').style.display = 'block';
-    document.getElementById('wantedNickname').value = '';
-    document.getElementById('wantedFullName').value = '';
-    document.getElementById('wantedReason').value = '';
-    document.getElementById('wantedLevel').value = 'Региональный';
-    document.getElementById('wantedDate').value = new Date().toISOString().split('T')[0];
+    const form = document.getElementById('wantedFormContainer');
+    if (form) {
+        form.style.display = 'block';
+        document.getElementById('wantedNickname').value = '';
+        document.getElementById('wantedFullName').value = '';
+        document.getElementById('wantedReason').value = '';
+        document.getElementById('wantedLevel').value = 'Региональный';
+        document.getElementById('wantedDate').value = new Date().toISOString().split('T')[0];
+    }
 }
 
 function hideWantedForm() {
-    document.getElementById('wantedFormContainer').style.display = 'none';
+    const form = document.getElementById('wantedFormContainer');
+    if (form) form.style.display = 'none';
     editingId = null;
 }
 
@@ -1752,19 +1851,21 @@ function saveWantedRecord(event) {
     }
     loadWantedTable();
     hideWantedForm();
-    event.target.reset();
 }
 
 function editWanted(id) {
     const wanted = systemData.wanted.find(w => w.id === id);
     if (wanted) {
         editingId = id;
-        document.getElementById('wantedFormContainer').style.display = 'block';
-        document.getElementById('wantedNickname').value = wanted.nickname;
-        document.getElementById('wantedFullName').value = wanted.fullName;
-        document.getElementById('wantedReason').value = wanted.reason;
-        document.getElementById('wantedLevel').value = wanted.level;
-        document.getElementById('wantedDate').value = wanted.date;
+        const form = document.getElementById('wantedFormContainer');
+        if (form) {
+            form.style.display = 'block';
+            document.getElementById('wantedNickname').value = wanted.nickname;
+            document.getElementById('wantedFullName').value = wanted.fullName;
+            document.getElementById('wantedReason').value = wanted.reason;
+            document.getElementById('wantedLevel').value = wanted.level;
+            document.getElementById('wantedDate').value = wanted.date;
+        }
     }
 }
 
@@ -2169,8 +2270,10 @@ function getDebtorsModule() {
                         <label>Дата возникновения:</label>
                         <input type="date" id="debtDate" required>
                     </div>
-                    <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Сохранить'}</button>
-                    <button type="button" class="btn btn-danger" onclick="hideDebtorForm()">Отмена</button>
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Сохранить'}</button>
+                        <button type="button" class="btn btn-danger" onclick="hideDebtorForm()">Отмена</button>
+                    </div>
                 </form>
             </div>
             
@@ -2180,18 +2283,23 @@ function getDebtorsModule() {
 }
 
 function showDebtorForm() {
+    hideAllForms();
     editingId = null;
-    document.getElementById('debtorFormContainer').style.display = 'block';
-    document.getElementById('debtorNickname').value = '';
-    document.getElementById('debtorFullName').value = '';
-    document.getElementById('debtType').value = 'Административный штраф';
-    document.getElementById('debtAmount').value = '';
-    document.getElementById('debtReason').value = '';
-    document.getElementById('debtDate').value = new Date().toISOString().split('T')[0];
+    const form = document.getElementById('debtorFormContainer');
+    if (form) {
+        form.style.display = 'block';
+        document.getElementById('debtorNickname').value = '';
+        document.getElementById('debtorFullName').value = '';
+        document.getElementById('debtType').value = 'Административный штраф';
+        document.getElementById('debtAmount').value = '';
+        document.getElementById('debtReason').value = '';
+        document.getElementById('debtDate').value = new Date().toISOString().split('T')[0];
+    }
 }
 
 function hideDebtorForm() {
-    document.getElementById('debtorFormContainer').style.display = 'none';
+    const form = document.getElementById('debtorFormContainer');
+    if (form) form.style.display = 'none';
     editingId = null;
 }
 
@@ -2225,20 +2333,22 @@ function saveDebtor(event) {
     }
     loadDebtorsTable();
     hideDebtorForm();
-    event.target.reset();
 }
 
 function editDebtor(id) {
     const debtor = systemData.debtors.find(d => d.id === id);
     if (debtor) {
         editingId = id;
-        document.getElementById('debtorFormContainer').style.display = 'block';
-        document.getElementById('debtorNickname').value = debtor.nickname;
-        document.getElementById('debtorFullName').value = debtor.fullName;
-        document.getElementById('debtType').value = debtor.debtType;
-        document.getElementById('debtAmount').value = debtor.debtAmount;
-        document.getElementById('debtReason').value = debtor.debtReason;
-        document.getElementById('debtDate').value = debtor.debtDate;
+        const form = document.getElementById('debtorFormContainer');
+        if (form) {
+            form.style.display = 'block';
+            document.getElementById('debtorNickname').value = debtor.nickname;
+            document.getElementById('debtorFullName').value = debtor.fullName;
+            document.getElementById('debtType').value = debtor.debtType;
+            document.getElementById('debtAmount').value = debtor.debtAmount;
+            document.getElementById('debtReason').value = debtor.debtReason;
+            document.getElementById('debtDate').value = debtor.debtDate;
+        }
     }
 }
 
