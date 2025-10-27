@@ -38,10 +38,22 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 async function initSystem() {
+    // Показываем уведомление о загрузке
+    showNotification('🔄 Загрузка данных из Firebase...', 'info');
+    
     await loadAllData();
     initRealtimeUpdates();
     updateUserInfo();
     showModule('dashboard');
+    
+    // Проверяем подключение
+    setTimeout(() => {
+        if (systemData.citizens.length === 0) {
+            showNotification('⚠️ База пустая, добавьте первого гражданина', 'warning');
+        } else {
+            showNotification('✅ Система готова к работе', 'success');
+        }
+    }, 2000);
 }
 
 function updateUserInfo() {
@@ -66,6 +78,7 @@ function initRealtimeUpdates() {
         if (data) {
             systemData = data;
             updateCurrentModule();
+            showNotification('🔄 Данные обновлены', 'info');
         }
     });
 }
@@ -76,19 +89,78 @@ async function loadAllData() {
         const data = snapshot.val();
         if (data) {
             systemData = data;
+            console.log('✅ Данные загружены из Firebase');
+        } else {
+            console.log('ℹ️ База данных пустая');
         }
     } catch (error) {
-        console.error('Ошибка загрузки данных:', error);
+        console.error('❌ Ошибка загрузки данных:', error);
+        showNotification('❌ Ошибка загрузки данных', 'error');
+        
+        // Пробуем загрузить из резервной копии
+        const backup = localStorage.getItem('mvd_backup');
+        if (backup) {
+            systemData = JSON.parse(backup);
+            console.log('✅ Данные загружены из резервной копии');
+        }
     }
 }
 
 async function saveAllData() {
     try {
-        await database.ref('systemData/').set(systemData);
-        console.log('Данные сохранены в Firebase');
+        await database.ref('systemData').set(systemData);
+        console.log('✅ Данные сохранены в Firebase');
+        
+        // Сохраняем резервную копию
+        localStorage.setItem('mvd_backup', JSON.stringify(systemData));
+        return true;
     } catch (error) {
-        console.error('Ошибка сохранения:', error);
+        console.error('❌ Ошибка сохранения:', error);
+        showNotification('❌ Ошибка сохранения данных', 'error');
+        
+        // Сохраняем в localStorage как резерв
+        try {
+            localStorage.setItem('mvd_backup', JSON.stringify(systemData));
+            console.log('⚠️ Данные сохранены в localStorage');
+        } catch (e) {
+            console.error('❌ Ошибка резервного сохранения:', e);
+        }
+        return false;
     }
+}
+
+// === ФУНКЦИЯ УВЕДОМЛЕНИЙ ===
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        border-radius: 5px;
+        color: white;
+        z-index: 10000;
+        font-weight: bold;
+        max-width: 300px;
+        transition: all 0.3s;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    `;
+    
+    const colors = {
+        success: '#27ae60',
+        error: '#e74c3c', 
+        warning: '#f39c12',
+        info: '#3498db'
+    };
+    
+    notification.style.background = colors[type] || colors.info;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 4000);
 }
 
 // === ОСНОВНЫЕ МОДУЛИ ===
@@ -213,7 +285,7 @@ function getCitizensModule() {
                 </form>
             </div>
             
-            <div id="citizensTableContainer" class="loading">Загрузка данных...</div>
+            <div id="citizensTableContainer"></div>
         </div>
     `;
 }
@@ -260,7 +332,9 @@ function saveCitizen(event) {
         systemData.citizens.push(citizen);
     }
     
-    saveAllData();
+    if (saveAllData()) {
+        showNotification('✅ Гражданин сохранен', 'success');
+    }
     loadCitizensTable();
     hideCitizenForm();
     event.target.reset();
@@ -284,6 +358,11 @@ function editCitizen(id) {
 function loadCitizensTable() {
     const container = document.getElementById('citizensTableContainer');
     if (!container) return;
+    
+    if (systemData.citizens.length === 0) {
+        container.innerHTML = '<div class="loading">Нет данных о гражданах</div>';
+        return;
+    }
     
     container.innerHTML = `
         <table class="table">
@@ -373,7 +452,9 @@ function searchCitizens() {
 function deleteCitizen(id) {
     if (confirm('Удалить гражданина из базы?')) {
         systemData.citizens = systemData.citizens.filter(c => c.id !== id);
-        saveAllData();
+        if (saveAllData()) {
+            showNotification('✅ Гражданин удален', 'success');
+        }
         loadCitizensTable();
     }
 }
@@ -414,7 +495,7 @@ function getDriversModule() {
                 </form>
             </div>
             
-            <div id="driversTableContainer" class="loading">Загрузка данных...</div>
+            <div id="driversTableContainer"></div>
         </div>
     `;
 }
@@ -438,6 +519,11 @@ function saveDriver(event) {
     const citizenId = parseInt(document.getElementById('driverCitizen').value);
     const citizen = systemData.citizens.find(c => c.id === citizenId);
     
+    if (!citizen) {
+        showNotification('❌ Гражданин не найден', 'error');
+        return;
+    }
+    
     const driver = {
         id: editingId || Date.now(),
         citizenId: citizenId,
@@ -459,7 +545,9 @@ function saveDriver(event) {
         systemData.drivers.push(driver);
     }
     
-    saveAllData();
+    if (saveAllData()) {
+        showNotification('✅ Водитель сохранен', 'success');
+    }
     loadDriversTable();
     hideDriverForm();
     event.target.reset();
@@ -480,6 +568,11 @@ function editDriver(id) {
 function loadDriversTable() {
     const container = document.getElementById('driversTableContainer');
     if (!container) return;
+    
+    if (systemData.drivers.length === 0) {
+        container.innerHTML = '<div class="loading">Нет данных о водителях</div>';
+        return;
+    }
     
     container.innerHTML = `
         <table class="table">
@@ -517,7 +610,9 @@ function loadDriversTable() {
 function deleteDriver(id) {
     if (confirm('Удалить водителя из базы?')) {
         systemData.drivers = systemData.drivers.filter(d => d.id !== id);
-        saveAllData();
+        if (saveAllData()) {
+            showNotification('✅ Водитель удален', 'success');
+        }
         loadDriversTable();
     }
 }
@@ -565,7 +660,7 @@ function getMigrationModule() {
                 </form>
             </div>
             
-            <div id="migrationTableContainer" class="loading">Загрузка данных...</div>
+            <div id="migrationTableContainer"></div>
         </div>
     `;
 }
@@ -611,7 +706,9 @@ function saveMigrationRecord(event) {
         systemData.migration.push(migration);
     }
     
-    saveAllData();
+    if (saveAllData()) {
+        showNotification('✅ Миграционная запись сохранена', 'success');
+    }
     loadMigrationTable();
     hideMigrationForm();
     event.target.reset();
@@ -634,6 +731,11 @@ function editMigration(id) {
 function loadMigrationTable() {
     const container = document.getElementById('migrationTableContainer');
     if (!container) return;
+    
+    if (systemData.migration.length === 0) {
+        container.innerHTML = '<div class="loading">Нет миграционных записей</div>';
+        return;
+    }
     
     container.innerHTML = `
         <table class="table">
@@ -673,7 +775,9 @@ function loadMigrationTable() {
 function deleteMigration(id) {
     if (confirm('Удалить миграционную запись?')) {
         systemData.migration = systemData.migration.filter(m => m.id !== id);
-        saveAllData();
+        if (saveAllData()) {
+            showNotification('✅ Миграционная запись удалена', 'success');
+        }
         loadMigrationTable();
     }
 }
@@ -721,7 +825,7 @@ function getPDNModule() {
                 </form>
             </div>
             
-            <div id="pdnTableContainer" class="loading">Загрузка данных...</div>
+            <div id="pdnTableContainer"></div>
         </div>
     `;
 }
@@ -767,7 +871,9 @@ function savePDNRecord(event) {
         systemData.pdn.push(pdn);
     }
     
-    saveAllData();
+    if (saveAllData()) {
+        showNotification('✅ Запись ПДН сохранена', 'success');
+    }
     loadPDNTable();
     hidePDNForm();
     event.target.reset();
@@ -790,6 +896,11 @@ function editPDN(id) {
 function loadPDNTable() {
     const container = document.getElementById('pdnTableContainer');
     if (!container) return;
+    
+    if (systemData.pdn.length === 0) {
+        container.innerHTML = '<div class="loading">Нет записей ПДН</div>';
+        return;
+    }
     
     container.innerHTML = `
         <table class="table">
@@ -829,8 +940,191 @@ function loadPDNTable() {
 function deletePDN(id) {
     if (confirm('Удалить запись из учета ПДН?')) {
         systemData.pdn = systemData.pdn.filter(p => p.id !== id);
-        saveAllData();
+        if (saveAllData()) {
+            showNotification('✅ Запись ПДН удалена', 'success');
+        }
         loadPDNTable();
+    }
+}
+
+// === МОДУЛЬ ОПЕРАТИВНОГО УЧЕТА ===
+function getOperationalModule() {
+    return `
+        <div class="module">
+            <h2>📋 Оперативный учет (База преступников)</h2>
+            <button class="btn btn-success" onclick="showOperationalForm()">➕ Добавить запись</button>
+            
+            <div id="operationalFormContainer" style="display: none; margin-top: 20px; padding: 20px; background: #f8f9fa; border-radius: 5px;">
+                <h3>${editingId ? 'Редактирование' : 'Добавление'} в оперативный учет</h3>
+                <form onsubmit="saveOperationalRecord(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Никнейм:</label>
+                            <input type="text" id="operationalNickname" required>
+                        </div>
+                        <div class="form-group">
+                            <label>ФИО:</label>
+                            <input type="text" id="operationalFullName" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Дата рождения:</label>
+                            <input type="date" id="operationalBirthDate">
+                        </div>
+                        <div class="form-group">
+                            <label>Кличка/Прозвище:</label>
+                            <input type="text" id="operationalAlias">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Преступная специализация:</label>
+                        <input type="text" id="operationalSpecialization" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Приметы:</label>
+                        <textarea id="operationalDescription" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Последнее известное местонахождение:</label>
+                        <input type="text" id="operationalLastLocation">
+                    </div>
+                    <div class="form-group">
+                        <label>Статус:</label>
+                        <select id="operationalStatus">
+                            <option value="Активен">Активен</option>
+                            <option value="Арестован">Арестован</option>
+                            <option value="В розыске">В розыске</option>
+                            <option value="Условно-досрочно">Условно-досрочно</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Сохранить'}</button>
+                    <button type="button" class="btn btn-danger" onclick="hideOperationalForm()">Отмена</button>
+                </form>
+            </div>
+            
+            <div id="operationalTableContainer"></div>
+        </div>
+    `;
+}
+
+function showOperationalForm() {
+    editingId = null;
+    document.getElementById('operationalFormContainer').style.display = 'block';
+    document.getElementById('operationalNickname').value = '';
+    document.getElementById('operationalFullName').value = '';
+    document.getElementById('operationalBirthDate').value = '';
+    document.getElementById('operationalAlias').value = '';
+    document.getElementById('operationalSpecialization').value = '';
+    document.getElementById('operationalDescription').value = '';
+    document.getElementById('operationalLastLocation').value = '';
+    document.getElementById('operationalStatus').value = 'Активен';
+}
+
+function hideOperationalForm() {
+    document.getElementById('operationalFormContainer').style.display = 'none';
+    editingId = null;
+}
+
+function saveOperationalRecord(event) {
+    event.preventDefault();
+    
+    const operational = {
+        id: editingId || Date.now(),
+        nickname: document.getElementById('operationalNickname').value,
+        fullName: document.getElementById('operationalFullName').value,
+        birthDate: document.getElementById('operationalBirthDate').value,
+        alias: document.getElementById('operationalAlias').value,
+        specialization: document.getElementById('operationalSpecialization').value,
+        description: document.getElementById('operationalDescription').value,
+        lastLocation: document.getElementById('operationalLastLocation').value,
+        status: document.getElementById('operationalStatus').value,
+        createdBy: currentUser.nickname,
+        createdAt: new Date().toLocaleString()
+    };
+    
+    if (editingId) {
+        const index = systemData.operational.findIndex(o => o.id === editingId);
+        if (index !== -1) {
+            systemData.operational[index] = operational;
+        }
+    } else {
+        systemData.operational.push(operational);
+    }
+    
+    if (saveAllData()) {
+        showNotification('✅ Запись оперативного учета сохранена', 'success');
+    }
+    loadOperationalTable();
+    hideOperationalForm();
+    event.target.reset();
+}
+
+function editOperational(id) {
+    const operational = systemData.operational.find(o => o.id === id);
+    if (operational) {
+        editingId = id;
+        document.getElementById('operationalFormContainer').style.display = 'block';
+        document.getElementById('operationalNickname').value = operational.nickname;
+        document.getElementById('operationalFullName').value = operational.fullName;
+        document.getElementById('operationalBirthDate').value = operational.birthDate;
+        document.getElementById('operationalAlias').value = operational.alias;
+        document.getElementById('operationalSpecialization').value = operational.specialization;
+        document.getElementById('operationalDescription').value = operational.description;
+        document.getElementById('operationalLastLocation').value = operational.lastLocation;
+        document.getElementById('operationalStatus').value = operational.status;
+    }
+}
+
+function loadOperationalTable() {
+    const container = document.getElementById('operationalTableContainer');
+    if (!container) return;
+    
+    if (systemData.operational.length === 0) {
+        container.innerHTML = '<div class="loading">Нет записей оперативного учета</div>';
+        return;
+    }
+    
+    container.innerHTML = `
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Никнейм</th>
+                    <th>ФИО</th>
+                    <th>Кличка</th>
+                    <th>Специализация</th>
+                    <th>Последнее место</th>
+                    <th>Статус</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${systemData.operational.map(record => `
+                    <tr>
+                        <td>${record.nickname}</td>
+                        <td>${record.fullName}</td>
+                        <td>${record.alias || '-'}</td>
+                        <td>${record.specialization}</td>
+                        <td>${record.lastLocation || '-'}</td>
+                        <td>${record.status}</td>
+                        <td>
+                            <button class="btn" onclick="editOperational(${record.id})">✏️</button>
+                            <button class="btn btn-danger" onclick="deleteOperational(${record.id})">🗑️</button>
+                        </td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+    `;
+}
+
+function deleteOperational(id) {
+    if (confirm('Удалить запись из оперативного учета?')) {
+        systemData.operational = systemData.operational.filter(o => o.id !== id);
+        if (saveAllData()) {
+            showNotification('✅ Запись оперативного учета удалена', 'success');
+        }
+        loadOperationalTable();
     }
 }
 
@@ -882,7 +1176,7 @@ function getCUSPModule() {
                 </form>
             </div>
             
-            <div id="cuspTableContainer" class="loading">Загрузка данных...</div>
+            <div id="cuspTableContainer"></div>
         </div>
     `;
 }
@@ -926,7 +1220,9 @@ function saveCUSPRecord(event) {
         systemData.cusp.push(cusp);
     }
     
-    saveAllData();
+    if (saveAllData()) {
+        showNotification('✅ Запись КУСП сохранена', 'success');
+    }
     loadCUSPTable();
     hideCUSPForm();
     event.target.reset();
@@ -949,6 +1245,11 @@ function editCUSP(id) {
 function loadCUSPTable() {
     const container = document.getElementById('cuspTableContainer');
     if (!container) return;
+    
+    if (systemData.cusp.length === 0) {
+        container.innerHTML = '<div class="loading">Нет записей КУСП</div>';
+        return;
+    }
     
     container.innerHTML = `
         <table class="table">
@@ -988,7 +1289,9 @@ function loadCUSPTable() {
 function deleteCUSP(id) {
     if (confirm('Удалить запись КУСП?')) {
         systemData.cusp = systemData.cusp.filter(c => c.id !== id);
-        saveAllData();
+        if (saveAllData()) {
+            showNotification('✅ Запись КУСП удалена', 'success');
+        }
         loadCUSPTable();
     }
 }
@@ -1046,7 +1349,7 @@ function getAdminProtocolsModule() {
                 </form>
             </div>
             
-            <div id="adminProtocolsTableContainer" class="loading">Загрузка данных...</div>
+            <div id="adminProtocolsTableContainer"></div>
         </div>
     `;
 }
@@ -1094,7 +1397,9 @@ function saveAdminProtocol(event) {
         systemData.adminProtocols.push(protocol);
     }
     
-    saveAllData();
+    if (saveAllData()) {
+        showNotification('✅ Административный протокол сохранен', 'success');
+    }
     loadAdminProtocolsTable();
     hideAdminProtocolForm();
     event.target.reset();
@@ -1118,6 +1423,11 @@ function editAdminProtocol(id) {
 function loadAdminProtocolsTable() {
     const container = document.getElementById('adminProtocolsTableContainer');
     if (!container) return;
+    
+    if (systemData.adminProtocols.length === 0) {
+        container.innerHTML = '<div class="loading">Нет административных протоколов</div>';
+        return;
+    }
     
     container.innerHTML = `
         <table class="table">
@@ -1157,7 +1467,9 @@ function loadAdminProtocolsTable() {
 function deleteAdminProtocol(id) {
     if (confirm('Удалить административный протокол?')) {
         systemData.adminProtocols = systemData.adminProtocols.filter(p => p.id !== id);
-        saveAllData();
+        if (saveAllData()) {
+            showNotification('✅ Административный протокол удален', 'success');
+        }
         loadAdminProtocolsTable();
     }
 }
@@ -1215,7 +1527,7 @@ function getCriminalCasesModule() {
                 </form>
             </div>
             
-            <div id="criminalCasesTableContainer" class="loading">Загрузка данных...</div>
+            <div id="criminalCasesTableContainer"></div>
         </div>
     `;
 }
@@ -1261,7 +1573,9 @@ function saveCriminalCase(event) {
         systemData.criminalCases.push(criminalCase);
     }
     
-    saveAllData();
+    if (saveAllData()) {
+        showNotification('✅ Уголовное дело сохранено', 'success');
+    }
     loadCriminalCasesTable();
     hideCriminalCaseForm();
     event.target.reset();
@@ -1285,6 +1599,11 @@ function editCriminalCase(id) {
 function loadCriminalCasesTable() {
     const container = document.getElementById('criminalCasesTableContainer');
     if (!container) return;
+    
+    if (systemData.criminalCases.length === 0) {
+        container.innerHTML = '<div class="loading">Нет уголовных дел</div>';
+        return;
+    }
     
     container.innerHTML = `
         <table class="table">
@@ -1322,7 +1641,9 @@ function loadCriminalCasesTable() {
 function deleteCriminalCase(id) {
     if (confirm('Удалить уголовное дело?')) {
         systemData.criminalCases = systemData.criminalCases.filter(c => c.id !== id);
-        saveAllData();
+        if (saveAllData()) {
+            showNotification('✅ Уголовное дело удалено', 'success');
+        }
         loadCriminalCasesTable();
     }
 }
@@ -1381,7 +1702,7 @@ function getWantedModule() {
                 <div class="tab" onclick="filterWanted('Международный')">Международный</div>
             </div>
             
-            <div id="wantedTableContainer" class="loading">Загрузка данных...</div>
+            <div id="wantedTableContainer"></div>
         </div>
     `;
 }
@@ -1426,7 +1747,9 @@ function saveWantedRecord(event) {
         systemData.wanted.push(wanted);
     }
     
-    saveAllData();
+    if (saveAllData()) {
+        showNotification('✅ Розыск объявлен', 'success');
+    }
     loadWantedTable();
     hideWantedForm();
     event.target.reset();
@@ -1451,6 +1774,11 @@ function filterWanted(level) {
     
     const container = document.getElementById('wantedTableContainer');
     const filtered = level === 'all' ? systemData.wanted : systemData.wanted.filter(w => w.level === level);
+    
+    if (filtered.length === 0) {
+        container.innerHTML = '<div class="loading">Нет записей розыска</div>';
+        return;
+    }
     
     container.innerHTML = `
         <table class="table">
@@ -1494,6 +1822,11 @@ function loadWantedTable() {
     const container = document.getElementById('wantedTableContainer');
     if (!container) return;
     
+    if (systemData.wanted.length === 0) {
+        container.innerHTML = '<div class="loading">Нет записей розыска</div>';
+        return;
+    }
+    
     container.innerHTML = `
         <table class="table">
             <thead>
@@ -1535,7 +1868,9 @@ function loadWantedTable() {
 function deleteWanted(id) {
     if (confirm('Снять с розыска?')) {
         systemData.wanted = systemData.wanted.filter(w => w.id !== id);
-        saveAllData();
+        if (saveAllData()) {
+            showNotification('✅ Розыск отменен', 'success');
+        }
         loadWantedTable();
     }
 }
@@ -1640,6 +1975,7 @@ function addTerroristOrg() {
         saveAllData();
         loadStateSecretData();
         document.getElementById('newTerroristOrg').value = '';
+        showNotification('✅ Террористическая организация добавлена', 'success');
     }
 }
 
@@ -1655,6 +1991,7 @@ function addTerrorist() {
         saveAllData();
         loadStateSecretData();
         document.getElementById('newTerrorist').value = '';
+        showNotification('✅ Террорист добавлен', 'success');
     }
 }
 
@@ -1670,6 +2007,7 @@ function addExtremist() {
         saveAllData();
         loadStateSecretData();
         document.getElementById('newExtremist').value = '';
+        showNotification('✅ Экстремист добавлен', 'success');
     }
 }
 
@@ -1685,6 +2023,7 @@ function addUnwanted() {
         saveAllData();
         loadStateSecretData();
         document.getElementById('newUnwanted').value = '';
+        showNotification('✅ Нежелательное лицо добавлено', 'success');
     }
 }
 
@@ -1700,6 +2039,7 @@ function addForeignAgent() {
         saveAllData();
         loadStateSecretData();
         document.getElementById('newForeignAgent').value = '';
+        showNotification('✅ Иностранный агент добавлен', 'success');
     }
 }
 
@@ -1778,7 +2118,9 @@ function loadStateSecretData() {
 function deleteStateSecretItem(type, id) {
     if (confirm('Удалить запись из государственной тайны?')) {
         systemData.stateSecret[type] = systemData.stateSecret[type].filter(item => item.id !== id);
-        saveAllData();
+        if (saveAllData()) {
+            showNotification('✅ Запись удалена из государственной тайны', 'success');
+        }
         loadStateSecretData();
     }
 }
@@ -1832,7 +2174,7 @@ function getDebtorsModule() {
                 </form>
             </div>
             
-            <div id="debtorsTableContainer" class="loading">Загрузка данных...</div>
+            <div id="debtorsTableContainer"></div>
         </div>
     `;
 }
@@ -1878,7 +2220,9 @@ function saveDebtor(event) {
         systemData.debtors.push(debtor);
     }
     
-    saveAllData();
+    if (saveAllData()) {
+        showNotification('✅ Должник сохранен', 'success');
+    }
     loadDebtorsTable();
     hideDebtorForm();
     event.target.reset();
@@ -1901,6 +2245,11 @@ function editDebtor(id) {
 function loadDebtorsTable() {
     const container = document.getElementById('debtorsTableContainer');
     if (!container) return;
+    
+    if (systemData.debtors.length === 0) {
+        container.innerHTML = '<div class="loading">Нет данных о должниках</div>';
+        return;
+    }
     
     const totalDebt = systemData.debtors.reduce((sum, debtor) => sum + parseFloat(debtor.debtAmount || 0), 0);
     
@@ -1945,180 +2294,10 @@ function loadDebtorsTable() {
 function deleteDebtor(id) {
     if (confirm('Удалить должника из базы?')) {
         systemData.debtors = systemData.debtors.filter(d => d.id !== id);
-        saveAllData();
-        loadDebtorsTable();
-    }
-}
-
-// === МОДУЛЬ ОПЕРАТИВНОГО УЧЕТА ===
-function getOperationalModule() {
-    return `
-        <div class="module">
-            <h2>📋 Оперативный учет (База преступников)</h2>
-            <button class="btn btn-success" onclick="showOperationalForm()">➕ Добавить запись</button>
-            
-            <div id="operationalFormContainer" style="display: none; margin-top: 20px; padding: 20px; background: #f8f9fa; border-radius: 5px;">
-                <h3>${editingId ? 'Редактирование' : 'Добавление'} в оперативный учет</h3>
-                <form onsubmit="saveOperationalRecord(event)">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Никнейм:</label>
-                            <input type="text" id="operationalNickname" required>
-                        </div>
-                        <div class="form-group">
-                            <label>ФИО:</label>
-                            <input type="text" id="operationalFullName" required>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Дата рождения:</label>
-                            <input type="date" id="operationalBirthDate">
-                        </div>
-                        <div class="form-group">
-                            <label>Кличка/Прозвище:</label>
-                            <input type="text" id="operationalAlias">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Преступная специализация:</label>
-                        <input type="text" id="operationalSpecialization" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Приметы:</label>
-                        <textarea id="operationalDescription" rows="2"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Последнее известное местонахождение:</label>
-                        <input type="text" id="operationalLastLocation">
-                    </div>
-                    <div class="form-group">
-                        <label>Статус:</label>
-                        <select id="operationalStatus">
-                            <option value="Активен">Активен</option>
-                            <option value="Арестован">Арестован</option>
-                            <option value="В розыске">В розыске</option>
-                            <option value="Условно-досрочно">Условно-досрочно</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Сохранить'}</button>
-                    <button type="button" class="btn btn-danger" onclick="hideOperationalForm()">Отмена</button>
-                </form>
-            </div>
-            
-            <div id="operationalTableContainer" class="loading">Загрузка данных...</div>
-        </div>
-    `;
-}
-
-function showOperationalForm() {
-    editingId = null;
-    document.getElementById('operationalFormContainer').style.display = 'block';
-    document.getElementById('operationalNickname').value = '';
-    document.getElementById('operationalFullName').value = '';
-    document.getElementById('operationalBirthDate').value = '';
-    document.getElementById('operationalAlias').value = '';
-    document.getElementById('operationalSpecialization').value = '';
-    document.getElementById('operationalDescription').value = '';
-    document.getElementById('operationalLastLocation').value = '';
-    document.getElementById('operationalStatus').value = 'Активен';
-}
-
-function hideOperationalForm() {
-    document.getElementById('operationalFormContainer').style.display = 'none';
-    editingId = null;
-}
-
-function saveOperationalRecord(event) {
-    event.preventDefault();
-    
-    const operational = {
-        id: editingId || Date.now(),
-        nickname: document.getElementById('operationalNickname').value,
-        fullName: document.getElementById('operationalFullName').value,
-        birthDate: document.getElementById('operationalBirthDate').value,
-        alias: document.getElementById('operationalAlias').value,
-        specialization: document.getElementById('operationalSpecialization').value,
-        description: document.getElementById('operationalDescription').value,
-        lastLocation: document.getElementById('operationalLastLocation').value,
-        status: document.getElementById('operationalStatus').value,
-        createdBy: currentUser.nickname,
-        createdAt: new Date().toLocaleString()
-    };
-    
-    if (editingId) {
-        const index = systemData.operational.findIndex(o => o.id === editingId);
-        if (index !== -1) {
-            systemData.operational[index] = operational;
+        if (saveAllData()) {
+            showNotification('✅ Должник удален', 'success');
         }
-    } else {
-        systemData.operational.push(operational);
-    }
-    
-    saveAllData();
-    loadOperationalTable();
-    hideOperationalForm();
-    event.target.reset();
-}
-
-function editOperational(id) {
-    const operational = systemData.operational.find(o => o.id === id);
-    if (operational) {
-        editingId = id;
-        document.getElementById('operationalFormContainer').style.display = 'block';
-        document.getElementById('operationalNickname').value = operational.nickname;
-        document.getElementById('operationalFullName').value = operational.fullName;
-        document.getElementById('operationalBirthDate').value = operational.birthDate;
-        document.getElementById('operationalAlias').value = operational.alias;
-        document.getElementById('operationalSpecialization').value = operational.specialization;
-        document.getElementById('operationalDescription').value = operational.description;
-        document.getElementById('operationalLastLocation').value = operational.lastLocation;
-        document.getElementById('operationalStatus').value = operational.status;
-    }
-}
-
-function loadOperationalTable() {
-    const container = document.getElementById('operationalTableContainer');
-    if (!container) return;
-    
-    container.innerHTML = `
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Никнейм</th>
-                    <th>ФИО</th>
-                    <th>Кличка</th>
-                    <th>Специализация</th>
-                    <th>Последнее место</th>
-                    <th>Статус</th>
-                    <th>Действия</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${systemData.operational.map(record => `
-                    <tr>
-                        <td>${record.nickname}</td>
-                        <td>${record.fullName}</td>
-                        <td>${record.alias || '-'}</td>
-                        <td>${record.specialization}</td>
-                        <td>${record.lastLocation || '-'}</td>
-                        <td>${record.status}</td>
-                        <td>
-                            <button class="btn" onclick="editOperational(${record.id})">✏️</button>
-                            <button class="btn btn-danger" onclick="deleteOperational(${record.id})">🗑️</button>
-                        </td>
-                    </tr>
-                `).join('')}
-            </tbody>
-        </table>
-    `;
-}
-
-function deleteOperational(id) {
-    if (confirm('Удалить запись из оперативного учета?')) {
-        systemData.operational = systemData.operational.filter(o => o.id !== id);
-        saveAllData();
-        loadOperationalTable();
+        loadDebtorsTable();
     }
 }
 
@@ -2187,7 +2366,7 @@ function getJournalModule() {
             
             <div id="journalEntriesContainer" style="margin-top: 30px;">
                 <h3>История записей</h3>
-                <div id="journalTableContainer" class="loading">Загрузка данных...</div>
+                <div id="journalTableContainer"></div>
             </div>
         </div>
     `;
@@ -2223,7 +2402,9 @@ function addJournalEntry(type) {
     }
     
     systemData.journal.push(entry);
-    saveAllData();
+    if (saveAllData()) {
+        showNotification('✅ Запись журнала добавлена', 'success');
+    }
     loadJournalEntries();
     
     // Очистка форм
@@ -2238,6 +2419,11 @@ function addJournalEntry(type) {
 function loadJournalEntries() {
     const container = document.getElementById('journalTableContainer');
     if (!container) return;
+    
+    if (systemData.journal.length === 0) {
+        container.innerHTML = '<div class="loading">Нет записей в журнале</div>';
+        return;
+    }
     
     const recentEntries = systemData.journal.slice(-50).reverse();
     
@@ -2281,7 +2467,9 @@ function getJournalTypeLabel(type) {
 function deleteJournalEntry(id) {
     if (confirm('Удалить эту запись из журнала?')) {
         systemData.journal = systemData.journal.filter(j => j.id !== id);
-        saveAllData();
+        if (saveAllData()) {
+            showNotification('✅ Запись журнала удалена', 'success');
+        }
         loadJournalEntries();
     }
 }
@@ -2351,7 +2539,9 @@ function publishNews() {
     };
     
     systemData.news.push(news);
-    saveAllData();
+    if (saveAllData()) {
+        showNotification('✅ Новость опубликована', 'success');
+    }
     
     document.getElementById('newsTitle').value = '';
     document.getElementById('newsContent').value = '';
@@ -2361,7 +2551,9 @@ function publishNews() {
 function deleteNews(id) {
     if (confirm('Удалить эту новость?')) {
         systemData.news = systemData.news.filter(n => n.id !== id);
-        saveAllData();
+        if (saveAllData()) {
+            showNotification('✅ Новость удалена', 'success');
+        }
         showModule('news');
     }
 }
@@ -2566,3 +2758,26 @@ function getDashboardModule() {
         </div>
     `;
 }
+
+// Добавляем тестовые данные при первом запуске
+function addTestData() {
+    if (systemData.citizens.length === 0) {
+        systemData.citizens = [{
+            id: 1,
+            nickname: "TestUser",
+            fullName: "Тестовый Пользователь",
+            birthDate: "1990-01-01",
+            passportNumber: "1234567890",
+            address: "Тестовый адрес",
+            additionalInfo: "Тестовые данные для демонстрации",
+            criminalRecord: false,
+            createdBy: "system",
+            createdAt: new Date().toLocaleString()
+        }];
+        saveAllData();
+        showNotification('✅ Добавлены тестовые данные', 'success');
+    }
+}
+
+// Вызываем через 5 секунд после загрузки
+setTimeout(addTestData, 5000);
