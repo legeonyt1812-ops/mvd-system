@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Единая система МВД (Игровая)</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-left">
+                <h1>🎮 ЕДИНАЯ СИСТЕМА МВД</h1>
+                <small>ИГРОВАЯ СИСТЕМА - НЕ СВЯЗАНА С РЕАЛЬНЫМИ ОРГАНАМИ</small>
+            </div>
+            <div class="header-right">
+                <span id="userInfo"></span>
+                <button onclick="logout()">Выйти</button>
+            </div>
+        </header>
+
+        <nav class="sidebar">
+            <div class="nav-section">
+                <h3>📋 Учетные системы</h3>
+                <button onclick="showModule('citizens')">👥 База граждан</button>
+                <button onclick="showModule('drivers')">🚗 База водителей</button>
+                <button onclick="showModule('migration')">🛂 Миграционный учет</button>
+                <button onclick="showModule('pdn')">👶 Учет ПДН</button>
+                <button onclick="showModule('operational')">📋 Оперативный учет</button>
+            </div>
+
+            <div class="nav-section">
+                <h3>⚖️ Производство</h3>
+                <button onclick="showModule('cusp')">📝 КУСП</button>
+                <button onclick="showModule('admin_protocols')">📄 Адм. протоколы</button>
+                <button onclick="showModule('criminal_cases')">🔍 Уголовные дела</button>
+            </div>
+
+            <div class="nav-section">
+                <h3>🔐 Спецсистемы</h3>
+                <button onclick="showModule('wanted')">🕵️ Розыск</button>
+                <button onclick="showModule('state_secret')">🔐 Государственная тайна</button>
+                <button onclick="showModule('debtors')">💳 База должников</button>
+            </div>
+
+            <div class="nav-section">
+                <h3>📊 Служба</h3>
+                <button onclick="showModule('journal')">📓 Оперативный журнал</button>
+                <button onclick="showModule('news')">📰 Новости</button>
+                <button onclick="showModule('games')">🎮 Криминалистика</button>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div id="moduleContent">
+                <div class="welcome">
+                    <h2>Добро пожаловать в Единую Систему МВД</h2>
+                    <p>Выберите модуль в меню слева для работы</p>
+                    <div class="disclaimer">
+                        <strong>ВНИМАНИЕ:</strong> Это игровая система для ролевой игры. 
+                        Все данные вымышлены, любые совпадения с реальными людьми случайны.
+                        Система не связана с реальными государственными органами.
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="firebase-config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

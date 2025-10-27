@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Авторизация - ЕС МВД</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <style>
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+        }
+        
+        .auth-form {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 500px;
+        }
+        
+        .auth-form h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #bdc3c7;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        
+        .disclaimer {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-size: 12px;
+            text-align: center;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-form">
+            <h2>🎮 ЕДИНАЯ СИСТЕМА МВД</h2>
+            <div class="form-group">
+                <label>Никнейм:</label>
+                <input type="text" id="nickname" placeholder="Введите никнейм" required>
+            </div>
+            <div class="form-group">
+                <label>Пароль:</label>
+                <input type="password" id="password" placeholder="Введите пароль" required>
+            </div>
+            <div class="form-group">
+                <label>ФИО:</label>
+                <input type="text" id="fullName" placeholder="Ваше игровое ФИО" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Должность:</label>
+                    <select id="position" required>
+                        <option value="">Выберите должность</option>
+                        <option>Инспектор ППСП</option>
+                        <option>Инспектор ДПС ГАИ</option>
+                        <option>Инспектор МРЭО ГАИ</option>
+                        <option>Инспектор ПДН</option>
+                        <option>Инспектор УВМ</option>
+                        <option>Инспектор УСБ</option>
+                        <option>Инспектор УНК</option>
+                        <option>Оперативный дежурный ДЧ</option>
+                        <option>Оперуполномоченный уголовного розыска</option>
+                        <option>Следователь следственного отдела</option>
+                        <option>Начальник территориального управления</option>
+                        <option>Иное допущенное лицо</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Спецзвание:</label>
+                    <select id="rank" required>
+                        <option value="">Выберите звание</option>
+                        <option>Рядовой полиции</option>
+                        <option>Младший сержант полиции</option>
+                        <option>Сержант полиции</option>
+                        <option>Старший сержант полиции</option>
+                        <option>Старшина полиции</option>
+                        <option>Прапорщик полиции</option>
+                        <option>Младший лейтенант полиции</option>
+                        <option>Лейтенант полиции</option>
+                        <option>Старший лейтенант полиции</option>
+                        <option>Капитан полиции</option>
+                        <option>Майор полиции</option>
+                        <option>Подполковник полиции</option>
+                        <option>Полковник полиции</option>
+                        <option>Генерал-майор полиции</option>
+                        <option>Генерал-лейтенант полиции</option>
+                        <option>Генерал-полковник полиции</option>
+                    </select>
+                </div>
+            </div>
+            <button class="login-btn" onclick="login()">Войти в систему</button>
+            
+            <div class="disclaimer">
+                <strong>ИГРОВАЯ СИСТЕМА</strong><br>
+                Не связана с реальными государственными органами. 
+                Все данные вымышлены. Для использования в ролевых играх.
+            </div>
+        </div>
+    </div>
+
+    <script src="firebase-config.js"></script>
+    <script>
+        function login() {
+            const user = {
+                nickname: document.getElementById('nickname').value,
+                fullName: document.getElementById('fullName').value,
+                position: document.getElementById('position').value,
+                rank: document.getElementById('rank').value,
+                loginTime: new Date().toLocaleString()
+            };
+            
+            if (!user.nickname || !user.fullName || !user.position || !user.rank) {
+                alert('Заполните все поля!');
+                return;
+            }
+            
+            // Сохраняем пользователя
+            localStorage.setItem('mvd_current_user', JSON.stringify(user));
+            
+            // Регистрируем пользователя в базе
+            database.ref('users/' + user.nickname).set(user);
+            
+            window.location.href = 'index.html';
+        }
+        
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') login();
+        });
+    </script>
+</body>
+</html>
