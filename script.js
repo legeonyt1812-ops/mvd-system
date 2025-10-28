@@ -48,8 +48,8 @@ async function initSystem() {
     
     // Проверяем подключение
     setTimeout(() => {
-        if (systemData.citizens.length === 0) {
-            showNotification('⚠️ База пустая, добавьте первого гражданина', 'warning');
+        if (systemData.citizens.length === 0 && systemData.drivers.length === 0) {
+            showNotification('⚠️ База пустая, начните с добавления данных', 'warning');
         } else {
             showNotification('✅ Система готова к работе', 'success');
         }
@@ -163,29 +163,9 @@ function showNotification(message, type = 'info') {
     }, 4000);
 }
 
-// === ФУНКЦИЯ ДЛЯ СКРЫТИЯ ВСЕХ ФОРМ ===
-function hideAllForms() {
-    const forms = [
-        'citizenFormContainer', 'driverFormContainer', 'migrationFormContainer',
-        'pdnFormContainer', 'operationalFormContainer', 'cuspFormContainer',
-        'adminProtocolFormContainer', 'criminalCaseFormContainer', 'wantedFormContainer',
-        'debtorFormContainer'
-    ];
-    
-    forms.forEach(formId => {
-        const form = document.getElementById(formId);
-        if (form) form.style.display = 'none';
-    });
-    editingId = null;
-}
-
 // === ОСНОВНЫЕ МОДУЛИ ===
 function showModule(moduleName) {
     currentModule = moduleName;
-    
-    // Скрываем все формы при переключении модулей
-    hideAllForms();
-    
     editingId = null;
     const moduleContent = document.getElementById('moduleContent');
     
@@ -300,10 +280,8 @@ function getCitizensModule() {
                             <input type="checkbox" id="citizenCriminalRecord"> Имеет судимость
                         </label>
                     </div>
-                    <div class="form-buttons">
-                        <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Сохранить'}</button>
-                        <button type="button" class="btn btn-danger" onclick="hideCitizenForm()">Отмена</button>
-                    </div>
+                    <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Сохранить'}</button>
+                    <button type="button" class="btn btn-danger" onclick="hideCitizenForm()">Отмена</button>
                 </form>
             </div>
             
@@ -313,24 +291,19 @@ function getCitizensModule() {
 }
 
 function showCitizenForm() {
-    hideAllForms();
     editingId = null;
-    const form = document.getElementById('citizenFormContainer');
-    if (form) {
-        form.style.display = 'block';
-        document.getElementById('citizenNickname').value = '';
-        document.getElementById('citizenFullName').value = '';
-        document.getElementById('citizenBirthDate').value = '';
-        document.getElementById('citizenPassport').value = '';
-        document.getElementById('citizenAddress').value = '';
-        document.getElementById('citizenAdditionalInfo').value = '';
-        document.getElementById('citizenCriminalRecord').checked = false;
-    }
+    document.getElementById('citizenFormContainer').style.display = 'block';
+    document.getElementById('citizenNickname').value = '';
+    document.getElementById('citizenFullName').value = '';
+    document.getElementById('citizenBirthDate').value = '';
+    document.getElementById('citizenPassport').value = '';
+    document.getElementById('citizenAddress').value = '';
+    document.getElementById('citizenAdditionalInfo').value = '';
+    document.getElementById('citizenCriminalRecord').checked = false;
 }
 
 function hideCitizenForm() {
-    const form = document.getElementById('citizenFormContainer');
-    if (form) form.style.display = 'none';
+    document.getElementById('citizenFormContainer').style.display = 'none';
     editingId = null;
 }
 
@@ -364,23 +337,21 @@ function saveCitizen(event) {
     }
     loadCitizensTable();
     hideCitizenForm();
+    event.target.reset();
 }
 
 function editCitizen(id) {
     const citizen = systemData.citizens.find(c => c.id === id);
     if (citizen) {
         editingId = id;
-        const form = document.getElementById('citizenFormContainer');
-        if (form) {
-            form.style.display = 'block';
-            document.getElementById('citizenNickname').value = citizen.nickname;
-            document.getElementById('citizenFullName').value = citizen.fullName;
-            document.getElementById('citizenBirthDate').value = citizen.birthDate;
-            document.getElementById('citizenPassport').value = citizen.passportNumber;
-            document.getElementById('citizenAddress').value = citizen.address;
-            document.getElementById('citizenAdditionalInfo').value = citizen.additionalInfo;
-            document.getElementById('citizenCriminalRecord').checked = citizen.criminalRecord;
-        }
+        document.getElementById('citizenFormContainer').style.display = 'block';
+        document.getElementById('citizenNickname').value = citizen.nickname;
+        document.getElementById('citizenFullName').value = citizen.fullName;
+        document.getElementById('citizenBirthDate').value = citizen.birthDate;
+        document.getElementById('citizenPassport').value = citizen.passportNumber;
+        document.getElementById('citizenAddress').value = citizen.address;
+        document.getElementById('citizenAdditionalInfo').value = citizen.additionalInfo;
+        document.getElementById('citizenCriminalRecord').checked = citizen.criminalRecord;
     }
 }
 
@@ -488,41 +459,59 @@ function deleteCitizen(id) {
     }
 }
 
-// === МОДУЛЬ БАЗЫ ВОДИТЕЛЕЙ ===
+// === МОДУЛЬ БАЗЫ ВОДИТЕЛЕЙ - НЕЗАВИСИМАЯ ВЕРСИЯ ===
 function getDriversModule() {
     return `
         <div class="module">
             <h2>🚗 База данных водителей</h2>
+            <div class="search-box">
+                <input type="text" id="searchDrivers" placeholder="Поиск по ФИО, никнейму или номеру В/У..." onkeyup="searchDrivers()">
+            </div>
             <button class="btn btn-success" onclick="showDriverForm()">➕ Добавить водителя</button>
             
             <div id="driverFormContainer" style="display: none; margin-top: 20px; padding: 20px; background: #f8f9fa; border-radius: 5px;">
                 <h3>${editingId ? 'Редактирование' : 'Добавление'} водителя</h3>
                 <form onsubmit="saveDriver(event)">
-                    <div class="form-group">
-                        <label>Выберите гражданина:</label>
-                        <select id="driverCitizen" required>
-                            <option value="">Выберите гражданина</option>
-                            ${systemData.citizens.map(c => `<option value="${c.id}">${c.nickname} - ${c.fullName}</option>`).join('')}
-                        </select>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Никнейм водителя:</label>
+                            <input type="text" id="driverNickname" required>
+                        </div>
+                        <div class="form-group">
+                            <label>ФИО водителя:</label>
+                            <input type="text" id="driverFullName" required>
+                        </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
                             <label>Номер В/У:</label>
-                            <input type="text" id="driverLicenseNumber" required>
+                            <input type="text" id="driverLicenseNumber" required placeholder="1234 567890">
                         </div>
                         <div class="form-group">
                             <label>Категории:</label>
                             <input type="text" id="driverCategories" placeholder="A,B,C,D" required>
                         </div>
                     </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Дата рождения:</label>
+                            <input type="date" id="driverBirthDate">
+                        </div>
+                        <div class="form-group">
+                            <label>Адрес:</label>
+                            <input type="text" id="driverAddress">
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label>Административные штрафы:</label>
                         <textarea id="driverFines" placeholder="Дата, сумма, нарушение..." rows="3"></textarea>
                     </div>
-                    <div class="form-buttons">
-                        <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Сохранить'}</button>
-                        <button type="button" class="btn btn-danger" onclick="hideDriverForm()">Отмена</button>
+                    <div class="form-group">
+                        <label>Дополнительная информация:</label>
+                        <textarea id="driverAdditionalInfo" rows="2"></textarea>
                     </div>
+                    <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Сохранить'}</button>
+                    <button type="button" class="btn btn-danger" onclick="hideDriverForm()">Отмена</button>
                 </form>
             </div>
             
@@ -532,42 +521,36 @@ function getDriversModule() {
 }
 
 function showDriverForm() {
-    hideAllForms();
     editingId = null;
-    const form = document.getElementById('driverFormContainer');
-    if (form) {
-        form.style.display = 'block';
-        document.getElementById('driverLicenseNumber').value = '';
-        document.getElementById('driverCategories').value = '';
-        document.getElementById('driverFines').value = '';
-    }
+    document.getElementById('driverFormContainer').style.display = 'block';
+    document.getElementById('driverNickname').value = '';
+    document.getElementById('driverFullName').value = '';
+    document.getElementById('driverLicenseNumber').value = '';
+    document.getElementById('driverCategories').value = '';
+    document.getElementById('driverBirthDate').value = '';
+    document.getElementById('driverAddress').value = '';
+    document.getElementById('driverFines').value = '';
+    document.getElementById('driverAdditionalInfo').value = '';
 }
 
 function hideDriverForm() {
-    const form = document.getElementById('driverFormContainer');
-    if (form) form.style.display = 'none';
+    document.getElementById('driverFormContainer').style.display = 'none';
     editingId = null;
 }
 
 function saveDriver(event) {
     event.preventDefault();
     
-    const citizenId = parseInt(document.getElementById('driverCitizen').value);
-    const citizen = systemData.citizens.find(c => c.id === citizenId);
-    
-    if (!citizen) {
-        showNotification('❌ Гражданин не найден', 'error');
-        return;
-    }
-    
     const driver = {
         id: editingId || Date.now(),
-        citizenId: citizenId,
-        citizenNickname: citizen.nickname,
-        citizenFullName: citizen.fullName,
+        nickname: document.getElementById('driverNickname').value,
+        fullName: document.getElementById('driverFullName').value,
         licenseNumber: document.getElementById('driverLicenseNumber').value,
         categories: document.getElementById('driverCategories').value,
+        birthDate: document.getElementById('driverBirthDate').value,
+        address: document.getElementById('driverAddress').value,
         fines: document.getElementById('driverFines').value,
+        additionalInfo: document.getElementById('driverAdditionalInfo').value,
         createdBy: currentUser.nickname,
         createdAt: new Date().toLocaleString()
     };
@@ -586,20 +569,22 @@ function saveDriver(event) {
     }
     loadDriversTable();
     hideDriverForm();
+    event.target.reset();
 }
 
 function editDriver(id) {
     const driver = systemData.drivers.find(d => d.id === id);
     if (driver) {
         editingId = id;
-        const form = document.getElementById('driverFormContainer');
-        if (form) {
-            form.style.display = 'block';
-            document.getElementById('driverCitizen').value = driver.citizenId;
-            document.getElementById('driverLicenseNumber').value = driver.licenseNumber;
-            document.getElementById('driverCategories').value = driver.categories;
-            document.getElementById('driverFines').value = driver.fines;
-        }
+        document.getElementById('driverFormContainer').style.display = 'block';
+        document.getElementById('driverNickname').value = driver.nickname;
+        document.getElementById('driverFullName').value = driver.fullName;
+        document.getElementById('driverLicenseNumber').value = driver.licenseNumber;
+        document.getElementById('driverCategories').value = driver.categories;
+        document.getElementById('driverBirthDate').value = driver.birthDate;
+        document.getElementById('driverAddress').value = driver.address;
+        document.getElementById('driverFines').value = driver.fines;
+        document.getElementById('driverAdditionalInfo').value = driver.additionalInfo;
     }
 }
 
@@ -620,6 +605,7 @@ function loadDriversTable() {
                     <th>ФИО</th>
                     <th>Номер В/У</th>
                     <th>Категории</th>
+                    <th>Дата рождения</th>
                     <th>Штрафы</th>
                     <th>Добавил</th>
                     <th>Действия</th>
@@ -628,11 +614,12 @@ function loadDriversTable() {
             <tbody>
                 ${systemData.drivers.map(driver => `
                     <tr>
-                        <td>${driver.citizenNickname}</td>
-                        <td>${driver.citizenFullName}</td>
+                        <td>${driver.nickname}</td>
+                        <td>${driver.fullName}</td>
                         <td>${driver.licenseNumber}</td>
                         <td>${driver.categories}</td>
-                        <td>${driver.fines || 'нет'}</td>
+                        <td>${driver.birthDate || '-'}</td>
+                        <td>${driver.fines ? '✅' : '❌'}</td>
                         <td>${driver.createdBy}</td>
                         <td>
                             <button class="btn" onclick="editDriver(${driver.id})">✏️</button>
@@ -642,6 +629,57 @@ function loadDriversTable() {
                 `).join('')}
             </tbody>
         </table>
+        <div style="margin-top: 10px; color: #666;">
+            Всего водителей: ${systemData.drivers.length}
+        </div>
+    `;
+}
+
+function searchDrivers() {
+    const searchTerm = document.getElementById('searchDrivers').value.toLowerCase();
+    const container = document.getElementById('driversTableContainer');
+    
+    const filteredDrivers = systemData.drivers.filter(driver => 
+        driver.nickname.toLowerCase().includes(searchTerm) ||
+        driver.fullName.toLowerCase().includes(searchTerm) ||
+        driver.licenseNumber.toLowerCase().includes(searchTerm)
+    );
+    
+    container.innerHTML = `
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Никнейм</th>
+                    <th>ФИО</th>
+                    <th>Номер В/У</th>
+                    <th>Категории</th>
+                    <th>Дата рождения</th>
+                    <th>Штрафы</th>
+                    <th>Добавил</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${filteredDrivers.map(driver => `
+                    <tr>
+                        <td>${driver.nickname}</td>
+                        <td>${driver.fullName}</td>
+                        <td>${driver.licenseNumber}</td>
+                        <td>${driver.categories}</td>
+                        <td>${driver.birthDate || '-'}</td>
+                        <td>${driver.fines ? '✅' : '❌'}</td>
+                        <td>${driver.createdBy}</td>
+                        <td>
+                            <button class="btn" onclick="editDriver(${driver.id})">✏️</button>
+                            <button class="btn btn-danger" onclick="deleteDriver(${driver.id})">🗑️</button>
+                        </td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+        <div style="margin-top: 10px; color: #666;">
+            Найдено: ${filteredDrivers.length} из ${systemData.drivers.length}
+        </div>
     `;
 }
 
@@ -693,10 +731,12 @@ function getMigrationModule() {
                         <label>Цель визита:</label>
                         <input type="text" id="migrationPurpose">
                     </div>
-                    <div class="form-buttons">
-                        <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Сохранить'}</button>
-                        <button type="button" class="btn btn-danger" onclick="hideMigrationForm()">Отмена</button>
+                    <div class="form-group">
+                        <label>Место проживания:</label>
+                        <input type="text" id="migrationAddress">
                     </div>
+                    <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Сохранить'}</button>
+                    <button type="button" class="btn btn-danger" onclick="hideMigrationForm()">Отмена</button>
                 </form>
             </div>
             
@@ -706,23 +746,19 @@ function getMigrationModule() {
 }
 
 function showMigrationForm() {
-    hideAllForms();
     editingId = null;
-    const form = document.getElementById('migrationFormContainer');
-    if (form) {
-        form.style.display = 'block';
-        document.getElementById('migrationNickname').value = '';
-        document.getElementById('migrationFullName').value = '';
-        document.getElementById('migrationCitizenship').value = '';
-        document.getElementById('migrationEntryDate').value = '';
-        document.getElementById('migrationExitDate').value = '';
-        document.getElementById('migrationPurpose').value = '';
-    }
+    document.getElementById('migrationFormContainer').style.display = 'block';
+    document.getElementById('migrationNickname').value = '';
+    document.getElementById('migrationFullName').value = '';
+    document.getElementById('migrationCitizenship').value = '';
+    document.getElementById('migrationEntryDate').value = '';
+    document.getElementById('migrationExitDate').value = '';
+    document.getElementById('migrationPurpose').value = '';
+    document.getElementById('migrationAddress').value = '';
 }
 
 function hideMigrationForm() {
-    const form = document.getElementById('migrationFormContainer');
-    if (form) form.style.display = 'none';
+    document.getElementById('migrationFormContainer').style.display = 'none';
     editingId = null;
 }
 
@@ -737,6 +773,7 @@ function saveMigrationRecord(event) {
         entryDate: document.getElementById('migrationEntryDate').value,
         exitDate: document.getElementById('migrationExitDate').value,
         purpose: document.getElementById('migrationPurpose').value,
+        address: document.getElementById('migrationAddress').value,
         status: document.getElementById('migrationExitDate').value ? 'Выехал' : 'На территории',
         createdBy: currentUser.nickname,
         createdAt: new Date().toLocaleString()
@@ -756,22 +793,21 @@ function saveMigrationRecord(event) {
     }
     loadMigrationTable();
     hideMigrationForm();
+    event.target.reset();
 }
 
 function editMigration(id) {
     const migration = systemData.migration.find(m => m.id === id);
     if (migration) {
         editingId = id;
-        const form = document.getElementById('migrationFormContainer');
-        if (form) {
-            form.style.display = 'block';
-            document.getElementById('migrationNickname').value = migration.nickname;
-            document.getElementById('migrationFullName').value = migration.fullName;
-            document.getElementById('migrationCitizenship').value = migration.citizenship;
-            document.getElementById('migrationEntryDate').value = migration.entryDate;
-            document.getElementById('migrationExitDate').value = migration.exitDate;
-            document.getElementById('migrationPurpose').value = migration.purpose;
-        }
+        document.getElementById('migrationFormContainer').style.display = 'block';
+        document.getElementById('migrationNickname').value = migration.nickname;
+        document.getElementById('migrationFullName').value = migration.fullName;
+        document.getElementById('migrationCitizenship').value = migration.citizenship;
+        document.getElementById('migrationEntryDate').value = migration.entryDate;
+        document.getElementById('migrationExitDate').value = migration.exitDate;
+        document.getElementById('migrationPurpose').value = migration.purpose;
+        document.getElementById('migrationAddress').value = migration.address;
     }
 }
 
@@ -795,6 +831,7 @@ function loadMigrationTable() {
                     <th>Выезд</th>
                     <th>Статус</th>
                     <th>Цель</th>
+                    <th>Адрес</th>
                     <th>Действия</th>
                 </tr>
             </thead>
@@ -808,6 +845,7 @@ function loadMigrationTable() {
                         <td>${record.exitDate || '-'}</td>
                         <td><span style="color: ${record.status === 'На территории' ? 'green' : 'red'}">${record.status}</span></td>
                         <td>${record.purpose || '-'}</td>
+                        <td>${record.address || '-'}</td>
                         <td>
                             <button class="btn" onclick="editMigration(${record.id})">✏️</button>
                             <button class="btn btn-danger" onclick="deleteMigration(${record.id})">🗑️</button>
@@ -863,14 +901,22 @@ function getPDNModule() {
                         <label>Причина постановки на учет:</label>
                         <textarea id="pdnReason" rows="3" required></textarea>
                     </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Дата постановки:</label>
+                            <input type="date" id="pdnRegistrationDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Куратор:</label>
+                            <input type="text" id="pdnCurator" value="${currentUser.fullName}" readonly>
+                        </div>
+                    </div>
                     <div class="form-group">
-                        <label>Дата постановки:</label>
-                        <input type="date" id="pdnRegistrationDate" required>
+                        <label>Дополнительная информация:</label>
+                        <textarea id="pdnAdditionalInfo" rows="2"></textarea>
                     </div>
-                    <div class="form-buttons">
-                        <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Сохранить'}</button>
-                        <button type="button" class="btn btn-danger" onclick="hidePDNForm()">Отмена</button>
-                    </div>
+                    <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Сохранить'}</button>
+                    <button type="button" class="btn btn-danger" onclick="hidePDNForm()">Отмена</button>
                 </form>
             </div>
             
@@ -880,23 +926,19 @@ function getPDNModule() {
 }
 
 function showPDNForm() {
-    hideAllForms();
     editingId = null;
-    const form = document.getElementById('pdnFormContainer');
-    if (form) {
-        form.style.display = 'block';
-        document.getElementById('pdnNickname').value = '';
-        document.getElementById('pdnFullName').value = '';
-        document.getElementById('pdnBirthDate').value = '';
-        document.getElementById('pdnSchool').value = '';
-        document.getElementById('pdnReason').value = '';
-        document.getElementById('pdnRegistrationDate').value = '';
-    }
+    document.getElementById('pdnFormContainer').style.display = 'block';
+    document.getElementById('pdnNickname').value = '';
+    document.getElementById('pdnFullName').value = '';
+    document.getElementById('pdnBirthDate').value = '';
+    document.getElementById('pdnSchool').value = '';
+    document.getElementById('pdnReason').value = '';
+    document.getElementById('pdnRegistrationDate').value = new Date().toISOString().split('T')[0];
+    document.getElementById('pdnAdditionalInfo').value = '';
 }
 
 function hidePDNForm() {
-    const form = document.getElementById('pdnFormContainer');
-    if (form) form.style.display = 'none';
+    document.getElementById('pdnFormContainer').style.display = 'none';
     editingId = null;
 }
 
@@ -911,6 +953,8 @@ function savePDNRecord(event) {
         school: document.getElementById('pdnSchool').value,
         reason: document.getElementById('pdnReason').value,
         registrationDate: document.getElementById('pdnRegistrationDate').value,
+        curator: document.getElementById('pdnCurator').value,
+        additionalInfo: document.getElementById('pdnAdditionalInfo').value,
         status: 'На учете',
         createdBy: currentUser.nickname,
         createdAt: new Date().toLocaleString()
@@ -930,22 +974,21 @@ function savePDNRecord(event) {
     }
     loadPDNTable();
     hidePDNForm();
+    event.target.reset();
 }
 
 function editPDN(id) {
     const pdn = systemData.pdn.find(p => p.id === id);
     if (pdn) {
         editingId = id;
-        const form = document.getElementById('pdnFormContainer');
-        if (form) {
-            form.style.display = 'block';
-            document.getElementById('pdnNickname').value = pdn.nickname;
-            document.getElementById('pdnFullName').value = pdn.fullName;
-            document.getElementById('pdnBirthDate').value = pdn.birthDate;
-            document.getElementById('pdnSchool').value = pdn.school;
-            document.getElementById('pdnReason').value = pdn.reason;
-            document.getElementById('pdnRegistrationDate').value = pdn.registrationDate;
-        }
+        document.getElementById('pdnFormContainer').style.display = 'block';
+        document.getElementById('pdnNickname').value = pdn.nickname;
+        document.getElementById('pdnFullName').value = pdn.fullName;
+        document.getElementById('pdnBirthDate').value = pdn.birthDate;
+        document.getElementById('pdnSchool').value = pdn.school;
+        document.getElementById('pdnReason').value = pdn.reason;
+        document.getElementById('pdnRegistrationDate').value = pdn.registrationDate;
+        document.getElementById('pdnAdditionalInfo').value = pdn.additionalInfo;
     }
 }
 
@@ -968,6 +1011,7 @@ function loadPDNTable() {
                     <th>Учебное заведение</th>
                     <th>Причина</th>
                     <th>Дата постановки</th>
+                    <th>Куратор</th>
                     <th>Статус</th>
                     <th>Действия</th>
                 </tr>
@@ -979,8 +1023,9 @@ function loadPDNTable() {
                         <td>${record.fullName}</td>
                         <td>${record.birthDate}</td>
                         <td>${record.school}</td>
-                        <td>${record.reason}</td>
+                        <td>${record.reason.length > 50 ? record.reason.substring(0, 50) + '...' : record.reason}</td>
                         <td>${record.registrationDate}</td>
+                        <td>${record.curator}</td>
                         <td>${record.status}</td>
                         <td>
                             <button class="btn" onclick="editPDN(${record.id})">✏️</button>
@@ -1054,10 +1099,8 @@ function getOperationalModule() {
                             <option value="Условно-досрочно">Условно-досрочно</option>
                         </select>
                     </div>
-                    <div class="form-buttons">
-                        <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Сохранить'}</button>
-                        <button type="button" class="btn btn-danger" onclick="hideOperationalForm()">Отмена</button>
-                    </div>
+                    <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Сохранить'}</button>
+                    <button type="button" class="btn btn-danger" onclick="hideOperationalForm()">Отмена</button>
                 </form>
             </div>
             
@@ -1067,25 +1110,20 @@ function getOperationalModule() {
 }
 
 function showOperationalForm() {
-    hideAllForms();
     editingId = null;
-    const form = document.getElementById('operationalFormContainer');
-    if (form) {
-        form.style.display = 'block';
-        document.getElementById('operationalNickname').value = '';
-        document.getElementById('operationalFullName').value = '';
-        document.getElementById('operationalBirthDate').value = '';
-        document.getElementById('operationalAlias').value = '';
-        document.getElementById('operationalSpecialization').value = '';
-        document.getElementById('operationalDescription').value = '';
-        document.getElementById('operationalLastLocation').value = '';
-        document.getElementById('operationalStatus').value = 'Активен';
-    }
+    document.getElementById('operationalFormContainer').style.display = 'block';
+    document.getElementById('operationalNickname').value = '';
+    document.getElementById('operationalFullName').value = '';
+    document.getElementById('operationalBirthDate').value = '';
+    document.getElementById('operationalAlias').value = '';
+    document.getElementById('operationalSpecialization').value = '';
+    document.getElementById('operationalDescription').value = '';
+    document.getElementById('operationalLastLocation').value = '';
+    document.getElementById('operationalStatus').value = 'Активен';
 }
 
 function hideOperationalForm() {
-    const form = document.getElementById('operationalFormContainer');
-    if (form) form.style.display = 'none';
+    document.getElementById('operationalFormContainer').style.display = 'none';
     editingId = null;
 }
 
@@ -1120,24 +1158,22 @@ function saveOperationalRecord(event) {
     }
     loadOperationalTable();
     hideOperationalForm();
+    event.target.reset();
 }
 
 function editOperational(id) {
     const operational = systemData.operational.find(o => o.id === id);
     if (operational) {
         editingId = id;
-        const form = document.getElementById('operationalFormContainer');
-        if (form) {
-            form.style.display = 'block';
-            document.getElementById('operationalNickname').value = operational.nickname;
-            document.getElementById('operationalFullName').value = operational.fullName;
-            document.getElementById('operationalBirthDate').value = operational.birthDate;
-            document.getElementById('operationalAlias').value = operational.alias;
-            document.getElementById('operationalSpecialization').value = operational.specialization;
-            document.getElementById('operationalDescription').value = operational.description;
-            document.getElementById('operationalLastLocation').value = operational.lastLocation;
-            document.getElementById('operationalStatus').value = operational.status;
-        }
+        document.getElementById('operationalFormContainer').style.display = 'block';
+        document.getElementById('operationalNickname').value = operational.nickname;
+        document.getElementById('operationalFullName').value = operational.fullName;
+        document.getElementById('operationalBirthDate').value = operational.birthDate;
+        document.getElementById('operationalAlias').value = operational.alias;
+        document.getElementById('operationalSpecialization').value = operational.specialization;
+        document.getElementById('operationalDescription').value = operational.description;
+        document.getElementById('operationalLastLocation').value = operational.lastLocation;
+        document.getElementById('operationalStatus').value = operational.status;
     }
 }
 
@@ -1236,10 +1272,8 @@ function getCUSPModule() {
                             <option value="Закрыто">Закрыто</option>
                         </select>
                     </div>
-                    <div class="form-buttons">
-                        <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Сохранить'}</button>
-                        <button type="button" class="btn btn-danger" onclick="hideCUSPForm()">Отмена</button>
-                    </div>
+                    <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Сохранить'}</button>
+                    <button type="button" class="btn btn-danger" onclick="hideCUSPForm()">Отмена</button>
                 </form>
             </div>
             
@@ -1249,22 +1283,17 @@ function getCUSPModule() {
 }
 
 function showCUSPForm() {
-    hideAllForms();
     editingId = null;
-    const form = document.getElementById('cuspFormContainer');
-    if (form) {
-        form.style.display = 'block';
-        document.getElementById('cuspApplicant').value = '';
-        document.getElementById('cuspContacts').value = '';
-        document.getElementById('cuspStatement').value = '';
-        document.getElementById('cuspDateTime').value = new Date().toISOString().slice(0, 16);
-        document.getElementById('cuspStatus').value = 'Зарегистрировано';
-    }
+    document.getElementById('cuspFormContainer').style.display = 'block';
+    document.getElementById('cuspApplicant').value = '';
+    document.getElementById('cuspContacts').value = '';
+    document.getElementById('cuspStatement').value = '';
+    document.getElementById('cuspDateTime').value = new Date().toISOString().slice(0, 16);
+    document.getElementById('cuspStatus').value = 'Зарегистрировано';
 }
 
 function hideCUSPForm() {
-    const form = document.getElementById('cuspFormContainer');
-    if (form) form.style.display = 'none';
+    document.getElementById('cuspFormContainer').style.display = 'none';
     editingId = null;
 }
 
@@ -1297,22 +1326,20 @@ function saveCUSPRecord(event) {
     }
     loadCUSPTable();
     hideCUSPForm();
+    event.target.reset();
 }
 
 function editCUSP(id) {
     const cusp = systemData.cusp.find(c => c.id === id);
     if (cusp) {
         editingId = id;
-        const form = document.getElementById('cuspFormContainer');
-        if (form) {
-            form.style.display = 'block';
-            document.getElementById('cuspApplicant').value = cusp.applicant;
-            document.getElementById('cuspContacts').value = cusp.contacts;
-            document.getElementById('cuspStatement').value = cusp.statement;
-            document.getElementById('cuspResponsible').value = cusp.responsible;
-            document.getElementById('cuspDateTime').value = cusp.dateTime;
-            document.getElementById('cuspStatus').value = cusp.status;
-        }
+        document.getElementById('cuspFormContainer').style.display = 'block';
+        document.getElementById('cuspApplicant').value = cusp.applicant;
+        document.getElementById('cuspContacts').value = cusp.contacts;
+        document.getElementById('cuspStatement').value = cusp.statement;
+        document.getElementById('cuspResponsible').value = cusp.responsible;
+        document.getElementById('cuspDateTime').value = cusp.dateTime;
+        document.getElementById('cuspStatus').value = cusp.status;
     }
 }
 
@@ -1418,10 +1445,8 @@ function getAdminProtocolsModule() {
                             <option value="Исполнен">Исполнен</option>
                         </select>
                     </div>
-                    <div class="form-buttons">
-                        <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Сохранить протокол'}</button>
-                        <button type="button" class="btn btn-danger" onclick="hideAdminProtocolForm()">Отмена</button>
-                    </div>
+                    <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Сохранить протокол'}</button>
+                    <button type="button" class="btn btn-danger" onclick="hideAdminProtocolForm()">Отмена</button>
                 </form>
             </div>
             
@@ -1431,24 +1456,19 @@ function getAdminProtocolsModule() {
 }
 
 function showAdminProtocolForm() {
-    hideAllForms();
     editingId = null;
-    const form = document.getElementById('adminProtocolFormContainer');
-    if (form) {
-        form.style.display = 'block';
-        document.getElementById('protocolViolator').value = '';
-        document.getElementById('protocolViolatorNickname').value = '';
-        document.getElementById('protocolArticle').value = '';
-        document.getElementById('protocolCircumstances').value = '';
-        document.getElementById('protocolLocation').value = '';
-        document.getElementById('protocolDateTime').value = new Date().toISOString().slice(0, 16);
-        document.getElementById('protocolStatus').value = 'Составлен';
-    }
+    document.getElementById('adminProtocolFormContainer').style.display = 'block';
+    document.getElementById('protocolViolator').value = '';
+    document.getElementById('protocolViolatorNickname').value = '';
+    document.getElementById('protocolArticle').value = '';
+    document.getElementById('protocolCircumstances').value = '';
+    document.getElementById('protocolLocation').value = '';
+    document.getElementById('protocolDateTime').value = new Date().toISOString().slice(0, 16);
+    document.getElementById('protocolStatus').value = 'Составлен';
 }
 
 function hideAdminProtocolForm() {
-    const form = document.getElementById('adminProtocolFormContainer');
-    if (form) form.style.display = 'none';
+    document.getElementById('adminProtocolFormContainer').style.display = 'none';
     editingId = null;
 }
 
@@ -1483,23 +1503,21 @@ function saveAdminProtocol(event) {
     }
     loadAdminProtocolsTable();
     hideAdminProtocolForm();
+    event.target.reset();
 }
 
 function editAdminProtocol(id) {
     const protocol = systemData.adminProtocols.find(p => p.id === id);
     if (protocol) {
         editingId = id;
-        const form = document.getElementById('adminProtocolFormContainer');
-        if (form) {
-            form.style.display = 'block';
-            document.getElementById('protocolViolator').value = protocol.violator;
-            document.getElementById('protocolViolatorNickname').value = protocol.violatorNickname;
-            document.getElementById('protocolArticle').value = protocol.article;
-            document.getElementById('protocolCircumstances').value = protocol.circumstances;
-            document.getElementById('protocolLocation').value = protocol.location;
-            document.getElementById('protocolDateTime').value = protocol.dateTime;
-            document.getElementById('protocolStatus').value = protocol.status;
-        }
+        document.getElementById('adminProtocolFormContainer').style.display = 'block';
+        document.getElementById('protocolViolator').value = protocol.violator;
+        document.getElementById('protocolViolatorNickname').value = protocol.violatorNickname;
+        document.getElementById('protocolArticle').value = protocol.article;
+        document.getElementById('protocolCircumstances').value = protocol.circumstances;
+        document.getElementById('protocolLocation').value = protocol.location;
+        document.getElementById('protocolDateTime').value = protocol.dateTime;
+        document.getElementById('protocolStatus').value = protocol.status;
     }
 }
 
@@ -1605,10 +1623,8 @@ function getCriminalCasesModule() {
                             <option value="Закрыто">Закрыто</option>
                         </select>
                     </div>
-                    <div class="form-buttons">
-                        <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Сохранить дело'}</button>
-                        <button type="button" class="btn btn-danger" onclick="hideCriminalCaseForm()">Отмена</button>
-                    </div>
+                    <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Сохранить дело'}</button>
+                    <button type="button" class="btn btn-danger" onclick="hideCriminalCaseForm()">Отмена</button>
                 </form>
             </div>
             
@@ -1618,23 +1634,18 @@ function getCriminalCasesModule() {
 }
 
 function showCriminalCaseForm() {
-    hideAllForms();
     editingId = null;
-    const form = document.getElementById('criminalCaseFormContainer');
-    if (form) {
-        form.style.display = 'block';
-        document.getElementById('caseNumber').value = '';
-        document.getElementById('caseArticle').value = '';
-        document.getElementById('caseSuspects').value = '';
-        document.getElementById('caseCircumstances').value = '';
-        document.getElementById('caseStartDate').value = new Date().toISOString().split('T')[0];
-        document.getElementById('caseStatus').value = 'Возбуждено';
-    }
+    document.getElementById('criminalCaseFormContainer').style.display = 'block';
+    document.getElementById('caseNumber').value = '';
+    document.getElementById('caseArticle').value = '';
+    document.getElementById('caseSuspects').value = '';
+    document.getElementById('caseCircumstances').value = '';
+    document.getElementById('caseStartDate').value = new Date().toISOString().split('T')[0];
+    document.getElementById('caseStatus').value = 'Возбуждено';
 }
 
 function hideCriminalCaseForm() {
-    const form = document.getElementById('criminalCaseFormContainer');
-    if (form) form.style.display = 'none';
+    document.getElementById('criminalCaseFormContainer').style.display = 'none';
     editingId = null;
 }
 
@@ -1668,23 +1679,21 @@ function saveCriminalCase(event) {
     }
     loadCriminalCasesTable();
     hideCriminalCaseForm();
+    event.target.reset();
 }
 
 function editCriminalCase(id) {
     const criminalCase = systemData.criminalCases.find(c => c.id === id);
     if (criminalCase) {
         editingId = id;
-        const form = document.getElementById('criminalCaseFormContainer');
-        if (form) {
-            form.style.display = 'block';
-            document.getElementById('caseNumber').value = criminalCase.number;
-            document.getElementById('caseArticle').value = criminalCase.article;
-            document.getElementById('caseSuspects').value = criminalCase.suspects;
-            document.getElementById('caseCircumstances').value = criminalCase.circumstances;
-            document.getElementById('caseInvestigator').value = criminalCase.investigator;
-            document.getElementById('caseStartDate').value = criminalCase.startDate;
-            document.getElementById('caseStatus').value = criminalCase.status;
-        }
+        document.getElementById('criminalCaseFormContainer').style.display = 'block';
+        document.getElementById('caseNumber').value = criminalCase.number;
+        document.getElementById('caseArticle').value = criminalCase.article;
+        document.getElementById('caseSuspects').value = criminalCase.suspects;
+        document.getElementById('caseCircumstances').value = criminalCase.circumstances;
+        document.getElementById('caseInvestigator').value = criminalCase.investigator;
+        document.getElementById('caseStartDate').value = criminalCase.startDate;
+        document.getElementById('caseStatus').value = criminalCase.status;
     }
 }
 
@@ -1782,10 +1791,8 @@ function getWantedModule() {
                         <label>Инициатор розыска:</label>
                         <input type="text" id="wantedInitiator" value="${currentUser.fullName}" readonly>
                     </div>
-                    <div class="form-buttons">
-                        <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Объявить в розыск'}</button>
-                        <button type="button" class="btn btn-danger" onclick="hideWantedForm()">Отмена</button>
-                    </div>
+                    <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Объявить в розыск'}</button>
+                    <button type="button" class="btn btn-danger" onclick="hideWantedForm()">Отмена</button>
                 </form>
             </div>
             
@@ -1802,22 +1809,17 @@ function getWantedModule() {
 }
 
 function showWantedForm() {
-    hideAllForms();
     editingId = null;
-    const form = document.getElementById('wantedFormContainer');
-    if (form) {
-        form.style.display = 'block';
-        document.getElementById('wantedNickname').value = '';
-        document.getElementById('wantedFullName').value = '';
-        document.getElementById('wantedReason').value = '';
-        document.getElementById('wantedLevel').value = 'Региональный';
-        document.getElementById('wantedDate').value = new Date().toISOString().split('T')[0];
-    }
+    document.getElementById('wantedFormContainer').style.display = 'block';
+    document.getElementById('wantedNickname').value = '';
+    document.getElementById('wantedFullName').value = '';
+    document.getElementById('wantedReason').value = '';
+    document.getElementById('wantedLevel').value = 'Региональный';
+    document.getElementById('wantedDate').value = new Date().toISOString().split('T')[0];
 }
 
 function hideWantedForm() {
-    const form = document.getElementById('wantedFormContainer');
-    if (form) form.style.display = 'none';
+    document.getElementById('wantedFormContainer').style.display = 'none';
     editingId = null;
 }
 
@@ -1851,21 +1853,19 @@ function saveWantedRecord(event) {
     }
     loadWantedTable();
     hideWantedForm();
+    event.target.reset();
 }
 
 function editWanted(id) {
     const wanted = systemData.wanted.find(w => w.id === id);
     if (wanted) {
         editingId = id;
-        const form = document.getElementById('wantedFormContainer');
-        if (form) {
-            form.style.display = 'block';
-            document.getElementById('wantedNickname').value = wanted.nickname;
-            document.getElementById('wantedFullName').value = wanted.fullName;
-            document.getElementById('wantedReason').value = wanted.reason;
-            document.getElementById('wantedLevel').value = wanted.level;
-            document.getElementById('wantedDate').value = wanted.date;
-        }
+        document.getElementById('wantedFormContainer').style.display = 'block';
+        document.getElementById('wantedNickname').value = wanted.nickname;
+        document.getElementById('wantedFullName').value = wanted.fullName;
+        document.getElementById('wantedReason').value = wanted.reason;
+        document.getElementById('wantedLevel').value = wanted.level;
+        document.getElementById('wantedDate').value = wanted.date;
     }
 }
 
@@ -2266,14 +2266,18 @@ function getDebtorsModule() {
                         <label>Причина/Основание:</label>
                         <textarea id="debtReason" rows="2" required></textarea>
                     </div>
-                    <div class="form-group">
-                        <label>Дата возникновения:</label>
-                        <input type="date" id="debtDate" required>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Дата возникновения:</label>
+                            <input type="date" id="debtDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Срок погашения:</label>
+                            <input type="date" id="debtDueDate">
+                        </div>
                     </div>
-                    <div class="form-buttons">
-                        <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Сохранить'}</button>
-                        <button type="button" class="btn btn-danger" onclick="hideDebtorForm()">Отмена</button>
-                    </div>
+                    <button type="submit" class="btn btn-success">${editingId ? 'Обновить' : 'Сохранить'}</button>
+                    <button type="button" class="btn btn-danger" onclick="hideDebtorForm()">Отмена</button>
                 </form>
             </div>
             
@@ -2283,23 +2287,19 @@ function getDebtorsModule() {
 }
 
 function showDebtorForm() {
-    hideAllForms();
     editingId = null;
-    const form = document.getElementById('debtorFormContainer');
-    if (form) {
-        form.style.display = 'block';
-        document.getElementById('debtorNickname').value = '';
-        document.getElementById('debtorFullName').value = '';
-        document.getElementById('debtType').value = 'Административный штраф';
-        document.getElementById('debtAmount').value = '';
-        document.getElementById('debtReason').value = '';
-        document.getElementById('debtDate').value = new Date().toISOString().split('T')[0];
-    }
+    document.getElementById('debtorFormContainer').style.display = 'block';
+    document.getElementById('debtorNickname').value = '';
+    document.getElementById('debtorFullName').value = '';
+    document.getElementById('debtType').value = 'Административный штраф';
+    document.getElementById('debtAmount').value = '';
+    document.getElementById('debtReason').value = '';
+    document.getElementById('debtDate').value = new Date().toISOString().split('T')[0];
+    document.getElementById('debtDueDate').value = '';
 }
 
 function hideDebtorForm() {
-    const form = document.getElementById('debtorFormContainer');
-    if (form) form.style.display = 'none';
+    document.getElementById('debtorFormContainer').style.display = 'none';
     editingId = null;
 }
 
@@ -2314,6 +2314,7 @@ function saveDebtor(event) {
         debtAmount: document.getElementById('debtAmount').value,
         debtReason: document.getElementById('debtReason').value,
         debtDate: document.getElementById('debtDate').value,
+        debtDueDate: document.getElementById('debtDueDate').value,
         status: 'Не погашен',
         createdBy: currentUser.nickname,
         createdAt: new Date().toLocaleString()
@@ -2333,22 +2334,21 @@ function saveDebtor(event) {
     }
     loadDebtorsTable();
     hideDebtorForm();
+    event.target.reset();
 }
 
 function editDebtor(id) {
     const debtor = systemData.debtors.find(d => d.id === id);
     if (debtor) {
         editingId = id;
-        const form = document.getElementById('debtorFormContainer');
-        if (form) {
-            form.style.display = 'block';
-            document.getElementById('debtorNickname').value = debtor.nickname;
-            document.getElementById('debtorFullName').value = debtor.fullName;
-            document.getElementById('debtType').value = debtor.debtType;
-            document.getElementById('debtAmount').value = debtor.debtAmount;
-            document.getElementById('debtReason').value = debtor.debtReason;
-            document.getElementById('debtDate').value = debtor.debtDate;
-        }
+        document.getElementById('debtorFormContainer').style.display = 'block';
+        document.getElementById('debtorNickname').value = debtor.nickname;
+        document.getElementById('debtorFullName').value = debtor.fullName;
+        document.getElementById('debtType').value = debtor.debtType;
+        document.getElementById('debtAmount').value = debtor.debtAmount;
+        document.getElementById('debtReason').value = debtor.debtReason;
+        document.getElementById('debtDate').value = debtor.debtDate;
+        document.getElementById('debtDueDate').value = debtor.debtDueDate;
     }
 }
 
@@ -2376,6 +2376,7 @@ function loadDebtorsTable() {
                     <th>Сумма</th>
                     <th>Причина</th>
                     <th>Дата</th>
+                    <th>Срок погашения</th>
                     <th>Статус</th>
                     <th>Действия</th>
                 </tr>
@@ -2389,6 +2390,7 @@ function loadDebtorsTable() {
                         <td>${parseFloat(debtor.debtAmount).toLocaleString()} руб.</td>
                         <td>${debtor.debtReason}</td>
                         <td>${debtor.debtDate}</td>
+                        <td>${debtor.debtDueDate || '-'}</td>
                         <td>${debtor.status}</td>
                         <td>
                             <button class="btn" onclick="editDebtor(${debtor.id})">✏️</button>
@@ -2809,7 +2811,12 @@ function getDashboardModule() {
         totalDrivers: systemData.drivers.length,
         totalWanted: systemData.wanted.length,
         totalCriminalCases: systemData.criminalCases.length,
-        totalDebt: systemData.debtors.reduce((sum, d) => sum + parseFloat(d.debtAmount || 0), 0)
+        totalDebt: systemData.debtors.reduce((sum, d) => sum + parseFloat(d.debtAmount || 0), 0),
+        totalMigration: systemData.migration.length,
+        totalPDN: systemData.pdn.length,
+        totalOperational: systemData.operational.length,
+        totalCUSP: systemData.cusp.length,
+        totalAdminProtocols: systemData.adminProtocols.length
     };
     
     return `
@@ -2852,15 +2859,51 @@ function getDashboardModule() {
                     <div style="font-size: 1.2em; color: #2c3e50;">${currentUser.position}</div>
                     <div style="font-size: 1em; color: #7f8c8d;">${currentUser.rank}</div>
                 </div>
+                
+                <div class="card">
+                    <h3>🛂 Миграция</h3>
+                    <div style="font-size: 2em; color: #1abc9c;">${stats.totalMigration}</div>
+                    <p>миграционных записей</p>
+                </div>
+                
+                <div class="card">
+                    <h3>👶 ПДН</h3>
+                    <div style="font-size: 2em; color: #e67e22;">${stats.totalPDN}</div>
+                    <p>несовершеннолетних на учете</p>
+                </div>
+                
+                <div class="card">
+                    <h3>📋 Оперативный учет</h3>
+                    <div style="font-size: 2em; color: #8e44ad;">${stats.totalOperational}</div>
+                    <p>преступников в базе</p>
+                </div>
+                
+                <div class="card">
+                    <h3>📝 КУСП</h3>
+                    <div style="font-size: 2em; color: #d35400;">${stats.totalCUSP}</div>
+                    <p>сообщений о преступлениях</p>
+                </div>
+                
+                <div class="card">
+                    <h3>📄 Протоколы</h3>
+                    <div style="font-size: 2em; color: #c0392b;">${stats.totalAdminProtocols}</div>
+                    <p>административных протоколов</p>
+                </div>
             </div>
             
             <div style="margin-top: 30px;">
                 <h3>📈 Последняя активность</h3>
                 <div class="card">
-                    <p><strong>Последние добавленные граждане:</strong></p>
+                    <p><strong>Последние добавленные записи:</strong></p>
                     <ul>
                         ${systemData.citizens.slice(-3).reverse().map(c => 
-                            `<li>${c.nickname} - ${c.fullName} (${new Date(c.createdAt).toLocaleDateString()})</li>`
+                            `<li>👥 ${c.nickname} - ${c.fullName}</li>`
+                        ).join('')}
+                        ${systemData.drivers.slice(-2).reverse().map(d => 
+                            `<li>🚗 ${d.nickname} - ${d.licenseNumber}</li>`
+                        ).join('')}
+                        ${systemData.cusp.slice(-1).map(c => 
+                            `<li>📝 КУСП: ${c.applicant}</li>`
                         ).join('')}
                     </ul>
                 </div>
@@ -2871,23 +2914,42 @@ function getDashboardModule() {
 
 // Добавляем тестовые данные при первом запуске
 function addTestData() {
-    if (systemData.citizens.length === 0) {
-        systemData.citizens = [{
-            id: 1,
-            nickname: "TestUser",
-            fullName: "Тестовый Пользователь",
-            birthDate: "1990-01-01",
-            passportNumber: "1234567890",
-            address: "Тестовый адрес",
-            additionalInfo: "Тестовые данные для демонстрации",
+    if (systemData.citizens.length === 0 && systemData.drivers.length === 0) {
+        console.log('🔄 Добавляем тестовые данные...');
+        
+        // Тестовый гражданин
+        systemData.citizens.push({
+            id: Date.now(),
+            nickname: "Ivanov",
+            fullName: "Иванов Иван Иванович",
+            birthDate: "1990-05-15",
+            passportNumber: "4510 123456",
+            address: "г. Москва, ул. Ленина, д. 1",
+            additionalInfo: "Тестовый гражданин для демонстрации",
             criminalRecord: false,
             createdBy: "system",
             createdAt: new Date().toLocaleString()
-        }];
+        });
+        
+        // Тестовый водитель
+        systemData.drivers.push({
+            id: Date.now() + 1,
+            nickname: "Petrov",
+            fullName: "Петров Петр Петрович",
+            licenseNumber: "1234 567890",
+            categories: "B,C",
+            birthDate: "1985-08-20",
+            address: "г. Москва, ул. Пушкина, д. 10",
+            fines: "12.09.2023 - 5000 руб. - Превышение скорости",
+            additionalInfo: "Тестовый водитель",
+            createdBy: "system",
+            createdAt: new Date().toLocaleString()
+        });
+        
         saveAllData();
-        showNotification('✅ Добавлены тестовые данные', 'success');
+        console.log('✅ Тестовые данные созданы');
     }
 }
 
-// Вызываем через 5 секунд после загрузки
-setTimeout(addTestData, 5000);
+// Вызываем через 3 секунд после загрузки
+setTimeout(addTestData, 3000);
