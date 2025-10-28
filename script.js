@@ -37,23 +37,177 @@ document.addEventListener('DOMContentLoaded', function() {
     initSystem();
 });
 
-async function initSystem() {
-    // Показываем уведомление о загрузке
-    showNotification('🔄 Загрузка данных из Firebase...', 'info');
+// 🔧 КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ 1: УЛУЧШЕННАЯ ФУНКЦИЯ ЗАГРУЗКИ
+async function loadAllData() {
+    console.log('🔄 Начинаем загрузку данных из Firebase...');
     
-    await loadAllData();
-    initRealtimeUpdates();
-    updateUserInfo();
-    showModule('dashboard');
-    
-    // Проверяем подключение
-    setTimeout(() => {
-        if (systemData.citizens.length === 0 && systemData.drivers.length === 0) {
-            showNotification('⚠️ База пустая, начните с добавления данных', 'warning');
+    try {
+        const snapshot = await database.ref('systemData').once('value');
+        const data = snapshot.val();
+        console.log('📦 Получены данные из Firebase:', data);
+        
+        if (data) {
+            // Обновляем systemData, сохраняя структуру по умолчанию для отсутствующих полей
+            systemData = {
+                citizens: data.citizens || [],
+                drivers: data.drivers || [],
+                migration: data.migration || [],
+                pdn: data.pdn || [],
+                cusp: data.cusp || [],
+                adminProtocols: data.adminProtocols || [],
+                criminalCases: data.criminalCases || [],
+                wanted: data.wanted || [],
+                stateSecret: data.stateSecret || {
+                    terrorists: [], terroristOrgs: [], extremists: [], unwanted: [], foreignAgents: []
+                },
+                debtors: data.debtors || [],
+                journal: data.journal || [],
+                news: data.news || [],
+                operational: data.operational || []
+            };
+            
+            console.log('✅ Данные загружены из Firebase');
+            console.log('📊 Статистика:');
+            console.log('- Граждане:', systemData.citizens.length);
+            console.log('- Водители:', systemData.drivers.length);
+            console.log('- Миграция:', systemData.migration.length);
+            console.log('- ПДН:', systemData.pdn.length);
+            console.log('- КУСП:', systemData.cusp.length);
+            console.log('- Протоколы:', systemData.adminProtocols.length);
+            console.log('- Уголовные дела:', systemData.criminalCases.length);
+            console.log('- Розыск:', systemData.wanted.length);
+            console.log('- Должники:', systemData.debtors.length);
+            
+            showNotification('✅ Данные загружены из Firebase', 'success');
         } else {
-            showNotification('✅ Система готова к работе', 'success');
+            console.log('ℹ️ База данных пустая, создаем структуру...');
+            // Сохраняем пустую структуру в Firebase
+            await saveAllData();
+            showNotification('🆕 Создана новая база данных', 'info');
         }
-    }, 2000);
+    } catch (error) {
+        console.error('❌ Ошибка загрузки данных:', error);
+        showNotification('❌ Ошибка загрузки данных: ' + error.message, 'error');
+        
+        // Пробуем загрузить из резервной копии
+        const backup = localStorage.getItem('mvd_backup');
+        if (backup) {
+            try {
+                systemData = JSON.parse(backup);
+                console.log('✅ Данные загружены из резервной копии');
+                showNotification('✅ Данные восстановлены из резервной копии', 'success');
+            } catch (e) {
+                console.error('❌ Ошибка загрузки резервной копии:', e);
+            }
+        }
+    }
+}
+
+// 🔧 КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ 2: УЛУЧШЕННАЯ ФУНКЦИЯ СОХРАНЕНИЯ
+async function saveAllData() {
+    console.log('💾 Сохраняем данные в Firebase...');
+    console.log('📊 Данные для сохранения:', {
+        citizens: systemData.citizens.length,
+        drivers: systemData.drivers.length,
+        migration: systemData.migration.length,
+        pdn: systemData.pdn.length,
+        cusp: systemData.cusp.length,
+        adminProtocols: systemData.adminProtocols.length,
+        criminalCases: systemData.criminalCases.length,
+        wanted: systemData.wanted.length,
+        debtors: systemData.debtors.length,
+        journal: systemData.journal.length,
+        news: systemData.news.length,
+        operational: systemData.operational.length
+    });
+    
+    try {
+        await database.ref('systemData').set(systemData);
+        console.log('✅ Все данные сохранены в Firebase');
+        
+        // Сохраняем резервную копию
+        localStorage.setItem('mvd_backup', JSON.stringify(systemData));
+        console.log('✅ Резервная копия сохранена в localStorage');
+        
+        return true;
+    } catch (error) {
+        console.error('❌ Ошибка сохранения в Firebase:', error);
+        showNotification('❌ Ошибка сохранения данных: ' + error.message, 'error');
+        
+        // Сохраняем в localStorage как резерв
+        try {
+            localStorage.setItem('mvd_backup', JSON.stringify(systemData));
+            console.log('⚠️ Данные сохранены в localStorage');
+            showNotification('⚠️ Данные сохранены локально', 'warning');
+        } catch (e) {
+            console.error('❌ Ошибка резервного сохранения:', e);
+        }
+        return false;
+    }
+}
+
+// 🔧 КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ 3: ПРОВЕРКА ПОДКЛЮЧЕНИЯ К FIREBASE
+async function checkFirebaseConnection() {
+    console.log('🔍 Проверяем подключение к Firebase...');
+    
+    try {
+        // Пробуем прочитать данные
+        const snapshot = await database.ref('systemData').once('value');
+        const data = snapshot.val();
+        
+        if (data) {
+            console.log('✅ Firebase подключен, данные доступны');
+            console.log('📊 Структура данных:', Object.keys(data));
+            return true;
+        } else {
+            console.log('ℹ️ Firebase подключен, но данных нет');
+            return true;
+        }
+    } catch (error) {
+        console.error('❌ Ошибка подключения к Firebase:', error);
+        showNotification('❌ Ошибка подключения к Firebase', 'error');
+        return false;
+    }
+}
+
+// 🔧 КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ 4: ОБНОВЛЕННАЯ ИНИЦИАЛИЗАЦИЯ СИСТЕМЫ
+async function initSystem() {
+    currentUser = JSON.parse(localStorage.getItem('mvd_current_user'));
+    
+    if (!currentUser) {
+        window.location.href = 'auth.html';
+        return;
+    }
+    
+    updateUserInfo();
+    
+    // Проверяем подключение к Firebase
+    const isConnected = await checkFirebaseConnection();
+    
+    if (isConnected) {
+        showNotification('🔄 Загрузка данных из Firebase...', 'info');
+        await loadAllData();
+        initRealtimeUpdates();
+        showModule('dashboard');
+        
+        // Показываем статистику
+        setTimeout(() => {
+            const stats = {
+                citizens: systemData.citizens.length,
+                drivers: systemData.drivers.length,
+                cusp: systemData.cusp.length,
+                wanted: systemData.wanted.length
+            };
+            showNotification(`✅ Система готова | Граждан: ${stats.citizens} | Водителей: ${stats.drivers} | КУСП: ${stats.cusp} | Розыск: ${stats.wanted}`, 'success');
+        }, 1000);
+    } else {
+        showNotification('⚠️ Работаем в оффлайн-режиме', 'warning');
+        await loadAllData(); // Все равно пробуем загрузить из резервной копии
+        showModule('dashboard');
+    }
+    
+    // Добавляем инструменты отладки
+    addDebugTools();
 }
 
 function updateUserInfo() {
@@ -71,62 +225,37 @@ function logout() {
     window.location.href = 'auth.html';
 }
 
-// === FIREBASE ФУНКЦИИ ===
+// 🔧 КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ 5: УЛУЧШЕННАЯ ФУНКЦИЯ РЕАЛЬНОГО ВРЕМЕНИ
 function initRealtimeUpdates() {
-    database.ref('systemData/').on('value', (snapshot) => {
+    console.log('🔄 Инициализация реального времени Firebase...');
+    
+    database.ref('systemData').on('value', (snapshot) => {
         const data = snapshot.val();
+        console.log('🔄 Получено обновление из Firebase');
+        
         if (data) {
-            systemData = data;
+            // Аккуратно обновляем systemData
+            systemData.citizens = data.citizens || [];
+            systemData.drivers = data.drivers || [];
+            systemData.migration = data.migration || [];
+            systemData.pdn = data.pdn || [];
+            systemData.cusp = data.cusp || [];
+            systemData.adminProtocols = data.adminProtocols || [];
+            systemData.criminalCases = data.criminalCases || [];
+            systemData.wanted = data.wanted || [];
+            systemData.stateSecret = data.stateSecret || systemData.stateSecret;
+            systemData.debtors = data.debtors || [];
+            systemData.journal = data.journal || [];
+            systemData.news = data.news || [];
+            systemData.operational = data.operational || [];
+            
+            console.log('✅ Данные обновлены в реальном времени');
             updateCurrentModule();
-            showNotification('🔄 Данные обновлены', 'info');
+            showNotification('🔄 Данные синхронизированы', 'info');
         }
+    }, (error) => {
+        console.error('❌ Ошибка реального времени:', error);
     });
-}
-
-async function loadAllData() {
-    try {
-        const snapshot = await database.ref('systemData/').once('value');
-        const data = snapshot.val();
-        if (data) {
-            systemData = data;
-            console.log('✅ Данные загружены из Firebase');
-        } else {
-            console.log('ℹ️ База данных пустая');
-        }
-    } catch (error) {
-        console.error('❌ Ошибка загрузки данных:', error);
-        showNotification('❌ Ошибка загрузки данных', 'error');
-        
-        // Пробуем загрузить из резервной копии
-        const backup = localStorage.getItem('mvd_backup');
-        if (backup) {
-            systemData = JSON.parse(backup);
-            console.log('✅ Данные загружены из резервной копии');
-        }
-    }
-}
-
-async function saveAllData() {
-    try {
-        await database.ref('systemData').set(systemData);
-        console.log('✅ Данные сохранены в Firebase');
-        
-        // Сохраняем резервную копию
-        localStorage.setItem('mvd_backup', JSON.stringify(systemData));
-        return true;
-    } catch (error) {
-        console.error('❌ Ошибка сохранения:', error);
-        showNotification('❌ Ошибка сохранения данных', 'error');
-        
-        // Сохраняем в localStorage как резерв
-        try {
-            localStorage.setItem('mvd_backup', JSON.stringify(systemData));
-            console.log('⚠️ Данные сохранены в localStorage');
-        } catch (e) {
-            console.error('❌ Ошибка резервного сохранения:', e);
-        }
-        return false;
-    }
 }
 
 // === ФУНКЦИЯ УВЕДОМЛЕНИЙ ===
@@ -2804,6 +2933,97 @@ function checkEvidence() {
     }
 }
 
+// 🔧 КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ 6: ИНСТРУМЕНТЫ ОТЛАДКИ
+function addDebugTools() {
+    const debugDiv = document.createElement('div');
+    debugDiv.style.cssText = 'position: fixed; bottom: 10px; right: 10px; z-index: 9999; background: rgba(0,0,0,0.8); color: white; padding: 10px; border-radius: 5px; font-size: 12px;';
+    debugDiv.innerHTML = `
+        <div style="margin-bottom: 5px;"><strong>Инструменты отладки:</strong></div>
+        <button onclick="resetAndReloadData()" style="padding: 5px 10px; font-size: 10px; background: #e74c3c; color: white; border: none; border-radius: 3px; margin: 2px;">
+            🔄 Перезагрузить
+        </button>
+        <button onclick="showDataStats()" style="padding: 5px 10px; font-size: 10px; background: #3498db; color: white; border: none; border-radius: 3px; margin: 2px;">
+            📊 Статистика
+        </button>
+        <button onclick="clearAllData()" style="padding: 5px 10px; font-size: 10px; background: #e67e22; color: white; border: none; border-radius: 3px; margin: 2px;">
+            🗑️ Очистить все
+        </button>
+    `;
+    document.body.appendChild(debugDiv);
+}
+
+// 🔧 КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ 7: ФУНКЦИИ ДЛЯ ОТЛАДКИ
+async function resetAndReloadData() {
+    if (confirm('Перезагрузить данные из Firebase? Все несохраненные изменения будут потеряны.')) {
+        showNotification('🔄 Перезагрузка данных...', 'info');
+        await loadAllData();
+        showModule(currentModule);
+        showNotification('✅ Данные перезагружены', 'success');
+    }
+}
+
+function showDataStats() {
+    const stats = {
+        citizens: systemData.citizens.length,
+        drivers: systemData.drivers.length,
+        migration: systemData.migration.length,
+        pdn: systemData.pdn.length,
+        cusp: systemData.cusp.length,
+        adminProtocols: systemData.adminProtocols.length,
+        criminalCases: systemData.criminalCases.length,
+        wanted: systemData.wanted.length,
+        debtors: systemData.debtors.length,
+        journal: systemData.journal.length,
+        news: systemData.news.length,
+        operational: systemData.operational.length
+    };
+    
+    alert(`
+📊 СТАТИСТИКА ДАННЫХ:
+
+👥 Граждане: ${stats.citizens}
+🚗 Водители: ${stats.drivers}
+🛂 Миграция: ${stats.migration}
+👶 ПДН: ${stats.pdn}
+📝 КУСП: ${stats.cusp}
+📄 Протоколы: ${stats.adminProtocols}
+🔍 Уголовные дела: ${stats.criminalCases}
+🕵️ Розыск: ${stats.wanted}
+💳 Должники: ${stats.debtors}
+📓 Журнал: ${stats.journal}
+📰 Новости: ${stats.news}
+📋 Оперативный учет: ${stats.operational}
+
+✅ Всего записей: ${Object.values(stats).reduce((a, b) => a + b, 0)}
+    `);
+}
+
+async function clearAllData() {
+    if (confirm('❌ ОПАСНО! Удалить ВСЕ данные из системы? Это действие нельзя отменить!')) {
+        systemData = {
+            citizens: [],
+            drivers: [],
+            migration: [],
+            pdn: [],
+            cusp: [],
+            adminProtocols: [],
+            criminalCases: [],
+            wanted: [],
+            stateSecret: {
+                terrorists: [], terroristOrgs: [], extremists: [], unwanted: [], foreignAgents: []
+            },
+            debtors: [],
+            journal: [],
+            news: [],
+            operational: []
+        };
+        
+        await saveAllData();
+        showModule(currentModule);
+        showNotification('🗑️ Все данные очищены', 'warning');
+    }
+}
+
 // === ГЛАВНАЯ ПАНЕЛЬ ===
 function getDashboardModule() {
     const stats = {
@@ -2859,36 +3079,6 @@ function getDashboardModule() {
                     <div style="font-size: 1.2em; color: #2c3e50;">${currentUser.position}</div>
                     <div style="font-size: 1em; color: #7f8c8d;">${currentUser.rank}</div>
                 </div>
-                
-                <div class="card">
-                    <h3>🛂 Миграция</h3>
-                    <div style="font-size: 2em; color: #1abc9c;">${stats.totalMigration}</div>
-                    <p>миграционных записей</p>
-                </div>
-                
-                <div class="card">
-                    <h3>👶 ПДН</h3>
-                    <div style="font-size: 2em; color: #e67e22;">${stats.totalPDN}</div>
-                    <p>несовершеннолетних на учете</p>
-                </div>
-                
-                <div class="card">
-                    <h3>📋 Оперативный учет</h3>
-                    <div style="font-size: 2em; color: #8e44ad;">${stats.totalOperational}</div>
-                    <p>преступников в базе</p>
-                </div>
-                
-                <div class="card">
-                    <h3>📝 КУСП</h3>
-                    <div style="font-size: 2em; color: #d35400;">${stats.totalCUSP}</div>
-                    <p>сообщений о преступлениях</p>
-                </div>
-                
-                <div class="card">
-                    <h3>📄 Протоколы</h3>
-                    <div style="font-size: 2em; color: #c0392b;">${stats.totalAdminProtocols}</div>
-                    <p>административных протоколов</p>
-                </div>
             </div>
             
             <div style="margin-top: 30px;">
@@ -2912,7 +3102,7 @@ function getDashboardModule() {
     `;
 }
 
-// Добавляем тестовые данные при первом запуске
+// 🔧 КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ 8: ТЕСТОВЫЕ ДАННЫЕ
 function addTestData() {
     if (systemData.citizens.length === 0 && systemData.drivers.length === 0) {
         console.log('🔄 Добавляем тестовые данные...');
@@ -2946,10 +3136,24 @@ function addTestData() {
             createdAt: new Date().toLocaleString()
         });
         
+        // Тестовая запись КУСП
+        systemData.cusp.push({
+            id: Date.now() + 2,
+            applicant: "Сидоров Алексей",
+            contacts: "+7 999 123-45-67",
+            statement: "Кража велосипеда из подъезда",
+            responsible: currentUser.fullName,
+            dateTime: new Date().toISOString().slice(0, 16),
+            status: "Зарегистрировано",
+            createdBy: "system",
+            createdAt: new Date().toLocaleString()
+        });
+        
         saveAllData();
         console.log('✅ Тестовые данные созданы');
+        showNotification('✅ Добавлены тестовые данные', 'success');
     }
 }
 
-// Вызываем через 3 секунд после загрузки
+// Вызываем через 3 секунды после загрузки
 setTimeout(addTestData, 3000);
