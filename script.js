@@ -1,4 +1,4 @@
-// Глобальные переменные
+// 🔧 КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: ЕДИНАЯ БАЗА ДАННЫХ ДЛЯ ВСЕХ ПОЛЬЗОВАТЕЛЕЙ
 let systemData = {
     citizens: [],
     drivers: [],
@@ -25,6 +25,9 @@ let currentUser = null;
 let currentModule = 'dashboard';
 let editingId = null;
 
+// 🔧 ФИКС: УНИКАЛЬНЫЙ ID ДЛЯ БАЗЫ ДАННЫХ
+const DATABASE_ID = 'mvd_unified_database_v1';
+
 // Инициализация
 document.addEventListener('DOMContentLoaded', function() {
     currentUser = JSON.parse(localStorage.getItem('mvd_current_user'));
@@ -37,17 +40,17 @@ document.addEventListener('DOMContentLoaded', function() {
     initSystem();
 });
 
-// 🔧 КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ 1: УЛУЧШЕННАЯ ФУНКЦИЯ ЗАГРУЗКИ
+// 🔧 КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: УЛУЧШЕННАЯ ФУНКЦИЯ ЗАГРУЗКИ
 async function loadAllData() {
     console.log('🔄 Начинаем загрузку данных из Firebase...');
     
     try {
-        const snapshot = await database.ref('systemData').once('value');
+        // 🔧 ФИКС: Используем единую базу для всех пользователей
+        const snapshot = await database.ref(DATABASE_ID).once('value');
         const data = snapshot.val();
         console.log('📦 Получены данные из Firebase:', data);
         
         if (data) {
-            // Обновляем systemData, сохраняя структуру по умолчанию для отсутствующих полей
             systemData = {
                 citizens: data.citizens || [],
                 drivers: data.drivers || [],
@@ -67,21 +70,10 @@ async function loadAllData() {
             };
             
             console.log('✅ Данные загружены из Firebase');
-            console.log('📊 Статистика:');
-            console.log('- Граждане:', systemData.citizens.length);
-            console.log('- Водители:', systemData.drivers.length);
-            console.log('- Миграция:', systemData.migration.length);
-            console.log('- ПДН:', systemData.pdn.length);
-            console.log('- КУСП:', systemData.cusp.length);
-            console.log('- Протоколы:', systemData.adminProtocols.length);
-            console.log('- Уголовные дела:', systemData.criminalCases.length);
-            console.log('- Розыск:', systemData.wanted.length);
-            console.log('- Должники:', systemData.debtors.length);
-            
-            showNotification('✅ Данные загружены из Firebase', 'success');
+            showSystemStats();
+            showNotification('✅ Данные загружены из облака', 'success');
         } else {
             console.log('ℹ️ База данных пустая, создаем структуру...');
-            // Сохраняем пустую структуру в Firebase
             await saveAllData();
             showNotification('🆕 Создана новая база данных', 'info');
         }
@@ -89,24 +81,138 @@ async function loadAllData() {
         console.error('❌ Ошибка загрузки данных:', error);
         showNotification('❌ Ошибка загрузки данных: ' + error.message, 'error');
         
-        // Пробуем загрузить из резервной копии
-        const backup = localStorage.getItem('mvd_backup');
+        // 🔧 ФИКС: Улучшенное резервное копирование
+        await loadBackupData();
+    }
+}
+
+// 🔧 НОВАЯ ФУНКЦИЯ: ЗАГРУЗКА ИЗ РЕЗЕРВНОЙ КОПИИ
+async function loadBackupData() {
+    console.log('🔄 Пробуем загрузить из резервных копий...');
+    
+    const backups = [
+        localStorage.getItem('mvd_backup'),
+        localStorage.getItem('mvd_system_backup'),
+        localStorage.getItem(DATABASE_ID + '_backup'),
+        localStorage.getItem('mvd_unified_backup')
+    ];
+    
+    for (const backup of backups) {
         if (backup) {
             try {
-                systemData = JSON.parse(backup);
+                const parsedData = JSON.parse(backup);
+                systemData = parsedData;
                 console.log('✅ Данные загружены из резервной копии');
                 showNotification('✅ Данные восстановлены из резервной копии', 'success');
+                
+                // Сохраняем в Firebase для синхронизации
+                await saveAllData();
+                return true;
             } catch (e) {
                 console.error('❌ Ошибка загрузки резервной копии:', e);
             }
         }
     }
+    
+    // Если резервных копий нет, создаем тестовые данные
+    if (systemData.citizens.length === 0 && systemData.drivers.length === 0) {
+        await createInitialData();
+    }
+    
+    return false;
 }
 
-// 🔧 КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ 2: УЛУЧШЕННАЯ ФУНКЦИЯ СОХРАНЕНИЯ
+// 🔧 НОВАЯ ФУНКЦИЯ: СОЗДАНИЕ НАЧАЛЬНЫХ ДАННЫХ
+async function createInitialData() {
+    console.log('🔄 Создаем начальные данные...');
+    
+    // Тестовые данные для демонстрации
+    const testCitizen = {
+        id: Date.now(),
+        nickname: "Ivanov_Test",
+        fullName: "Иванов Иван Иванович (Тестовый)",
+        birthDate: "1990-05-15",
+        passportNumber: "4510 123456",
+        address: "г. Москва, ул. Ленина, д. 1",
+        additionalInfo: "Тестовый гражданин для демонстрации системы",
+        criminalRecord: false,
+        createdBy: "system",
+        createdAt: new Date().toLocaleString()
+    };
+    
+    const testDriver = {
+        id: Date.now() + 1,
+        nickname: "Petrov_Test",
+        fullName: "Петров Петр Петрович (Тестовый)",
+        licenseNumber: "1234 567890",
+        categories: "B,C",
+        birthDate: "1985-08-20",
+        address: "г. Москва, ул. Пушкина, д. 10",
+        fines: "12.09.2023 - 5000 руб. - Превышение скорости",
+        additionalInfo: "Тестовый водитель для демонстрации",
+        createdBy: "system",
+        createdAt: new Date().toLocaleString()
+    };
+
+    const testCUSP = {
+        id: Date.now() + 2,
+        applicant: "Сидоров Алексей",
+        contacts: "+7 999 123-45-67",
+        statement: "Кража велосипеда из подъезда",
+        responsible: "Система",
+        dateTime: new Date().toISOString().slice(0, 16),
+        status: "Зарегистрировано",
+        createdBy: "system",
+        createdAt: new Date().toLocaleString()
+    };
+    
+    systemData.citizens.push(testCitizen);
+    systemData.drivers.push(testDriver);
+    systemData.cusp.push(testCUSP);
+    
+    await saveAllData();
+    console.log('✅ Начальные данные созданы');
+    showNotification('✅ Созданы начальные тестовые данные', 'info');
+}
+
+// 🔧 КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: УЛУЧШЕННАЯ ФУНКЦИЯ СОХРАНЕНИЯ
 async function saveAllData() {
     console.log('💾 Сохраняем данные в Firebase...');
-    console.log('📊 Данные для сохранения:', {
+    
+    try {
+        // 🔧 ФИКС: Сохраняем в единую базу
+        await database.ref(DATABASE_ID).set(systemData);
+        console.log('✅ Все данные сохранены в Firebase');
+        
+        // 🔧 ФИКС: Множественные резервные копии
+        const backupData = JSON.stringify(systemData);
+        localStorage.setItem('mvd_backup', backupData);
+        localStorage.setItem('mvd_system_backup', backupData);
+        localStorage.setItem(DATABASE_ID + '_backup', backupData);
+        localStorage.setItem('mvd_unified_backup', backupData);
+        
+        console.log('✅ Резервные копии сохранены в localStorage');
+        return true;
+    } catch (error) {
+        console.error('❌ Ошибка сохранения в Firebase:', error);
+        showNotification('❌ Ошибка сохранения данных: ' + error.message, 'error');
+        
+        // Сохраняем в localStorage как резерв
+        try {
+            const backupData = JSON.stringify(systemData);
+            localStorage.setItem(DATABASE_ID + '_backup', backupData);
+            console.log('⚠️ Данные сохранены в localStorage');
+            showNotification('⚠️ Данные сохранены локально', 'warning');
+        } catch (e) {
+            console.error('❌ Ошибка резервного сохранения:', e);
+        }
+        return false;
+    }
+}
+
+// 🔧 НОВАЯ ФУНКЦИЯ: СТАТИСТИКА СИСТЕМЫ
+function showSystemStats() {
+    const stats = {
         citizens: systemData.citizens.length,
         drivers: systemData.drivers.length,
         migration: systemData.migration.length,
@@ -119,45 +225,33 @@ async function saveAllData() {
         journal: systemData.journal.length,
         news: systemData.news.length,
         operational: systemData.operational.length
-    });
+    };
     
-    try {
-        await database.ref('systemData').set(systemData);
-        console.log('✅ Все данные сохранены в Firebase');
-        
-        // Сохраняем резервную копию
-        localStorage.setItem('mvd_backup', JSON.stringify(systemData));
-        console.log('✅ Резервная копия сохранена в localStorage');
-        
-        return true;
-    } catch (error) {
-        console.error('❌ Ошибка сохранения в Firebase:', error);
-        showNotification('❌ Ошибка сохранения данных: ' + error.message, 'error');
-        
-        // Сохраняем в localStorage как резерв
-        try {
-            localStorage.setItem('mvd_backup', JSON.stringify(systemData));
-            console.log('⚠️ Данные сохранены в localStorage');
-            showNotification('⚠️ Данные сохранены локально', 'warning');
-        } catch (e) {
-            console.error('❌ Ошибка резервного сохранения:', e);
-        }
-        return false;
-    }
+    console.log('📊 Статистика системы:');
+    console.log('- Граждане:', stats.citizens);
+    console.log('- Водители:', stats.drivers);
+    console.log('- Миграция:', stats.migration);
+    console.log('- ПДН:', stats.pdn);
+    console.log('- КУСП:', stats.cusp);
+    console.log('- Протоколы:', stats.adminProtocols);
+    console.log('- Уголовные дела:', stats.criminalCases);
+    console.log('- Розыск:', stats.wanted);
+    console.log('- Должники:', stats.debtors);
+    console.log('- Журнал:', stats.journal);
+    console.log('- Новости:', stats.news);
+    console.log('- Оперативный учет:', stats.operational);
 }
 
-// 🔧 КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ 3: ПРОВЕРКА ПОДКЛЮЧЕНИЯ К FIREBASE
+// 🔧 КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: ПРОВЕРКА ПОДКЛЮЧЕНИЯ К FIREBASE
 async function checkFirebaseConnection() {
     console.log('🔍 Проверяем подключение к Firebase...');
     
     try {
-        // Пробуем прочитать данные
-        const snapshot = await database.ref('systemData').once('value');
+        const snapshot = await database.ref(DATABASE_ID).once('value');
         const data = snapshot.val();
         
-        if (data) {
+        if (data !== null) {
             console.log('✅ Firebase подключен, данные доступны');
-            console.log('📊 Структура данных:', Object.keys(data));
             return true;
         } else {
             console.log('ℹ️ Firebase подключен, но данных нет');
@@ -170,9 +264,9 @@ async function checkFirebaseConnection() {
     }
 }
 
-// 🔧 КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ 4: ОБНОВЛЕННАЯ ИНИЦИАЛИЗАЦИЯ СИСТЕМЫ
+// 🔧 КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: ОБНОВЛЕННАЯ ИНИЦИАЛИЗАЦИЯ СИСТЕМЫ
 async function initSystem() {
-    currentUser = JSON.parse(localStorage.getItem('mvd_current_user'));
+    console.log('🚀 Инициализация системы МВД...');
     
     if (!currentUser) {
         window.location.href = 'auth.html';
@@ -185,7 +279,7 @@ async function initSystem() {
     const isConnected = await checkFirebaseConnection();
     
     if (isConnected) {
-        showNotification('🔄 Загрузка данных из Firebase...', 'info');
+        showNotification('🔄 Загрузка данных из облака...', 'info');
         await loadAllData();
         initRealtimeUpdates();
         showModule('dashboard');
@@ -225,11 +319,11 @@ function logout() {
     window.location.href = 'auth.html';
 }
 
-// 🔧 КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ 5: УЛУЧШЕННАЯ ФУНКЦИЯ РЕАЛЬНОГО ВРЕМЕНИ
+// 🔧 КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: УЛУЧШЕННАЯ ФУНКЦИЯ РЕАЛЬНОГО ВРЕМЕНИ
 function initRealtimeUpdates() {
     console.log('🔄 Инициализация реального времени Firebase...');
     
-    database.ref('systemData').on('value', (snapshot) => {
+    database.ref(DATABASE_ID).on('value', (snapshot) => {
         const data = snapshot.val();
         console.log('🔄 Получено обновление из Firebase');
         
@@ -266,20 +360,22 @@ function showNotification(message, type = 'info') {
         top: 20px;
         right: 20px;
         padding: 15px 20px;
-        border-radius: 5px;
+        border-radius: 10px;
         color: white;
         z-index: 10000;
         font-weight: bold;
-        max-width: 300px;
+        max-width: 400px;
         transition: all 0.3s;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.2);
     `;
     
     const colors = {
-        success: '#27ae60',
-        error: '#e74c3c', 
-        warning: '#f39c12',
-        info: '#3498db'
+        success: 'linear-gradient(135deg, #00b09b, #96c93d)',
+        error: 'linear-gradient(135deg, #ff6b6b, #ee5a24)',
+        warning: 'linear-gradient(135deg, #f39c12, #e67e22)',
+        info: 'linear-gradient(135deg, #4facfe, #00f2fe)'
     };
     
     notification.style.background = colors[type] || colors.info;
@@ -288,7 +384,11 @@ function showNotification(message, type = 'info') {
     document.body.appendChild(notification);
     
     setTimeout(() => {
-        notification.remove();
+        notification.style.opacity = '0';
+        notification.style.transform = 'translateX(100px)';
+        setTimeout(() => {
+            notification.remove();
+        }, 300);
     }, 4000);
 }
 
@@ -2384,7 +2484,7 @@ function getDebtorsModule() {
                                 <option value="Алименты">Алименты</option>
                                 <option value="Кредит">Кредит</option>
                                 <option value="Иное">Иное</option>
-                            </select>
+                        </select>
                         </div>
                         <div class="form-group">
                             <label>Сумма долга:</label>
@@ -2933,26 +3033,55 @@ function checkEvidence() {
     }
 }
 
-// 🔧 КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ 6: ИНСТРУМЕНТЫ ОТЛАДКИ
+// 🔧 КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: ИНСТРУМЕНТЫ ОТЛАДКИ
 function addDebugTools() {
     const debugDiv = document.createElement('div');
-    debugDiv.style.cssText = 'position: fixed; bottom: 10px; right: 10px; z-index: 9999; background: rgba(0,0,0,0.8); color: white; padding: 10px; border-radius: 5px; font-size: 12px;';
+    debugDiv.className = 'debug-tools';
     debugDiv.innerHTML = `
-        <div style="margin-bottom: 5px;"><strong>Инструменты отладки:</strong></div>
-        <button onclick="resetAndReloadData()" style="padding: 5px 10px; font-size: 10px; background: #e74c3c; color: white; border: none; border-radius: 3px; margin: 2px;">
-            🔄 Перезагрузить
+        <div style="margin-bottom: 10px;"><strong>🔧 Инструменты разработчика</strong></div>
+        <button onclick="resetAndReloadData()" class="btn btn-warning" style="margin: 2px; padding: 5px 10px; font-size: 12px;">
+            🔄 Перезагрузить данные
         </button>
-        <button onclick="showDataStats()" style="padding: 5px 10px; font-size: 10px; background: #3498db; color: white; border: none; border-radius: 3px; margin: 2px;">
+        <button onclick="showDataStats()" class="btn" style="margin: 2px; padding: 5px 10px; font-size: 12px; background: #3498db; color: white;">
             📊 Статистика
         </button>
-        <button onclick="clearAllData()" style="padding: 5px 10px; font-size: 10px; background: #e67e22; color: white; border: none; border-radius: 3px; margin: 2px;">
+        <button onclick="exportAllData()" class="btn btn-success" style="margin: 2px; padding: 5px 10px; font-size: 12px;">
+            💾 Экспорт данных
+        </button>
+        <button onclick="clearAllData()" class="btn btn-danger" style="margin: 2px; padding: 5px 10px; font-size: 12px;">
             🗑️ Очистить все
+        </button>
+        <button onclick="fixDatabase()" class="btn" style="margin: 2px; padding: 5px 10px; font-size: 12px; background: #9b59b6; color: white;">
+            🔧 Исправить базу
         </button>
     `;
     document.body.appendChild(debugDiv);
 }
 
-// 🔧 КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ 7: ФУНКЦИИ ДЛЯ ОТЛАДКИ
+// 🔧 НОВАЯ ФУНКЦИЯ: ВОССТАНОВЛЕНИЕ БАЗЫ ДАННЫХ
+async function fixDatabase() {
+    if (confirm('Исправить базу данных? Это перезапишет текущие данные из резервных копий.')) {
+        showNotification('🔄 Восстанавливаем базу данных...', 'info');
+        await loadBackupData();
+        showModule(currentModule);
+        showNotification('✅ База данных восстановлена', 'success');
+    }
+}
+
+// 🔧 НОВАЯ ФУНКЦИЯ: ЭКСПОРТ ДАННЫХ
+function exportAllData() {
+    const dataStr = JSON.stringify(systemData, null, 2);
+    const dataBlob = new Blob([dataStr], {type: 'application/json'});
+    
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(dataBlob);
+    link.download = `mvd_backup_${new Date().toISOString().split('T')[0]}.json`;
+    link.click();
+    
+    showNotification('✅ Данные экспортированы', 'success');
+}
+
+// 🔧 СУЩЕСТВУЮЩИЕ ФУНКЦИИ ОТЛАДКИ
 async function resetAndReloadData() {
     if (confirm('Перезагрузить данные из Firebase? Все несохраненные изменения будут потеряны.')) {
         showNotification('🔄 Перезагрузка данных...', 'info');
@@ -2978,8 +3107,10 @@ function showDataStats() {
         operational: systemData.operational.length
     };
     
+    const total = Object.values(stats).reduce((a, b) => a + b, 0);
+    
     alert(`
-📊 СТАТИСТИКА ДАННЫХ:
+📊 СТАТИСТИКА СИСТЕМЫ МВД:
 
 👥 Граждане: ${stats.citizens}
 🚗 Водители: ${stats.drivers}
@@ -2994,7 +3125,8 @@ function showDataStats() {
 📰 Новости: ${stats.news}
 📋 Оперативный учет: ${stats.operational}
 
-✅ Всего записей: ${Object.values(stats).reduce((a, b) => a + b, 0)}
+✅ Всего записей: ${total}
+🎯 База данных: ${DATABASE_ID}
     `);
 }
 
@@ -3021,6 +3153,26 @@ async function clearAllData() {
         await saveAllData();
         showModule(currentModule);
         showNotification('🗑️ Все данные очищены', 'warning');
+    }
+}
+
+// 🔧 ФУНКЦИЯ ДЛЯ МИГРАЦИИ СТАРЫХ ДАННЫХ
+async function migrateOldData() {
+    console.log('🔄 Проверяем старые данные для миграции...');
+    
+    // Проверяем старые форматы данных
+    const oldData = localStorage.getItem('systemData');
+    if (oldData) {
+        try {
+            const parsedData = JSON.parse(oldData);
+            systemData = {...systemData, ...parsedData};
+            await saveAllData();
+            localStorage.removeItem('systemData');
+            console.log('✅ Старые данные мигрированы');
+            showNotification('✅ Данные перенесены в новую систему', 'success');
+        } catch (e) {
+            console.error('❌ Ошибка миграции старых данных:', e);
+        }
     }
 }
 
@@ -3102,58 +3254,5 @@ function getDashboardModule() {
     `;
 }
 
-// 🔧 КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ 8: ТЕСТОВЫЕ ДАННЫЕ
-function addTestData() {
-    if (systemData.citizens.length === 0 && systemData.drivers.length === 0) {
-        console.log('🔄 Добавляем тестовые данные...');
-        
-        // Тестовый гражданин
-        systemData.citizens.push({
-            id: Date.now(),
-            nickname: "Ivanov",
-            fullName: "Иванов Иван Иванович",
-            birthDate: "1990-05-15",
-            passportNumber: "4510 123456",
-            address: "г. Москва, ул. Ленина, д. 1",
-            additionalInfo: "Тестовый гражданин для демонстрации",
-            criminalRecord: false,
-            createdBy: "system",
-            createdAt: new Date().toLocaleString()
-        });
-        
-        // Тестовый водитель
-        systemData.drivers.push({
-            id: Date.now() + 1,
-            nickname: "Petrov",
-            fullName: "Петров Петр Петрович",
-            licenseNumber: "1234 567890",
-            categories: "B,C",
-            birthDate: "1985-08-20",
-            address: "г. Москва, ул. Пушкина, д. 10",
-            fines: "12.09.2023 - 5000 руб. - Превышение скорости",
-            additionalInfo: "Тестовый водитель",
-            createdBy: "system",
-            createdAt: new Date().toLocaleString()
-        });
-        
-        // Тестовая запись КУСП
-        systemData.cusp.push({
-            id: Date.now() + 2,
-            applicant: "Сидоров Алексей",
-            contacts: "+7 999 123-45-67",
-            statement: "Кража велосипеда из подъезда",
-            responsible: currentUser.fullName,
-            dateTime: new Date().toISOString().slice(0, 16),
-            status: "Зарегистрировано",
-            createdBy: "system",
-            createdAt: new Date().toLocaleString()
-        });
-        
-        saveAllData();
-        console.log('✅ Тестовые данные созданы');
-        showNotification('✅ Добавлены тестовые данные', 'success');
-    }
-}
-
-// Вызываем через 3 секунды после загрузки
-setTimeout(addTestData, 3000);
+// Автоматически вызываем миграцию при загрузке
+setTimeout(migrateOldData, 2000);
