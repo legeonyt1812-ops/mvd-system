@@ -1,1083 +1,1794 @@
-// 🔥 МЕГА-ГИГАНТСКАЯ СИСТЕМА МВД - ПОЛНАЯ ВЕРСИЯ
+// 🔧 КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: ЕДИНАЯ БАЗА ДАННЫХ ДЛЯ ВСЕХ ПОЛЬЗОВАТЕЛЕЙ
 let systemData = {
-    citizens: [], drivers: [], migration: [], pdn: [], cusp: [], adminProtocols: [], criminalCases: [], wanted: [],
-    stateSecret: { terrorists: [], terroristOrgs: [], extremists: [], unwanted: [], foreignAgents: [], sorm: [] },
-    debtors: [], journal: [], news: [], operational: [], dutySchedule: [], vehicles: [], weapons: [], buildings: [],
-    organizations: [], events: [], investigations: [], analytics: [], departments: [], employees: [], inventory: [],
-    fines: [], patrolRoutes: [], emergency: [], training: [], awards: [], violations: [], cyberCrimes: [], evidence: [],
-    witnesses: [], surveillance: [], k9Units: [], tacticalUnits: [], forensic: [], ballistics: [], dnaDatabase: [],
-    undercover: [], informants: [], wiretaps: [], financial: [], properties: [], vessels: [], aircraft: [], borders: [],
-    customs: [], interpol: [], surveillanceCams: [], biometrics: [], facialRecognition: [], voiceprints: [], cyberForensic: [],
-    darkweb: [], crypto: [], socialMedia: [], phoneRecords: [], bankRecords: [], travel: [], medical: [], psychological: [],
-    profiles: [], modusOperandi: [], crimeScenes: [], timeLines: [], linkAnalysis: [], geoMapping: [], riskAssessment: [],
-    threatLevels: [], security: [], accessLogs: [], audit: [], backups: [], systemLogs: [], performance: [], alerts: [],
-    notifications: [], messages: [], tasks: [], calendar: [], reports: [], dashboards: [], charts: [], maps: [], liveFeed: [],
-    realTime: [], emergencyProtocols: [], disaster: [], terrorism: [], hostage: [], bombThreats: [], activeShooter: [],
-    riots: [], protests: [], demonstrations: [], strikes: [], traffic: [], accidents: [], disasters: [], weather: [],
-    epidemics: [], quarantine: [], curfew: [], checkpoints: [], barricades: [], snipers: [], negotiators: [], swat: [],
-    assault: [], breaching: [], hostages: [], casualties: [], medevac: [], triage: [], fieldHospital: [], morgue: [],
-    coroner: [], autopsies: [], toxicology: [], pathology: [], forensics: [], fingerprints: [], dna: [], ballistics: [],
-    toolmarks: [], impressions: [], documents: [], handwriting: [], digital: [], mobile: [], computers: [], networks: [],
-    servers: [], cloud: [], encryption: [], decryption: [], hacking: [], malware: [], viruses: [], ransomware: [],
-    phishing: [], socialEngineering: [], ddos: [], botnets: [], darknet: [], tor: [], cryptocurrencies: [], wallets: [],
-    exchanges: [], mining: [], blockchain: [], smartContracts: [], nft: [], defi: [], web3: [], metaverse: [], ai: [],
-    machineLearning: [], neuralNetworks: [], predictive: [], analytics: [], bigData: [], dataMining: [], patternRecognition: [],
-    behavioral: [], psychological: [], profiling: [], geographic: [], temporal: [], spatial: [], network: [], relational: [],
-    hierarchical: [], matrix: [], organizational: [], command: [], control: [], communications: [], intelligence: [],
-    surveillance: [], reconnaissance: [], counterIntelligence: [], counterTerrorism: [], counterEspionage: [], counterSabotage: [],
-    counterSubversion: [], counterPropaganda: [], psyops: [], deception: [], misdirection: [], camouflage: [], stealth: [],
-    infiltration: [], exfiltration: [], extraction: [], evasion: [], escape: [], survival: [], resistance: [], interrogation: [],
-    debriefing: [], vetting: [], clearance: [], classification: [], compartmentalization: [], needToKnow: [], eyesOnly: [],
-    topSecret: [], secret: [], confidential: [], restricted: [], unclassified: [], forOfficialUse: [], sensitive: [],
-    proprietary: [], tradeSecrets: [], patents: [], copyrights: [], trademarks: [], intellectualProperty: [], industrial: [],
-    economic: [], corporate: [], executive: [], personal: [], family: [], associates: [], contacts: [], relationships: [],
-    networks: [], hierarchies: [], structures: [], organizations: [], cells: [], factions: [], groups: [], gangs: [],
-    cartels: [], syndicates: [], mafia: [], triads: [], yakuza: [], bratva: [], terrorists: [], extremists: [], radicals: [],
-    activists: [], dissidents: [], rebels: [], insurgents: [], guerrillas: [], mercenaries: [], assassins: [], spies: [],
-    saboteurs: [], propagandists: [], recruiters: [], financiers: [], facilitators: [], transporters: [], suppliers: [],
-    manufacturers: distributors: [], dealers: [], traffickers: [], smugglers: [], pirates: [], hijackers: [], kidnappers: [],
-    extortionists: [], blackmailers: [], fraudsters: [], counterfeiters: [], forgers: [], thieves: [], burglars: [], robbers: [],
-    muggers: [], carjackers: [], hackers: [], crackers: [], phreakers: [], carders: [], scammers: [], conmen: [], imposters: [],
-    identityThieves: [], cyberstalkers: [], harassers: [], stalkers: [], predators: [], pedophiles: [], groomers: [], traffickers: [],
-    pimps: [], prostitutes: [], johns: [], madams: [], brothels: [], escortServices: [], massageParlors: [], stripClubs: [],
-    adultEntertainment: [], pornography: [], obscenity: [], indecency: [], morality: [], vice: [], gambling: [], bookmaking: [],
-    loanSharking: [], usury: [], racketeering: [], protection: [], intimidation: [], violence: [], assault: [], battery: [],
-    mayhem: [], murder: [], homicide: [], manslaughter: [], negligent: [], vehicular: [], drunk: [], drugged: [], reckless: [],
-    premeditated: [], felony: [], misdemeanor: [], infraction: [], violation: [], citation: [], warning: [], arrest: [],
-    detention: [], custody: [], interrogation: [], confession: [], admission: [], denial: [], alibi: [], witness: [],
-    testimony: [], evidence: [], exhibit: [], chainOfCustody: [], forensic: [], expert: [], opinion: [], conclusion: [],
-    finding: [], verdict: [], sentence: [], punishment: [], penalty: [], fine: [], restitution: [], compensation: [],
-    damages: [], injunction: [], order: [], warrant: [], subpoena: [], summons: [], complaint: [], indictment: [],
-    information: [], charging: [], pleading: [], bargaining: [], agreement: [], trial: [], court: [], judge: [], jury: [],
-    prosecutor: [], defense: [], attorney: [], counsel: [], representation: [], rights: [], miranda: [], warning: [],
-    silence: [], lawyer: [], present: [], questioning: [], cross: [], examination: [], direct: [], redirect: [], recross: [],
-    objection: [], sustained: [], overruled: [], exception: [], appeal: [], review: [], reversal: [], affirmation: [],
-    remand: [], retrial: [], newTrial: [], mistrial: [], hungJury: [], acquittal: [], conviction: [], guilty: [], innocent: [],
-    notGuilty: [], insanity: [], incompetence: [], fitness: [], capacity: [], responsibility: [], accountability: [], culpability: [],
-    blame: [], fault: [], negligence: [], recklessness: [], intent: [], knowledge: [], purpose: [], motive: [], opportunity: [],
-    means: [], ability: [], capability: [], capacity: [], propensity: [], tendency: [], pattern: [], habit: [], custom: [],
-    practice: [], procedure: [], protocol: [], policy: [], regulation: [], rule: [], law: [], statute: [], ordinance: [],
-    code: [], act: [], bill: [], resolution: [], amendment: [], revision: [], repeal: [], enactment: [], implementation: [],
-    enforcement: [], execution: [], administration: [], management: [], supervision: [], direction: [], leadership: [],
-    command: [], control: [], coordination: [], cooperation: [], collaboration: [], partnership: [], alliance: [], coalition: [],
-    federation: [], confederation: [], union: [], association: [], society: [], club: [], organization: [], institution: [],
-    agency: [], department: [], bureau: [], office: [], division: [], section: [], unit: [], team: [], squad: [], platoon: [],
-    company: [], battalion: [], regiment: [], brigade: [], division: [], corps: [], army: [], force: [], service: [], branch: [],
-    military: [], police: [], security: [], intelligence: [], diplomatic: [], consular: [], embassy: [], mission: [], delegation: [],
-    representative: [], ambassador: [], consul: [], attaché: [], diplomat: [], envoy: [], emissary: [], messenger: [], courier: [],
-    carrier: [], transporter: [], mover: [], shipper: [], exporter: [], importer: [], manufacturer: [], producer: [], grower: [],
-    cultivator: [], processor: [], refiner: [], chemist: [], cook: [], lab: [], laboratory: [], facility: [], plant: [], factory: [],
-    warehouse: [], storage: [], distribution: [], retail: [], wholesale: [], market: [], marketplace: [], bazaar: [], fair: [],
-    exhibition: [], show: [], demonstration: [], protest: [], rally: [], march: [], parade: [], procession: [], ceremony: [],
-    event: [], occasion: [], function: [], gathering: [], meeting: [], assembly: [], congregation: [], crowd: [], mob: [],
-    riot: [], disturbance: [], disorder: [], chaos: [], anarchy: [], revolution: [], rebellion: [], uprising: [], insurrection: [],
-    coup: [], takeover: [], seizure: [], occupation: [], blockade: [], siege: [], assault: [], attack: [], raid: [], strike: [],
-    ambush: [], trap: [], snare: [], lure: [], bait: [], decoy: [], distraction: [], diversion: [], deception: [], trick: [],
-    scheme: [], plot: [], plan: [], conspiracy: [], collusion: [], complicity: [], involvement: [], participation: [], role: [],
-    function: [], duty: [], responsibility: [], obligation: [], requirement: [], necessity: [], need: [], demand: [], request: [],
-    order: [], command: [], instruction: [], direction: [], guidance: [], advice: [], recommendation: [], suggestion: [], proposal: [],
-    offer: [], bid: [], tender: [], quote: [], estimate: [], assessment: [], evaluation: [], appraisal: [], review: [], audit: [],
-    inspection: [], examination: [], investigation: [], inquiry: [], probe: [], research: [], study: [], analysis: [], scrutiny: [],
-    surveillance: [], monitoring: [], observation: [], watching: [], tracking: [], tracing: [], following: [], pursuing: [],
-    chasing: [], hunting: [], stalking: [], shadowing: [], trailing: [], pursuing: [], seeking: [], searching: [], looking: [],
-    finding: [], locating: [], discovering: [], uncovering: [], revealing: [], exposing: [], disclosing: [], leaking: [],
-    whistleblowing: [], reporting: [], notifying: [], informing: [], telling: [], sharing: [], communicating: [], transmitting: [],
-    sending: [], receiving: [], getting: [], obtaining: [], acquiring: [], gaining: [], achieving: [], accomplishing: [],
-    completing: [], finishing: [], ending: [], stopping: [], halting: [], pausing: [], waiting: [], delaying: [], postponing: [],
-    canceling: [], aborting: [], terminating: [], destroying: [], eliminating: [], removing: [], deleting: [], erasing: [],
-    wiping: [], cleansing: [], purging: [], clearing: [], emptying: [], vacating: [], evacuating: [], fleeing: [], escaping: [],
-    running: [], hiding: [], concealing: [], covering: [], masking: [], disguising: [], camouflaging: [], blending: [], merging: [],
-    joining: [], uniting: [], combining: [], integrating: [], incorporating: [], including: [], adding: [], appending: [],
-    attaching: [], connecting: [], linking: [], coupling: [], bonding: [], tying: [], binding: [], securing: [], fastening: [],
-    locking: [], closing: [], sealing: [], shutting: [], opening: [], unlocking: [], releasing: [], freeing: [], liberating: [],
-    rescuing: [], saving: [], protecting: [], defending: [], guarding: [], securing: [], fortifying: [], strengthening: [],
-    reinforcing: [], supporting: [], assisting: [], helping: [], aiding: [], facilitating: [], enabling: [], empowering: [],
-    authorizing: [], permitting: [], allowing: [], approving: [], endorsing: [], sanctioning: [], licensing: [], certifying: [],
-    accrediting: [], qualifying: [], validating: [], verifying: [], confirming: [], affirming: [], asserting: [], declaring: [],
-    stating: [], saying: [], speaking: [], talking: [], communicating: [], conversing: [], discussing: [], debating: [],
-    arguing: [], disputing: [], contesting: [], challenging: [], questioning: [], doubting: [], suspecting: [], distrusting: [],
-    mistrusting: [], fearing: [], worrying: [], concerned: [], anxious: [], nervous: [], tense: [], stressed: [], pressured: [],
-    strained: [], troubled: [], problematic: [], difficult: [], challenging: [], hard: [], tough: [], rough: [], brutal: [],
-    violent: [], aggressive: [], hostile: [], antagonistic: [], adversarial: [], oppositional: [], competitive: [], rival: [],
-    enemy: [], foe: [], opponent: [], adversary: [], competitor: [], challenger: [], contender: [], contestant: [], participant: [],
-    player: [], actor: [], performer: [], entertainer: [], artist: [], creator: [], maker: [], builder: [], constructor: [],
-    manufacturer: [], producer: [], generator: [], creator: [], originator: [], founder: [], establisher: [], initiator: [],
-    starter: [], beginner: [], novice: [], amateur: [], rookie: [], newbie: [], greenhorn: [], trainee: [], apprentice: [],
-    student: [], learner: [], pupil: [], disciple: [], follower: [], adherent: [], supporter: [], backer: [], sponsor: [],
-    patron: [], benefactor: [], donor: [], contributor: [], giver: [], provider: [], supplier: [], source: [], origin: [],
-    beginning: [], start: [], commencement: [], initiation: [], inauguration: [], launch: [], introduction: [], presentation: [],
-    demonstration: [], exhibition: [], display: [], show: [], performance: [], execution: [], implementation: [], application: [],
-    use: [], utilization: [], employment: [], deployment: [], assignment: [], task: [], job: [], work: [], labor: [], effort: [],
-    energy: [], power: [], force: [], strength: [], might: [], potency: [], ability: [], capability: [], capacity: [], potential: [],
-    possibility: [], opportunity: [], chance: [], likelihood: [], probability: [], odds: [], expectation: [], anticipation: [],
-    prediction: [], forecast: [], projection: [], estimate: [], guess: [], speculation: [], conjecture: [], hypothesis: [],
-    theory: [], concept: [], idea: [], notion: [], thought: [], belief: [], opinion: [], view: [], perspective: [], attitude: [],
-    mindset: [], psychology: [], mentality: [], intellect: [], intelligence: [], wisdom: [], knowledge: [], understanding: [],
-    comprehension: [], grasp: [], mastery: [], expertise: [], skill: [], talent: [], gift: [], ability: [], aptitude: [],
-    competence: [], proficiency: [], qualification: [], credential: [], certification: [], diploma: [], degree: [], education: [],
-    training: [], instruction: [], teaching: [], coaching: [], mentoring: [], guidance: [], direction: [], leadership: [],
-    management: [], administration: [], governance: [], rule: [], control: [], power: [], authority: [], jurisdiction: [],
-    dominion: [], sovereignty: [], supremacy: [], dominance: [], superiority: [], advantage: [], edge: [], lead: [], head: [],
-    front: [], forefront: [], vanguard: [], pioneer: [], innovator: [], trailblazer: [], pathfinder: [], explorer: [], discoverer: [],
-    inventor: [], creator: [], maker: [], builder: [], architect: [], designer: [], planner: [], organizer: [], coordinator: [],
-    manager: [], supervisor: [], director: [], executive: [], chief: [], head: [], leader: [], boss: [], commander: [], captain: [],
-    officer: [], official: [], representative: [], agent: [], delegate: [], envoy: [], ambassador: [], diplomat: [], negotiator: [],
-    mediator: [], arbitrator: [], judge: [], referee: [], umpire: [], adjudicator: [], decider: [], determiner: [], resolver: [],
-    solver: [], fixer: [], repairer: [], restorer: [], healer: [], doctor: [], physician: [], surgeon: [], nurse: [], medic: [],
-    paramedic: [], technician: [], specialist: [], expert: [], professional: [], veteran: [], experienced: [], seasoned: [],
-    practiced: [], skilled: [], accomplished: [], achieved: [], successful: [], victorious: [], winning: [], triumphant: [],
-    champion: [], hero: [], idol: [], icon: [], legend: [], myth: [], story: [], tale: [], narrative: [], account: [], report: [],
-    record: [], document: [], file: [], archive: [], database: [], repository: [], storage: [], memory: [], recall: [], remembrance: [],
-    recollection: [], recognition: [], identification: [], detection: [], discovery: [], finding: [], location: [], position: [],
-    placement: [], arrangement: [], organization: [], structure: [], system: [], network: [], web: [], mesh: [], grid: [], matrix: [],
-    array: [], collection: [], set: [], group: [], cluster: [], bunch: [], bundle: [], package: [], parcel: [], container: [],
-    vessel: [], receptacle: [], holder: [], carrier: [], transporter: [], conveyor: [], mover: [], shifter: [], changer: [],
-    transformer: [], converter: [], adapter: [], connector: [], link: [], bond: [], tie: [], relationship: [], connection: [],
-    association: [], affiliation: [], membership: [], participation: [], involvement: [], engagement: [], commitment: [], dedication: [],
-    devotion: [], loyalty: [], allegiance: [], fidelity: [], faithfulness: [], reliability: [], dependability: [], trustworthiness: [],
-    honesty: [], integrity: [], character: [], morality: [], ethics: [], principles: [], values: [], standards: [], norms: [],
-    customs: [], traditions: [], culture: [], society: [], community: [], population: [], people: [], persons: [], individuals: [],
-    humans: [], citizens: [], residents: [], inhabitants: [], occupants: [], tenants: [], owners: [], proprietors: [], landlords: [],
-    managers: [], administrators: [], operators: [], workers: [], employees: [], staff: [], personnel: [], workforce: [], labor: [],
-    help: [], assistance: [], support: [], aid: [], relief: [], rescue: [], salvation: [], redemption: [], forgiveness: [], pardon: [],
-    clemency: [], mercy: [], grace: [], kindness: [], compassion: [], empathy: [], sympathy: [], understanding: [], tolerance: [],
-    patience: [], forbearance: [], restraint: [], control: [], discipline: [], order: [], regularity: [], consistency: [], stability: [],
-    security: [], safety: [], protection: [], defense: [], guard: [], shield: [], armor: [], fortress: [], stronghold: [], bastion: [],
-    citadel: [], castle: [], palace: [], mansion: [], villa: [], house: [], home: [], residence: [], dwelling: [], abode: [],
-    habitat: [], environment: [], surroundings: [], setting: [], context: [], background: [], history: [], past: [], present: [],
-    future: [], tomorrow: [], today: [], yesterday: [], now: [], then: [], when: [], where: [], why: [], how: [], what: [], who: [],
-    whom: [], whose: [], which: [], that: [], this: [], these: [], those: [], some: [], any: [], all: [], every: [], each: [],
-    both: [], either: [], neither: [], none: [], nothing: [], something: [], anything: [], everything: [], everyone: [], everybody: [],
-    someone: [], somebody: [], anyone: [], anybody: [], noOne: [], nobody: [], whatever: [], whoever: [], whomever: [], whichever: [],
-    wherever: [], whenever: [], however: [], whyever: [], whatsoever: [], whosoever: [], whomsoever: [], whichsoever: [], wheresoever: [],
-    whensoever: [], howsoever: [], whysoever: [], indeed: [], truly: [], really: [], actually: [], certainly: [], definitely: [],
-    absolutely: [], positively: [], undoubtedly: [], unquestionably: [], indisputably: [], undeniably: [], irrefutably: [], conclusively: [],
-    finally: [], ultimately: [], eventually: [], presently: [], currently: [], now: [], immediately: [], instantly: [], promptly: [],
-    quickly: [], rapidly: [], swiftly: [], speedily: [], fast: [], slow: [], slowly: [], gradually: [], steadily: [], constantly: [],
-    continuously: [], endlessly: [], infinitely: [], eternally: [], forever: [], always: [], never: [], ever: [], once: [], twice: [],
-    thrice: [], multiple: [], many: [], few: [], several: [], numerous: [], countless: [], infinite: [], limited: [], restricted: [],
-    confined: [], bounded: [], finite: [], ending: [], concluding: [], finishing: [], completing: [], achieving: [], accomplishing: [],
-    succeeding: [], winning: [], losing: [], failing: [], falling: [], dropping: [], descending: [], declining: [], decreasing: [],
-    reducing: [], diminishing: [], shrinking: [], contracting: [], compressing: [], squeezing: [], pressing: [], pushing: [], pulling: [],
-    dragging: [], drawing: [], painting: [], sketching: [], drafting: [], designing: [], planning: [], plotting: [], scheming: [],
-    conspiring: [], colluding: [], cooperating: [], collaborating: [], working: [], laboring: [], toiling: [], striving: [], struggling: [],
-    fighting: [], battling: [], warring: [], conflicting: [], clashing: [], colliding: [], crashing: [], smashing: [], breaking: [],
-    shattering: [], destroying: [], ruining: [], wrecking: [], damaging: [], harming: [], hurting: [], injuring: [], wounding: [],
-    killing: [], murdering: [], assassinating: [], executing: [], eliminating: [], eradicating: [], exterminating: [], annihilating: [],
-    obliterating: [], demolishing: [], leveling: [], razing: [], flattening: [], crushing: [], pounding: [], hammering: [], beating: [],
-    striking: [], hitting: [], punching: [], kicking: [], slapping: [], whipping: [], lashing: [], flogging: [], caning: [], birching: [],
-    spanking: [], paddling: [], strapping: [], belting: [], thrashing: [], drubbing: [], clobbering: [], walloping: [], lambasting: [],
-    pummeling: [], battering: [], mauling: [], mangling: [], mutilating: [], disfiguring: [], deforming: [], distorting: [], twisting: [],
-    bending: [], curving: [], arching: [], bowing: [], leaning: [], tilting: [], slanting: [], sloping: [], inclining: [], declining: [],
-    descending: [], ascending: [], rising: [], climbing: [], scaling: [], mounting: [], boarding: [], embarking: [], disembarking: [],
-    alighting: [], landing: [], arriving: [], coming: [], going: [], leaving: [], departing: [], exiting: [], entering: [], incoming: [],
-    outgoing: [], through: [], via: [], by: [], with: [], without: [], within: [], inside: [], outside: [], internal: [], external: [],
-    interior: [], exterior: [], surface: [], top: [], bottom: [], base: [], foundation: [], ground: [], floor: [], ceiling: [], roof: [],
-    wall: [], partition: [], divider: [], separator: [], barrier: [], obstacle: [], impediment: [], hindrance: [], obstruction: [],
-    blockage: [], closure: [], seal: [], lock: [], key: [], code: [], cipher: [], crypt: [], hidden: [], secret: [], covert: [],
-    undercover: [], clandestine: [], surreptitious: [], stealthy: [], furtive: [], sneaky: [], sly: [], cunning: [], crafty: [], tricky: [],
-    deceptive: [], misleading: [], false: [], fake: [], counterfeit: [], forged: [], fabricated: [], manufactured: [], created: [],
-    produced: [], generated: [], made: [], built: [], constructed: [], assembled: [], putTogether: [], takenApart: [], disassembled: [],
-    dismantled: [], deconstructed: [], analyzed: [], examined: [], studied: [], researched: [], investigated: [], inquired: [], probed: [],
-    explored: [], searched: [], sought: [], lookedFor: [], hunted: [], tracked: [], traced: [], followed: [], pursued: [], chased: [],
-    huntedDown: [], captured: [], caught: [], arrested: [], detained: [], held: [], kept: [], stored: [], saved: [], preserved: [],
-    protected: [], defended: [], guarded: [], secured: [], locked: [], sealed: [], closed: [], opened: [], unlocked: [], released: [],
-    freed: [], liberated: [], rescued: [], saved: [], helped: [], assisted: [], aided: [], supported: [], backed: [], endorsed: [],
-    approved: [], authorized: [], permitted: [], allowed: [], granted: [], given: [], provided: [], supplied: [], furnished: [],
-    equipped: [], armed: [], weaponized: [], fortified: [], strengthened: [], reinforced: [], supported: [], bolstered: [], boosted: [],
-    enhanced: [], improved: [], upgraded: [], updated: [], modernized: [], contemporary: [], current: [], present: [], existing: [],
-    extant: [], living: [], alive: [], dead: [], deceased: [], departed: [], gone: [], lost: [], missing: [], absent: [], present: [],
-    here: [], there: [], everywhere: [], nowhere: [], somewhere: [], anywhere: [], wherever: [], whenever: [], however: [], whyever: [],
-    whatsoever: [], whosoever: [], whomsoever: [], whichsoever: [], wheresoever: [], whensoever: [], howsoever: [], whysoever: []
+    citizens: [],
+    drivers: [],
+    migration: [],
+    pdn: [],
+    cusp: [],
+    adminProtocols: [],
+    criminalCases: [],
+    wanted: [],
+    stateSecret: {
+        terrorists: [],
+        terroristOrgs: [],
+        extremists: [],
+        unwanted: [],
+        foreignAgents: [],
+        sorm: []
+    },
+    debtors: [],
+    journal: [],
+    news: [],
+    operational: []
 };
 
-// 🚀 МЕГА-КОНСТАНТЫ
-const DATABASE_ID = 'mvd_mega_system_v10';
-const BACKUP_DATABASE_ID = 'mvd_mega_backup_v10';
-const SYSTEM_VERSION = '10.0.0 MEGA EDITION';
+let currentUser = null;
+let currentModule = 'dashboard';
+let editingId = null;
 
-// 🚀 МЕГА-ФУНКЦИЯ СОХРАНЕНИЯ
-async function saveAllData() {
-    console.log('💾 МЕГА-СОХРАНЕНИЕ...');
+// 🔧 ФИКС: УНИКАЛЬНЫЙ ID ДЛЯ БАЗЫ ДАННЫХ
+const CURRENT_DATABASE_ID = 'mvd_unified_database_v4';
+
+// 🔧 ФУНКЦИЯ ГЕНЕРАЦИИ ОТПЕЧАТКА ПАЛЬЦА
+function generateFingerprint(birthDate, nickname) {
+    if (!birthDate) return `FP_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
+    const dateStr = birthDate.replace(/-/g, '');
+    const randomPart = Math.random().toString(36).substr(2, 5).toUpperCase();
+    return `FP_${dateStr}_${randomPart}`;
+}
+
+// === СИСТЕМНЫЕ ФУНКЦИИ ===
+async function loadAllData() {
+    console.log('🔄 Загрузка данных...');
     try {
-        await database.ref(DATABASE_ID).set(systemData);
-        localStorage.setItem(DATABASE_ID + '_mega_backup', JSON.stringify(systemData));
-        localStorage.setItem('mega_last_save', new Date().toISOString());
-        console.log('✅ МЕГА-ДАННЫЕ СОХРАНЕНЫ');
+        const currentSnapshot = await database.ref(CURRENT_DATABASE_ID).once('value');
+        const currentData = currentSnapshot.val();
+        if (currentData) {
+            console.log('✅ Данные загружены из Firebase');
+            systemData = {...systemData, ...currentData};
+            showNotification('✅ Данные загружены из облака', 'success');
+            return;
+        }
+        console.log('🔄 Данных в Firebase нет, создаем начальные данные');
+        await createInitialData();
+    } catch (error) {
+        console.error('❌ Ошибка загрузки:', error);
+        await createInitialData();
+    }
+}
+
+async function createInitialData() {
+    console.log('🔄 Создаем начальные данные...');
+    
+    // Тестовые граждане
+    const testCitizens = [
+        {
+            id: Date.now(),
+            nickname: "Ivanov_Test",
+            fullName: "Иванов Иван Иванович",
+            birthDate: "1990-05-15",
+            passportNumber: "4510 123456",
+            address: "г. Москва, ул. Ленина, д. 1",
+            additionalInfo: "Тестовый гражданин",
+            criminalRecord: false,
+            fingerprint: generateFingerprint("1990-05-15", "Ivanov_Test"),
+            createdBy: "system",
+            createdAt: new Date().toLocaleString()
+        },
+        {
+            id: Date.now() + 1,
+            nickname: "Petrov_Test",
+            fullName: "Петров Петр Петрович",
+            birthDate: "1985-08-20",
+            passportNumber: "4510 789012",
+            address: "г. Москва, ул. Пушкина, д. 10",
+            additionalInfo: "Тестовый гражданин 2",
+            criminalRecord: true,
+            fingerprint: generateFingerprint("1985-08-20", "Petrov_Test"),
+            createdBy: "system",
+            createdAt: new Date().toLocaleString()
+        }
+    ];
+    
+    // Тестовые водители
+    const testDrivers = [
+        {
+            id: Date.now() + 2,
+            nickname: "Driver_Test",
+            fullName: "Сидоров Алексей Владимирович",
+            licenseNumber: "1234 567890",
+            categories: "B,C",
+            birthDate: "1988-03-10",
+            address: "г. Москва, ул. Гагарина, д. 15",
+            fines: "12.09.2023 - 5000 руб. - Превышение скорости",
+            additionalInfo: "Тестовый водитель",
+            createdBy: "system",
+            createdAt: new Date().toLocaleString()
+        }
+    ];
+    
+    // Тестовые КУСП
+    const testCUSP = [
+        {
+            id: Date.now() + 3,
+            applicant: "Кузнецов Михаил",
+            contacts: "+7 999 123-45-67",
+            statement: "Кража велосипеда из подъезда",
+            responsible: "Система",
+            dateTime: new Date().toISOString().slice(0, 16),
+            status: "Зарегистрировано",
+            createdBy: "system",
+            createdAt: new Date().toLocaleString()
+        }
+    ];
+    
+    systemData.citizens.push(...testCitizens);
+    systemData.drivers.push(...testDrivers);
+    systemData.cusp.push(...testCUSP);
+    
+    await saveAllData();
+    console.log('✅ Начальные данные созданы');
+}
+
+async function saveAllData() {
+    console.log('💾 Сохранение данных...');
+    try {
+        await database.ref(CURRENT_DATABASE_ID).set(systemData);
+        console.log('✅ Данные сохранены в Firebase');
+        
+        // Локальная резервная копия
+        const backupData = JSON.stringify(systemData);
+        localStorage.setItem(CURRENT_DATABASE_ID + '_backup', backupData);
+        
         return true;
     } catch (error) {
-        console.error('❌ МЕГА-ОШИБКА СОХРАНЕНИЯ:', error);
+        console.error('❌ Ошибка сохранения:', error);
+        showNotification('❌ Ошибка сохранения данных', 'error');
         return false;
     }
 }
 
-// 🚀 МЕГА-ФУНКЦИЯ ЗАГРУЗКИ
-async function loadAllData() {
-    console.log('🔄 МЕГА-ЗАГРУЗКА...');
-    try {
-        const snapshot = await database.ref(DATABASE_ID).once('value');
-        const data = snapshot.val();
-        if (data) {
-            systemData = { ...systemData, ...data };
-            showNotification('✅ МЕГА-ДАННЫЕ ЗАГРУЖЕНЫ', 'success');
-        } else {
-            await initializeMegaSystem();
+function importFromFile(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+        try {
+            const importedData = JSON.parse(e.target.result);
+            
+            if (confirm(`Импортировать данные из файла?\n\nГраждане: ${importedData.citizens?.length || 0}\nВодители: ${importedData.drivers?.length || 0}\nКУСП: ${importedData.cusp?.length || 0}\n\nСуществующие данные будут объединены с импортированными.`)) {
+                
+                // Объединяем данные
+                for (const key in importedData) {
+                    if (Array.isArray(importedData[key])) {
+                        systemData[key] = [...systemData[key], ...importedData[key]];
+                    } else if (typeof importedData[key] === 'object') {
+                        systemData[key] = {...systemData[key], ...importedData[key]};
+                    }
+                }
+                
+                if (await saveAllData()) {
+                    showNotification('✅ Данные успешно импортированы и сохранены в облако', 'success');
+                    showModule(currentModule);
+                }
+            }
+        } catch (error) {
+            console.error('❌ Ошибка импорта:', error);
+            showNotification('❌ Ошибка импорта данных. Проверьте формат файла.', 'error');
         }
-    } catch (error) {
-        console.error('❌ МЕГА-ОШИБКА ЗАГРУЗКИ:', error);
-        await loadMegaBackup();
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+}
+
+function exportToFile() {
+    const dataStr = JSON.stringify(systemData, null, 2);
+    const dataBlob = new Blob([dataStr], {type: 'application/json'});
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(dataBlob);
+    link.download = `mvd_backup_${new Date().toISOString().split('T')[0]}.json`;
+    link.click();
+    showNotification('✅ Данные экспортированы в файл', 'success');
+}
+
+// === ФУНКЦИЯ УВЕДОМЛЕНИЙ ===
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed; top: 20px; right: 20px; padding: 15px 20px; border-radius: 10px;
+        color: white; z-index: 10000; font-weight: bold; max-width: 400px; transition: all 0.3s;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.3); backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.2);
+    `;
+    const colors = {
+        success: 'linear-gradient(135deg, #00b09b, #96c93d)',
+        error: 'linear-gradient(135deg, #ff6b6b, #ee5a24)',
+        warning: 'linear-gradient(135deg, #f39c12, #e67e22)',
+        info: 'linear-gradient(135deg, #4facfe, #00f2fe)'
+    };
+    notification.style.background = colors[type] || colors.info;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        notification.style.transform = 'translateX(100px)';
+        setTimeout(() => notification.remove(), 300);
+    }, 4000);
+}
+
+// === ОСНОВНЫЕ МОДУЛИ ===
+function showModule(moduleName) {
+    currentModule = moduleName;
+    editingId = null;
+    const moduleContent = document.getElementById('moduleContent');
+    
+    const modules = {
+        'citizens': { html: getCitizensModule, load: loadCitizensTable },
+        'drivers': { html: getDriversModule, load: loadDriversTable },
+        'migration': { html: getMigrationModule, load: loadMigrationTable },
+        'pdn': { html: getPDNModule, load: loadPDNTable },
+        'operational': { html: getOperationalModule, load: loadOperationalTable },
+        'cusp': { html: getCUSPModule, load: loadCUSPTable },
+        'admin_protocols': { html: getAdminProtocolsModule, load: loadAdminProtocolsTable },
+        'criminal_cases': { html: getCriminalCasesModule, load: loadCriminalCasesTable },
+        'wanted': { html: getWantedModule, load: loadWantedTable },
+        'state_secret': { html: getStateSecretModule, load: loadStateSecretData },
+        'debtors': { html: getDebtorsModule, load: loadDebtorsTable },
+        'journal': { html: getJournalModule, load: loadJournalEntries },
+        'news': { html: getNewsModule, load: loadNews },
+        'games': { html: getGamesModule, load: () => {} }
+    };
+    
+    const module = modules[moduleName] || { html: getDashboardModule, load: () => {} };
+    moduleContent.innerHTML = module.html();
+    module.load();
+}
+
+// === МОДУЛЬ БАЗЫ ГРАЖДАН ===
+function getCitizensModule() {
+    return `
+        <div class="module">
+            <div class="module-header">
+                <h2>👥 База данных граждан</h2>
+                <div class="header-stats">
+                    <span class="stat">Всего: ${systemData.citizens.length}</span>
+                    <span class="stat">С судимостью: ${systemData.citizens.filter(c => c.criminalRecord).length}</span>
+                </div>
+            </div>
+            
+            <div class="module-controls">
+                <div class="search-box">
+                    <input type="text" id="searchCitizens" placeholder="🔍 Поиск по ФИО или никнейму..." onkeyup="searchCitizens()">
+                </div>
+                <button class="btn btn-success" onclick="showCitizenForm()">
+                    <span class="btn-icon">➕</span> Добавить гражданина
+                </button>
+            </div>
+
+            <div id="citizenFormContainer" class="form-container" style="display: none;">
+                <div class="form-header">
+                    <h3>${editingId ? '✏️ Редактирование гражданина' : '👤 Добавление гражданина'}</h3>
+                    <button class="btn-close" onclick="hideCitizenForm()">×</button>
+                </div>
+                <form onsubmit="saveCitizen(event)" class="form-content">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="citizenNickname">Никнейм *</label>
+                            <input type="text" id="citizenNickname" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="citizenFullName">ФИО *</label>
+                            <input type="text" id="citizenFullName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="citizenBirthDate">Дата рождения</label>
+                            <input type="date" id="citizenBirthDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="citizenPassport">Номер паспорта</label>
+                            <input type="text" id="citizenPassport" placeholder="4510 123456">
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="citizenAddress">Место регистрации</label>
+                            <input type="text" id="citizenAddress" placeholder="г. Москва, ул. Ленина, д. 1">
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="citizenAdditionalInfo">Дополнительная информация</label>
+                            <textarea id="citizenAdditionalInfo" rows="3" placeholder="Особые приметы, род занятий и т.д."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="citizenCriminalRecord">
+                                <span class="checkmark"></span>
+                                Имеет судимость
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label for="citizenFingerprint">Отпечаток пальца</label>
+                            <div class="fingerprint-input">
+                                <input type="text" id="citizenFingerprint" readonly>
+                                <button type="button" class="btn btn-secondary" onclick="generateNewFingerprint()">
+                                    🔄 Сгенерировать
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="hideCitizenForm()">Отмена</button>
+                        <button type="submit" class="btn btn-primary">
+                            ${editingId ? '💾 Обновить' : '✅ Сохранить'}
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="data-section">
+                <div id="citizensTableContainer" class="table-container"></div>
+            </div>
+        </div>
+    `;
+}
+
+function showCitizenForm() {
+    editingId = null;
+    const container = document.getElementById('citizenFormContainer');
+    container.style.display = 'block';
+    
+    // Очистка формы
+    const form = container.querySelector('form');
+    form.reset();
+    document.getElementById('citizenFingerprint').value = generateFingerprint('', '');
+}
+
+function hideCitizenForm() {
+    document.getElementById('citizenFormContainer').style.display = 'none';
+    editingId = null;
+}
+
+function generateNewFingerprint() {
+    const birthDate = document.getElementById('citizenBirthDate').value;
+    const nickname = document.getElementById('citizenNickname').value;
+    document.getElementById('citizenFingerprint').value = generateFingerprint(birthDate, nickname);
+}
+
+function saveCitizen(event) {
+    event.preventDefault();
+    
+    const citizen = {
+        id: editingId || Date.now(),
+        nickname: document.getElementById('citizenNickname').value,
+        fullName: document.getElementById('citizenFullName').value,
+        birthDate: document.getElementById('citizenBirthDate').value,
+        passportNumber: document.getElementById('citizenPassport').value,
+        address: document.getElementById('citizenAddress').value,
+        additionalInfo: document.getElementById('citizenAdditionalInfo').value,
+        criminalRecord: document.getElementById('citizenCriminalRecord').checked,
+        fingerprint: document.getElementById('citizenFingerprint').value,
+        createdBy: currentUser.nickname,
+        createdAt: new Date().toLocaleString()
+    };
+    
+    if (editingId) {
+        const index = systemData.citizens.findIndex(c => c.id === editingId);
+        if (index !== -1) {
+            systemData.citizens[index] = citizen;
+            showNotification('✅ Гражданин обновлен', 'success');
+        }
+    } else {
+        systemData.citizens.push(citizen);
+        showNotification('✅ Гражданин добавлен', 'success');
+    }
+    
+    saveAllData();
+    loadCitizensTable();
+    hideCitizenForm();
+}
+
+function editCitizen(id) {
+    const citizen = systemData.citizens.find(c => c.id === id);
+    if (citizen) {
+        editingId = id;
+        const container = document.getElementById('citizenFormContainer');
+        container.style.display = 'block';
+        
+        document.getElementById('citizenNickname').value = citizen.nickname;
+        document.getElementById('citizenFullName').value = citizen.fullName;
+        document.getElementById('citizenBirthDate').value = citizen.birthDate;
+        document.getElementById('citizenPassport').value = citizen.passportNumber;
+        document.getElementById('citizenAddress').value = citizen.address;
+        document.getElementById('citizenAdditionalInfo').value = citizen.additionalInfo;
+        document.getElementById('citizenCriminalRecord').checked = citizen.criminalRecord;
+        document.getElementById('citizenFingerprint').value = citizen.fingerprint;
     }
 }
 
-// 🚀 МЕГА-ИНИЦИАЛИЗАЦИЯ
-async function initializeMegaSystem() {
-    console.log('🚀 ИНИЦИАЛИЗАЦИЯ МЕГА-СИСТЕМЫ...');
+function loadCitizensTable() {
+    const container = document.getElementById('citizensTableContainer');
+    if (!container) return;
     
-    // Добавляем тестовые данные во ВСЕ модули
-    Object.keys(systemData).forEach(module => {
-        if (Array.isArray(systemData[module])) {
-            for (let i = 0; i < 50; i++) {
-                systemData[module].push(createMegaTestData(module, i));
+    if (systemData.citizens.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">👥</div>
+                <h3>Нет данных о гражданах</h3>
+                <p>Добавьте первого гражданина в базу данных</p>
+                <button class="btn btn-success" onclick="showCitizenForm()">➕ Добавить гражданина</button>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = `
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Никнейм</th>
+                        <th>ФИО</th>
+                        <th>Дата рождения</th>
+                        <th>Паспорт</th>
+                        <th>Адрес</th>
+                        <th>Судимость</th>
+                        <th>Отпечаток</th>
+                        <th>Добавил</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${systemData.citizens.map(citizen => `
+                        <tr>
+                            <td>
+                                <div class="user-cell">
+                                    <span class="user-avatar">👤</span>
+                                    <span class="user-name">${citizen.nickname}</span>
+                                </div>
+                            </td>
+                            <td><strong>${citizen.fullName}</strong></td>
+                            <td>${citizen.birthDate || '<span class="text-muted">—</span>'}</td>
+                            <td>${citizen.passportNumber || '<span class="text-muted">—</span>'}</td>
+                            <td>${citizen.address || '<span class="text-muted">—</span>'}</td>
+                            <td>
+                                <span class="status-badge ${citizen.criminalRecord ? 'status-danger' : 'status-success'}">
+                                    ${citizen.criminalRecord ? '✅' : '❌'}
+                                </span>
+                            </td>
+                            <td>
+                                <code class="fingerprint-code">${citizen.fingerprint}</code>
+                            </td>
+                            <td>
+                                <div class="created-info">
+                                    <span class="created-by">${citizen.createdBy}</span>
+                                    <span class="created-date">${formatDate(citizen.createdAt)}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-sm btn-outline" onclick="editCitizen(${citizen.id})" title="Редактировать">
+                                        ✏️
+                                    </button>
+                                    <button class="btn btn-sm btn-outline btn-danger" onclick="deleteCitizen(${citizen.id})" title="Удалить">
+                                        🗑️
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </div>
+        <div class="table-footer">
+            <div class="table-stats">
+                Показано ${systemData.citizens.length} записей
+            </div>
+        </div>
+    `;
+}
+
+function searchCitizens() {
+    const searchTerm = document.getElementById('searchCitizens').value.toLowerCase();
+    const container = document.getElementById('citizensTableContainer');
+    
+    if (!searchTerm) {
+        loadCitizensTable();
+        return;
+    }
+    
+    const filteredCitizens = systemData.citizens.filter(citizen => 
+        citizen.nickname.toLowerCase().includes(searchTerm) || 
+        citizen.fullName.toLowerCase().includes(searchTerm) ||
+        (citizen.passportNumber && citizen.passportNumber.toLowerCase().includes(searchTerm))
+    );
+    
+    if (filteredCitizens.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">🔍</div>
+                <h3>Ничего не найдено</h3>
+                <p>Попробуйте изменить поисковый запрос</p>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = `
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Никнейм</th>
+                        <th>ФИО</th>
+                        <th>Дата рождения</th>
+                        <th>Паспорт</th>
+                        <th>Адрес</th>
+                        <th>Судимость</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${filteredCitizens.map(citizen => `
+                        <tr>
+                            <td>${citizen.nickname}</td>
+                            <td><strong>${citizen.fullName}</strong></td>
+                            <td>${citizen.birthDate || '<span class="text-muted">—</span>'}</td>
+                            <td>${citizen.passportNumber || '<span class="text-muted">—</span>'}</td>
+                            <td>${citizen.address || '<span class="text-muted">—</span>'}</td>
+                            <td>
+                                <span class="status-badge ${citizen.criminalRecord ? 'status-danger' : 'status-success'}">
+                                    ${citizen.criminalRecord ? '✅' : '❌'}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-sm btn-outline" onclick="editCitizen(${citizen.id})">✏️</button>
+                                    <button class="btn btn-sm btn-outline btn-danger" onclick="deleteCitizen(${citizen.id})">🗑️</button>
+                                </div>
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </div>
+        <div class="table-footer">
+            <div class="table-stats">
+                Найдено ${filteredCitizens.length} из ${systemData.citizens.length} записей
+            </div>
+        </div>
+    `;
+}
+
+function deleteCitizen(id) {
+    if (confirm('Вы уверены, что хотите удалить гражданина из базы данных?')) {
+        systemData.citizens = systemData.citizens.filter(c => c.id !== id);
+        saveAllData();
+        loadCitizensTable();
+        showNotification('✅ Гражданин удален', 'success');
+    }
+}
+
+// === МОДУЛЬ БАЗЫ ВОДИТЕЛЕЙ ===
+function getDriversModule() {
+    return `
+        <div class="module">
+            <div class="module-header">
+                <h2>🚗 База данных водителей</h2>
+                <div class="header-stats">
+                    <span class="stat">Всего: ${systemData.drivers.length}</span>
+                    <span class="stat">Со штрафами: ${systemData.drivers.filter(d => d.fines).length}</span>
+                </div>
+            </div>
+            
+            <div class="module-controls">
+                <div class="search-box">
+                    <input type="text" id="searchDrivers" placeholder="🔍 Поиск по ФИО, никнейму или номеру В/У..." onkeyup="searchDrivers()">
+                </div>
+                <button class="btn btn-success" onclick="showDriverForm()">
+                    <span class="btn-icon">➕</span> Добавить водителя
+                </button>
+            </div>
+
+            <div id="driverFormContainer" class="form-container" style="display: none;">
+                <div class="form-header">
+                    <h3>${editingId ? '✏️ Редактирование водителя' : '🚗 Добавление водителя'}</h3>
+                    <button class="btn-close" onclick="hideDriverForm()">×</button>
+                </div>
+                <form onsubmit="saveDriver(event)" class="form-content">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="driverNickname">Никнейм водителя *</label>
+                            <input type="text" id="driverNickname" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="driverFullName">ФИО водителя *</label>
+                            <input type="text" id="driverFullName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="driverLicenseNumber">Номер В/У *</label>
+                            <input type="text" id="driverLicenseNumber" required placeholder="1234 567890">
+                        </div>
+                        <div class="form-group">
+                            <label for="driverCategories">Категории *</label>
+                            <input type="text" id="driverCategories" required placeholder="A,B,C,D">
+                        </div>
+                        <div class="form-group">
+                            <label for="driverBirthDate">Дата рождения</label>
+                            <input type="date" id="driverBirthDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="driverAddress">Адрес</label>
+                            <input type="text" id="driverAddress">
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="driverFines">Административные штрафы</label>
+                            <textarea id="driverFines" rows="3" placeholder="Дата, сумма, нарушение..."></textarea>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="driverAdditionalInfo">Дополнительная информация</label>
+                            <textarea id="driverAdditionalInfo" rows="2"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="hideDriverForm()">Отмена</button>
+                        <button type="submit" class="btn btn-primary">
+                            ${editingId ? '💾 Обновить' : '✅ Сохранить'}
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="data-section">
+                <div id="driversTableContainer" class="table-container"></div>
+            </div>
+        </div>
+    `;
+}
+
+function showDriverForm() {
+    editingId = null;
+    const container = document.getElementById('driverFormContainer');
+    container.style.display = 'block';
+    container.querySelector('form').reset();
+}
+
+function hideDriverForm() {
+    document.getElementById('driverFormContainer').style.display = 'none';
+    editingId = null;
+}
+
+function saveDriver(event) {
+    event.preventDefault();
+    
+    const driver = {
+        id: editingId || Date.now(),
+        nickname: document.getElementById('driverNickname').value,
+        fullName: document.getElementById('driverFullName').value,
+        licenseNumber: document.getElementById('driverLicenseNumber').value,
+        categories: document.getElementById('driverCategories').value,
+        birthDate: document.getElementById('driverBirthDate').value,
+        address: document.getElementById('driverAddress').value,
+        fines: document.getElementById('driverFines').value,
+        additionalInfo: document.getElementById('driverAdditionalInfo').value,
+        createdBy: currentUser.nickname,
+        createdAt: new Date().toLocaleString()
+    };
+    
+    if (editingId) {
+        const index = systemData.drivers.findIndex(d => d.id === editingId);
+        if (index !== -1) {
+            systemData.drivers[index] = driver;
+            showNotification('✅ Водитель обновлен', 'success');
+        }
+    } else {
+        systemData.drivers.push(driver);
+        showNotification('✅ Водитель добавлен', 'success');
+    }
+    
+    saveAllData();
+    loadDriversTable();
+    hideDriverForm();
+}
+
+function editDriver(id) {
+    const driver = systemData.drivers.find(d => d.id === id);
+    if (driver) {
+        editingId = id;
+        const container = document.getElementById('driverFormContainer');
+        container.style.display = 'block';
+        
+        document.getElementById('driverNickname').value = driver.nickname;
+        document.getElementById('driverFullName').value = driver.fullName;
+        document.getElementById('driverLicenseNumber').value = driver.licenseNumber;
+        document.getElementById('driverCategories').value = driver.categories;
+        document.getElementById('driverBirthDate').value = driver.birthDate;
+        document.getElementById('driverAddress').value = driver.address;
+        document.getElementById('driverFines').value = driver.fines;
+        document.getElementById('driverAdditionalInfo').value = driver.additionalInfo;
+    }
+}
+
+function loadDriversTable() {
+    const container = document.getElementById('driversTableContainer');
+    if (!container) return;
+    
+    if (systemData.drivers.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">🚗</div>
+                <h3>Нет данных о водителях</h3>
+                <p>Добавьте первого водителя в базу данных</p>
+                <button class="btn btn-success" onclick="showDriverForm()">➕ Добавить водителя</button>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = `
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Никнейм</th>
+                        <th>ФИО</th>
+                        <th>Номер В/У</th>
+                        <th>Категории</th>
+                        <th>Дата рождения</th>
+                        <th>Штрафы</th>
+                        <th>Добавил</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${systemData.drivers.map(driver => `
+                        <tr>
+                            <td>
+                                <div class="user-cell">
+                                    <span class="user-avatar">👤</span>
+                                    <span class="user-name">${driver.nickname}</span>
+                                </div>
+                            </td>
+                            <td><strong>${driver.fullName}</strong></td>
+                            <td>
+                                <code class="license-number">${driver.licenseNumber}</code>
+                            </td>
+                            <td>
+                                <div class="categories-list">
+                                    ${driver.categories.split(',').map(cat => 
+                                        `<span class="category-badge">${cat.trim()}</span>`
+                                    ).join('')}
+                                </div>
+                            </td>
+                            <td>${driver.birthDate || '<span class="text-muted">—</span>'}</td>
+                            <td>
+                                <span class="status-badge ${driver.fines ? 'status-warning' : 'status-success'}">
+                                    ${driver.fines ? '⚠️' : '✅'}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="created-info">
+                                    <span class="created-by">${driver.createdBy}</span>
+                                    <span class="created-date">${formatDate(driver.createdAt)}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-sm btn-outline" onclick="editDriver(${driver.id})" title="Редактировать">
+                                        ✏️
+                                    </button>
+                                    <button class="btn btn-sm btn-outline btn-danger" onclick="deleteDriver(${driver.id})" title="Удалить">
+                                        🗑️
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </div>
+        <div class="table-footer">
+            <div class="table-stats">
+                Показано ${systemData.drivers.length} записей
+            </div>
+        </div>
+    `;
+}
+
+function searchDrivers() {
+    const searchTerm = document.getElementById('searchDrivers').value.toLowerCase();
+    const container = document.getElementById('driversTableContainer');
+    
+    if (!searchTerm) {
+        loadDriversTable();
+        return;
+    }
+    
+    const filteredDrivers = systemData.drivers.filter(driver => 
+        driver.nickname.toLowerCase().includes(searchTerm) || 
+        driver.fullName.toLowerCase().includes(searchTerm) ||
+        driver.licenseNumber.toLowerCase().includes(searchTerm)
+    );
+    
+    if (filteredDrivers.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">🔍</div>
+                <h3>Ничего не найдено</h3>
+                <p>Попробуйте изменить поисковый запрос</p>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = `
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Никнейм</th>
+                        <th>ФИО</th>
+                        <th>Номер В/У</th>
+                        <th>Категории</th>
+                        <th>Штрафы</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${filteredDrivers.map(driver => `
+                        <tr>
+                            <td>${driver.nickname}</td>
+                            <td><strong>${driver.fullName}</strong></td>
+                            <td>${driver.licenseNumber}</td>
+                            <td>${driver.categories}</td>
+                            <td>${driver.fines ? '⚠️' : '✅'}</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-sm btn-outline" onclick="editDriver(${driver.id})">✏️</button>
+                                    <button class="btn btn-sm btn-outline btn-danger" onclick="deleteDriver(${driver.id})">🗑️</button>
+                                </div>
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </div>
+        <div class="table-footer">
+            <div class="table-stats">
+                Найдено ${filteredDrivers.length} из ${systemData.drivers.length} записей
+            </div>
+        </div>
+    `;
+}
+
+function deleteDriver(id) {
+    if (confirm('Вы уверены, что хотите удалить водителя из базы данных?')) {
+        systemData.drivers = systemData.drivers.filter(d => d.id !== id);
+        saveAllData();
+        loadDriversTable();
+        showNotification('✅ Водитель удален', 'success');
+    }
+}
+
+// === РАСШИРЕННЫЙ МОДУЛЬ МИГРАЦИОННОГО УЧЕТА ===
+function getMigrationModule() {
+    const presentCount = systemData.migration.filter(m => !m.exitDate && !isOverstayed(m)).length;
+    const overstayedCount = systemData.migration.filter(m => isOverstayed(m)).length;
+    
+    return `
+        <div class="module">
+            <div class="module-header">
+                <h2>🛂 МИГРАЦИОННЫЙ УЧЕТ И КОНТРОЛЬ</h2>
+                <div class="header-stats">
+                    <span class="stat">Всего: ${systemData.migration.length}</span>
+                    <span class="stat">На территории: ${presentCount}</span>
+                    <span class="stat">Просрочено: ${overstayedCount}</span>
+                </div>
+            </div>
+            
+            <div class="module-controls">
+                <div class="search-box">
+                    <input type="text" id="searchMigration" placeholder="🔍 Поиск по ФИО или паспорту..." onkeyup="searchMigration()">
+                </div>
+                <select onchange="filterMigrationByStatus(this.value)" class="filter-select">
+                    <option value="">Все статусы</option>
+                    <option value="active">На территории</option>
+                    <option value="departed">Выехал</option>
+                    <option value="overstayed">Просрочено</option>
+                </select>
+                <button class="btn btn-success" onclick="showMigrationForm()">
+                    <span class="btn-icon">👤</span> Регистрация мигранта
+                </button>
+                <button class="btn btn-info" onclick="showBulkMigrationForm()">
+                    <span class="btn-icon">📥</span> Групповая регистрация
+                </button>
+            </div>
+
+            <div id="migrationFormContainer" class="form-container" style="display: none;">
+                <div class="form-header">
+                    <h3>${editingId ? '✏️ Редактирование миграционной записи' : '👤 Регистрация иностранного гражданина'}</h3>
+                    <button class="btn-close" onclick="hideMigrationForm()">×</button>
+                </div>
+                <form onsubmit="saveMigrationRecord(event)" class="form-content">
+                    <div class="form-tabs">
+                        <button type="button" class="tab-btn active" onclick="switchMigrationTab('basic')">Основные данные</button>
+                        <button type="button" class="tab-btn" onclick="switchMigrationTab('documents')">Документы</button>
+                        <button type="button" class="tab-btn" onclick="switchMigrationTab('visa')">Визовый режим</button>
+                    </div>
+                    
+                    <div id="migrationBasicTab" class="tab-content active">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="migrationFullName">ФИО *</label>
+                                <input type="text" id="migrationFullName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="migrationCitizenship">Гражданство *</label>
+                                <select id="migrationCitizenship" required>
+                                    <option value="">Выберите страну</option>
+                                    ${getCountryOptions()}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="migrationBirthDate">Дата рождения *</label>
+                                <input type="date" id="migrationBirthDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="migrationGender">Пол *</label>
+                                <select id="migrationGender" required>
+                                    <option value="male">Мужской</option>
+                                    <option value="female">Женский</option>
+                                </select>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="migrationBirthPlace">Место рождения</label>
+                                <input type="text" id="migrationBirthPlace">
+                            </div>
+                            <div class="form-group">
+                                <label for="migrationEntryDate">Дата въезда *</label>
+                                <input type="date" id="migrationEntryDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="migrationPurpose">Цель визита *</label>
+                                <select id="migrationPurpose" required>
+                                    <option value="tourism">Туризм</option>
+                                    <option value="work">Работа</option>
+                                    <option value="study">Учеба</option>
+                                    <option value="business">Бизнес</option>
+                                    <option value="private">Частный визит</option>
+                                    <option value="transit">Транзит</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="migrationDuration">Срок пребывания (дней) *</label>
+                                <input type="number" id="migrationDuration" required min="1" max="365">
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="migrationAddress">Адрес проживания *</label>
+                                <input type="text" id="migrationAddress" required>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="migrationHost">Принимающая сторона</label>
+                                <input type="text" id="migrationHost">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="migrationDocumentsTab" class="tab-content">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="migrationDocType">Тип документа *</label>
+                                <select id="migrationDocType" required>
+                                    <option value="passport">Заграничный паспорт</option>
+                                    <option value="id_card">ID карта</option>
+                                    <option value="certificate">Свидетельство</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="migrationDocNumber">Номер документа *</label>
+                                <input type="text" id="migrationDocNumber" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="migrationBorderCrossing">Пункт пропуска</label>
+                                <input type="text" id="migrationBorderCrossing">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="migrationVisaTab" class="tab-content">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="migrationVisaType">Визовый режим</label>
+                                <select id="migrationVisaType">
+                                    <option value="none">Без визы</option>
+                                    <option value="tourist">Туристическая</option>
+                                    <option value="business">Деловая</option>
+                                    <option value="work">Рабочая</option>
+                                    <option value="student">Учебная</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="migrationVisaNumber">Номер визы</label>
+                                <input type="text" id="migrationVisaNumber">
+                            </div>
+                            <div class="form-group">
+                                <label for="migrationVisaExpiry">Срок визы до</label>
+                                <input type="date" id="migrationVisaExpiry">
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="migrationNotes">Примечания</label>
+                                <textarea id="migrationNotes" rows="3"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="hideMigrationForm()">Отмена</button>
+                        <button type="submit" class="btn btn-primary">
+                            ${editingId ? '💾 Обновить' : '✅ Зарегистрировать'}
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="data-section">
+                <div id="migrationTableContainer" class="table-container"></div>
+            </div>
+        </div>
+    `;
+}
+
+function getCountryOptions() {
+    const countries = [
+        'Украина', 'Казахстан', 'Беларусь', 'Узбекистан', 'Таджикистан', 
+        'Армения', 'Азербайджан', 'Грузия', 'Молдова', 'Кыргызстан', 'Туркменистан',
+        'Китай', 'Вьетнам', 'Турция', 'Сербия', 'Черногория'
+    ];
+    return countries.map(country => `<option value="${country}">${country}</option>`).join('');
+}
+
+function switchMigrationTab(tabName) {
+    // Скрыть все вкладки
+    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    
+    // Показать выбранную вкладку
+    document.getElementById('migration' + tabName.charAt(0).toUpperCase() + tabName.slice(1) + 'Tab').classList.add('active');
+    event.target.classList.add('active');
+}
+
+function showMigrationForm() {
+    editingId = null;
+    const container = document.getElementById('migrationFormContainer');
+    container.style.display = 'block';
+    
+    // Очистка формы
+    const form = container.querySelector('form');
+    form.reset();
+    document.getElementById('migrationEntryDate').value = new Date().toISOString().split('T')[0];
+    
+    // Активируем первую вкладку
+    switchMigrationTab('basic');
+}
+
+function hideMigrationForm() {
+    document.getElementById('migrationFormContainer').style.display = 'none';
+    editingId = null;
+}
+
+function saveMigrationRecord(event) {
+    event.preventDefault();
+    
+    const migrationRecord = {
+        id: editingId || Date.now(),
+        fullName: document.getElementById('migrationFullName').value,
+        citizenship: document.getElementById('migrationCitizenship').value,
+        documentType: document.getElementById('migrationDocType').value,
+        documentNumber: document.getElementById('migrationDocNumber').value,
+        birthDate: document.getElementById('migrationBirthDate').value,
+        gender: document.getElementById('migrationGender').value,
+        birthPlace: document.getElementById('migrationBirthPlace').value,
+        entryDate: document.getElementById('migrationEntryDate').value,
+        borderCrossing: document.getElementById('migrationBorderCrossing').value,
+        purpose: document.getElementById('migrationPurpose').value,
+        duration: parseInt(document.getElementById('migrationDuration').value),
+        host: document.getElementById('migrationHost').value,
+        address: document.getElementById('migrationAddress').value,
+        visaType: document.getElementById('migrationVisaType').value,
+        visaNumber: document.getElementById('migrationVisaNumber').value,
+        visaExpiry: document.getElementById('migrationVisaExpiry').value,
+        notes: document.getElementById('migrationNotes').value,
+        status: 'active',
+        createdAt: new Date().toISOString(),
+        createdBy: currentUser.nickname,
+        registrationNumber: generateMigrationNumber()
+    };
+
+    if (editingId) {
+        const index = systemData.migration.findIndex(m => m.id === editingId);
+        if (index !== -1) {
+            systemData.migration[index] = migrationRecord;
+            showNotification('✅ Миграционная запись обновлена', 'success');
+        }
+    } else {
+        systemData.migration.push(migrationRecord);
+        showNotification('✅ Мигрант успешно зарегистрирован', 'success');
+    }
+    
+    saveAllData();
+    loadMigrationTable();
+    hideMigrationForm();
+}
+
+function generateMigrationNumber() {
+    const date = new Date();
+    const year = date.getFullYear();
+    const number = systemData.migration.length + 1;
+    return `МИГ-${year}-${number.toString().padStart(6, '0')}`;
+}
+
+function isOverstayed(migrant) {
+    if (!migrant.entryDate || !migrant.duration) return false;
+    const entryDate = new Date(migrant.entryDate);
+    const exitDate = new Date(entryDate.getTime() + migrant.duration * 24 * 60 * 60 * 1000);
+    return exitDate < new Date() && !migrant.exitDate;
+}
+
+function getMigrationStatus(migrant) {
+    if (migrant.exitDate) return 'departed';
+    if (isOverstayed(migrant)) return 'overstayed';
+    return 'active';
+}
+
+function getMigrationStatusLabel(migrant) {
+    const status = getMigrationStatus(migrant);
+    const labels = {
+        active: 'На территории',
+        departed: 'Выехал',
+        overstayed: 'Просрочено'
+    };
+    return labels[status] || status;
+}
+
+function loadMigrationTable() {
+    const container = document.getElementById('migrationTableContainer');
+    if (!container) return;
+    
+    if (systemData.migration.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">🛂</div>
+                <h3>Нет миграционных записей</h3>
+                <p>Зарегистрируйте первого иностранного гражданина</p>
+                <button class="btn btn-success" onclick="showMigrationForm()">👤 Регистрация мигранта</button>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = `
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ФИО</th>
+                        <th>Гражданство</th>
+                        <th>Паспорт</th>
+                        <th>Въезд</th>
+                        <th>Выезд</th>
+                        <th>Цель визита</th>
+                        <th>Статус</th>
+                        <th>Визовый режим</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${systemData.migration.map(record => {
+                        const status = getMigrationStatus(record);
+                        const statusClass = {
+                            active: 'status-success',
+                            departed: 'status-info', 
+                            overstayed: 'status-danger'
+                        }[status];
+                        
+                        return `
+                        <tr>
+                            <td>
+                                <div class="user-cell">
+                                    <span class="user-avatar">${record.gender === 'male' ? '👨' : '👩'}</span>
+                                    <div>
+                                        <strong>${record.fullName}</strong>
+                                        <div class="user-meta">${calculateAge(record.birthDate)} лет</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="country-cell">
+                                    <span class="country-flag">${getFlag(record.citizenship)}</span>
+                                    ${record.citizenship}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="document-cell">
+                                    <div class="document-type">${record.documentType}</div>
+                                    <div class="document-number">${record.documentNumber}</div>
+                                </div>
+                            </td>
+                            <td>${formatDate(record.entryDate)}</td>
+                            <td>${record.exitDate ? formatDate(record.exitDate) : '<span class="text-muted">—</span>'}</td>
+                            <td>
+                                <span class="purpose-badge purpose-${record.purpose}">
+                                    ${getPurposeLabel(record.purpose)}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="status-badge ${statusClass}">
+                                    ${getMigrationStatusLabel(record)}
+                                </span>
+                            </td>
+                            <td>
+                                ${record.visaType && record.visaType !== 'none' ? `
+                                    <div class="visa-info">
+                                        <div>${getVisaLabel(record.visaType)}</div>
+                                        ${record.visaExpiry ? `
+                                            <div class="visa-expiry ${isVisaExpired(record) ? 'expired' : ''}">
+                                                до ${formatDate(record.visaExpiry)}
+                                            </div>
+                                        ` : ''}
+                                    </div>
+                                ` : '<span class="text-muted">Без визы</span>'}
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-sm btn-outline" onclick="editMigration(${record.id})" title="Редактировать">
+                                        ✏️
+                                    </button>
+                                    ${!record.exitDate ? `
+                                        <button class="btn btn-sm btn-outline btn-warning" onclick="registerExit(${record.id})" title="Зарегистрировать выезд">
+                                            🚪
+                                        </button>
+                                    ` : ''}
+                                    <button class="btn btn-sm btn-outline btn-danger" onclick="deleteMigration(${record.id})" title="Удалить">
+                                        🗑️
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `}).join('')}
+                </tbody>
+            </table>
+        </div>
+        <div class="table-footer">
+            <div class="table-stats">
+                Показано ${systemData.migration.length} записей
+            </div>
+        </div>
+    `;
+}
+
+function calculateAge(birthDate) {
+    if (!birthDate) return '?';
+    const today = new Date();
+    const birth = new Date(birthDate);
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+        age--;
+    }
+    return age;
+}
+
+function getFlag(country) {
+    const flags = {
+        'Украина': '🇺🇦', 'Казахстан': '🇰🇿', 'Беларусь': '🇧🇾', 'Узбекистан': '🇺🇿',
+        'Таджикистан': '🇹🇯', 'Армения': '🇦🇲', 'Азербайджан': '🇦🇿', 'Грузия': '🇬🇪',
+        'Молдова': '🇲🇩', 'Кыргызстан': '🇰🇬', 'Туркменистан': '🇹🇲', 'Китай': '🇨🇳',
+        'Вьетнам': '🇻🇳', 'Турция': '🇹🇷', 'Сербия': '🇷🇸', 'Черногория': '🇲🇪'
+    };
+    return flags[country] || '🏳️';
+}
+
+function getPurposeLabel(purpose) {
+    const labels = {
+        tourism: 'Туризм', work: 'Работа', study: 'Учеба', business: 'Бизнес',
+        private: 'Частный', transit: 'Транзит'
+    };
+    return labels[purpose] || purpose;
+}
+
+function getVisaLabel(visaType) {
+    const labels = {
+        tourist: 'Туристическая', business: 'Деловая', work: 'Рабочая', student: 'Учебная'
+    };
+    return labels[visaType] || visaType;
+}
+
+function isVisaExpired(record) {
+    if (!record.visaExpiry) return false;
+    return new Date(record.visaExpiry) < new Date();
+}
+
+function editMigration(id) {
+    const record = systemData.migration.find(m => m.id === id);
+    if (record) {
+        editingId = id;
+        const container = document.getElementById('migrationFormContainer');
+        container.style.display = 'block';
+        
+        // Основные данные
+        document.getElementById('migrationFullName').value = record.fullName;
+        document.getElementById('migrationCitizenship').value = record.citizenship;
+        document.getElementById('migrationBirthDate').value = record.birthDate;
+        document.getElementById('migrationGender').value = record.gender;
+        document.getElementById('migrationBirthPlace').value = record.birthPlace || '';
+        document.getElementById('migrationEntryDate').value = record.entryDate;
+        document.getElementById('migrationPurpose').value = record.purpose;
+        document.getElementById('migrationDuration').value = record.duration;
+        document.getElementById('migrationHost').value = record.host || '';
+        document.getElementById('migrationAddress').value = record.address;
+        
+        // Документы
+        document.getElementById('migrationDocType').value = record.documentType;
+        document.getElementById('migrationDocNumber').value = record.documentNumber;
+        document.getElementById('migrationBorderCrossing').value = record.borderCrossing || '';
+        
+        // Визовый режим
+        document.getElementById('migrationVisaType').value = record.visaType || 'none';
+        document.getElementById('migrationVisaNumber').value = record.visaNumber || '';
+        document.getElementById('migrationVisaExpiry').value = record.visaExpiry || '';
+        document.getElementById('migrationNotes').value = record.notes || '';
+        
+        // Активируем первую вкладку
+        switchMigrationTab('basic');
+    }
+}
+
+function registerExit(id) {
+    const record = systemData.migration.find(m => m.id === id);
+    if (record && !record.exitDate) {
+        record.exitDate = new Date().toISOString().split('T')[0];
+        record.status = 'departed';
+        saveAllData();
+        loadMigrationTable();
+        showNotification('✅ Выезд зарегистрирован', 'success');
+    }
+}
+
+function deleteMigration(id) {
+    if (confirm('Вы уверены, что хотите удалить миграционную запись?')) {
+        systemData.migration = systemData.migration.filter(m => m.id !== id);
+        saveAllData();
+        loadMigrationTable();
+        showNotification('✅ Миграционная запись удалена', 'success');
+    }
+}
+
+function searchMigration() {
+    const searchTerm = document.getElementById('searchMigration').value.toLowerCase();
+    const container = document.getElementById('migrationTableContainer');
+    
+    if (!searchTerm) {
+        loadMigrationTable();
+        return;
+    }
+    
+    const filtered = systemData.migration.filter(record =>
+        record.fullName.toLowerCase().includes(searchTerm) ||
+        record.documentNumber.toLowerCase().includes(searchTerm)
+    );
+    
+    if (filtered.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">🔍</div>
+                <h3>Ничего не найдено</h3>
+                <p>Попробуйте изменить поисковый запрос</p>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = `
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ФИО</th>
+                        <th>Гражданство</th>
+                        <th>Паспорт</th>
+                        <th>Въезд</th>
+                        <th>Статус</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${filtered.map(record => `
+                        <tr>
+                            <td>${record.fullName}</td>
+                            <td>${record.citizenship}</td>
+                            <td>${record.documentNumber}</td>
+                            <td>${formatDate(record.entryDate)}</td>
+                            <td>${getMigrationStatusLabel(record)}</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-sm btn-outline" onclick="editMigration(${record.id})">✏️</button>
+                                    ${!record.exitDate ? `
+                                        <button class="btn btn-sm btn-outline btn-warning" onclick="registerExit(${record.id})">🚪</button>
+                                    ` : ''}
+                                    <button class="btn btn-sm btn-outline btn-danger" onclick="deleteMigration(${record.id})">🗑️</button>
+                                </div>
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </div>
+        <div class="table-footer">
+            <div class="table-stats">
+                Найдено ${filtered.length} из ${systemData.migration.length} записей
+            </div>
+        </div>
+    `;
+}
+
+function filterMigrationByStatus(status) {
+    let filtered = systemData.migration;
+    
+    if (status === 'active') {
+        filtered = systemData.migration.filter(m => !m.exitDate && !isOverstayed(m));
+    } else if (status === 'departed') {
+        filtered = systemData.migration.filter(m => m.exitDate);
+    } else if (status === 'overstayed') {
+        filtered = systemData.migration.filter(m => isOverstayed(m));
+    }
+    
+    const container = document.getElementById('migrationTableContainer');
+    
+    if (filtered.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">🔍</div>
+                <h3>Нет записей с выбранным статусом</h3>
+                <p>Попробуйте выбрать другой фильтр</p>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = `
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ФИО</th>
+                        <th>Гражданство</th>
+                        <th>Паспорт</th>
+                        <th>Въезд</th>
+                        <th>Статус</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${filtered.map(record => `
+                        <tr>
+                            <td>${record.fullName}</td>
+                            <td>${record.citizenship}</td>
+                            <td>${record.documentNumber}</td>
+                            <td>${formatDate(record.entryDate)}</td>
+                            <td>${getMigrationStatusLabel(record)}</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-sm btn-outline" onclick="editMigration(${record.id})">✏️</button>
+                                    ${!record.exitDate ? `
+                                        <button class="btn btn-sm btn-outline btn-warning" onclick="registerExit(${record.id})">🚪</button>
+                                    ` : ''}
+                                    <button class="btn btn-sm btn-outline btn-danger" onclick="deleteMigration(${record.id})">🗑️</button>
+                                </div>
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </div>
+        <div class="table-footer">
+            <div class="table-stats">
+                Показано ${filtered.length} записей
+            </div>
+        </div>
+    `;
+}
+
+function showBulkMigrationForm() {
+    // Реализация групповой регистрации
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📥 Групповая регистрация мигрантов</h3>
+                <button class="btn-close" onclick="this.closest('.modal-overlay').remove()">×</button>
+            </div>
+            <div class="modal-body">
+                <p>Загрузите CSV файл с данными мигрантов или введите данные вручную:</p>
+                <textarea id="bulkMigrationData" rows="10" placeholder="ФИО;Гражданство;Документ;Номер;Дата въезда;Цель визита&#10;Иванов Иван;Украина;паспорт;AB123456;2024-01-15;работа&#10;Петров Петр;Казахстан;паспорт;CD789012;2024-01-16;туризм" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove()">Отмена</button>
+                <button class="btn btn-primary" onclick="processBulkMigration()">✅ Обработать</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+function processBulkMigration() {
+    const data = document.getElementById('bulkMigrationData').value;
+    if (!data) {
+        showNotification('❌ Введите данные для обработки', 'error');
+        return;
+    }
+    
+    // Простая обработка CSV
+    const lines = data.split('\n');
+    let processed = 0;
+    
+    lines.forEach(line => {
+        if (line.trim()) {
+            const parts = line.split(';');
+            if (parts.length >= 5) {
+                const record = {
+                    id: Date.now() + Math.random(),
+                    fullName: parts[0].trim(),
+                    citizenship: parts[1].trim(),
+                    documentType: 'passport',
+                    documentNumber: parts[3].trim(),
+                    entryDate: parts[4].trim(),
+                    purpose: parts[5]?.trim() || 'tourism',
+                    duration: 30,
+                    status: 'active',
+                    createdAt: new Date().toISOString(),
+                    createdBy: currentUser.nickname,
+                    registrationNumber: generateMigrationNumber()
+                };
+                systemData.migration.push(record);
+                processed++;
             }
         }
     });
     
-    await saveAllData();
-    showNotification('🎉 МЕГА-СИСТЕМА ИНИЦИАЛИЗИРОВАНА!', 'success');
-}
-
-function createMegaTestData(module, index) {
-    const baseData = {
-        id: Date.now() + index,
-        createdAt: new Date().toLocaleString(),
-        createdBy: 'MEGA_SYSTEM',
-        status: ['Активен', 'Завершен', 'В процессе', 'На паузе'][index % 4],
-        priority: ['Низкий', 'Средний', 'Высокий', 'Критический'][index % 4]
-    };
-
-    switch(module) {
-        case 'citizens':
-            return {
-                ...baseData,
-                nickname: `TestUser${index}`,
-                fullName: `Тестовый Гражданин ${index}`,
-                passportNumber: `${1000 + index} ${100000 + index}`,
-                fingerprint: `FP_MEGA_${index}`
-            };
-        case 'sorm':
-            return {
-                ...baseData,
-                target: `+7 999 000-${index.toString().padStart(2, '0')}`,
-                type: ['Прослушка', 'Мониторинг', 'Геолокация'][index % 3],
-                reason: `Тестовое наблюдение ${index}`
-            };
-        case 'dutySchedule':
-            return {
-                ...baseData,
-                officer: `Сотрудник ${index}`,
-                shift: ['Дневная', 'Вечерняя', 'Ночная'][index % 3],
-                role: ['Патруль', 'Дежурный', 'Оперативный'][index % 3]
-            };
-        default:
-            return {
-                ...baseData,
-                name: `Тестовый объект ${module} ${index}`,
-                description: `МЕГА-тестовые данные для модуля ${module}`
-            };
-    }
-}
-
-// 🚀 МЕГА-ПАНЕЛЬ УПРАВЛЕНИЯ
-function getDashboardModule() {
-    const stats = {};
-    Object.keys(systemData).forEach(key => {
-        if (Array.isArray(systemData[key])) {
-            stats[key] = systemData[key].length;
-        }
-    });
-
-    const totalRecords = Object.values(stats).reduce((a, b) => a + b, 0);
-    const activeModules = Object.keys(stats).length;
-
-    return `
-        <div class="module">
-            <h1>🚀 МЕГА-СИСТЕМА МВД ${SYSTEM_VERSION}</h1>
-            
-            <!-- МЕГА-СТАТИСТИКА -->
-            <div class="mega-stats">
-                <div class="mega-stat-card">
-                    <div class="mega-stat-number">${totalRecords.toLocaleString()}</div>
-                    <div class="mega-stat-label">ВСЕГО ЗАПИСЕЙ</div>
-                </div>
-                <div class="mega-stat-card">
-                    <div class="mega-stat-number">${activeModules}</div>
-                    <div class="mega-stat-label">МОДУЛЕЙ</div>
-                </div>
-                <div class="mega-stat-card">
-                    <div class="mega-stat-number">${systemData.sorm?.length || 0}</div>
-                    <div class="mega-stat-label">СОРМ-НАБЛЮДЕНИЙ</div>
-                </div>
-                <div class="mega-stat-card">
-                    <div class="mega-stat-number">${systemData.citizens?.length || 0}</div>
-                    <div class="mega-stat-label">ГРАЖДАН</div>
-                </div>
-            </div>
-
-            <!-- МЕГА-БЫСТРЫЙ ДОСТУП -->
-            <div class="mega-quick-access">
-                <h2>⚡ МЕГА-БЫСТРЫЙ ДОСТУП</h2>
-                <div class="mega-grid">
-                    ${Object.entries(stats).slice(0, 20).map(([module, count]) => `
-                        <div class="mega-card" onclick="showModule('${module}')">
-                            <div class="mega-card-icon">📊</div>
-                            <div class="mega-card-title">${module}</div>
-                            <div class="mega-card-count">${count}</div>
-                        </div>
-                    `).join('')}
-                </div>
-            </div>
-
-            <!-- МЕГА-АКТИВНОСТЬ -->
-            <div class="mega-activity">
-                <h2>📈 МЕГА-АКТИВНОСТЬ</h2>
-                <div class="mega-activity-grid">
-                    <div class="mega-activity-card">
-                        <h3>🔥 Горячие операции</h3>
-                        ${systemData.operational?.slice(-5).map(op => `
-                            <div class="activity-item">
-                                <span class="activity-badge">🚨</span>
-                                ${op.name || op.target || 'Операция'}
-                            </div>
-                        `).join('')}
-                    </div>
-                    <div class="mega-activity-card">
-                        <h3>📡 Активные СОРМ</h3>
-                        ${systemData.sorm?.filter(s => s.status === 'Активен').slice(-5).map(sorm => `
-                            <div class="activity-item">
-                                <span class="activity-badge">🎯</span>
-                                ${sorm.target} - ${sorm.type}
-                            </div>
-                        `).join('')}
-                    </div>
-                    <div class="mega-activity-card">
-                        <h3>🕐 Текущие дежурства</h3>
-                        ${systemData.dutySchedule?.filter(d => d.status === 'Запланировано').slice(-5).map(duty => `
-                            <div class="activity-item">
-                                <span class="activity-badge">👮</span>
-                                ${duty.officer} - ${duty.shift}
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-}
-
-// 🚀 МЕГА-МОДУЛЬ СОРМ
-function getStateSecretModule() {
-    return `
-        <div class="module">
-            <h1>📡 МЕГА-СИСТЕМА СОРМ</h1>
-            
-            <!-- МЕГА-ПАНЕЛЬ УПРАВЛЕНИЯ СОРМ -->
-            <div class="mega-control-panel">
-                <div class="mega-control-group">
-                    <h3>🎯 Управление наблюдениями</h3>
-                    <button class="mega-btn mega-btn-primary" onclick="showSormWizard()">
-                        🧙‍♂️ Мастер создания наблюдений
-                    </button>
-                    <button class="mega-btn" onclick="showSormAnalytics()">
-                        📊 Аналитика СОРМ
-                    </button>
-                    <button class="mega-btn" onclick="showSormReports()">
-                        📋 Отчеты
-                    </button>
-                </div>
-
-                <div class="mega-control-group">
-                    <h3>🔧 Инструменты</h3>
-                    <button class="mega-btn" onclick="startMassSurveillance()">
-                        🌐 Массовый мониторинг
-                    </button>
-                    <button class="mega-btn" onclick="showDeepPacketInspection()">
-                        📦 Глубокий анализ пакетов
-                    </button>
-                    <button class="mega-btn" onclick="showSocialNetworkAnalysis()">
-                        🕸️ Анализ социальных сетей
-                    </button>
-                </div>
-            </div>
-
-            <!-- МЕГА-СТАТИСТИКА СОРМ -->
-            <div class="mega-sorm-stats">
-                ${getSormStatsHTML()}
-            </div>
-
-            <!-- МЕГА-ТАБЛИЦА СОРМ -->
-            <div class="mega-table-container">
-                <div class="mega-table-header">
-                    <h3>📋 Все наблюдения СОРМ</h3>
-                    <div class="mega-table-controls">
-                        <input type="text" placeholder="🔍 Поиск..." class="mega-search">
-                        <select class="mega-filter">
-                            <option>Все статусы</option>
-                            <option>Активен</option>
-                            <option>Приостановлен</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="mega-table">
-                    ${getSormTableHTML()}
-                </div>
-            </div>
-
-            <!-- МЕГА-КАРТА НАБЛЮДЕНИЙ -->
-            <div class="mega-map-container">
-                <h3>🗺️ География наблюдений</h3>
-                <div class="mega-map" id="sormMap">
-                    ${generateSormMap()}
-                </div>
-            </div>
-        </div>
-    `;
-}
-
-function getSormStatsHTML() {
-    const stats = {
-        total: systemData.sorm?.length || 0,
-        active: systemData.sorm?.filter(s => s.status === 'Активен').length || 0,
-        critical: systemData.sorm?.filter(s => s.priority === 'Критический').length || 0,
-        today: systemData.sorm?.filter(s => new Date(s.createdAt).toDateString() === new Date().toDateString()).length || 0
-    };
-
-    return `
-        <div class="mega-stats-grid">
-            <div class="mega-stat-item">
-                <div class="mega-stat-value">${stats.total}</div>
-                <div class="mega-stat-label">Всего наблюдений</div>
-            </div>
-            <div class="mega-stat-item">
-                <div class="mega-stat-value" style="color: #27ae60;">${stats.active}</div>
-                <div class="mega-stat-label">Активных</div>
-            </div>
-            <div class="mega-stat-item">
-                <div class="mega-stat-value" style="color: #e74c3c;">${stats.critical}</div>
-                <div class="mega-stat-label">Критических</div>
-            </div>
-            <div class="mega-stat-item">
-                <div class="mega-stat-value" style="color: #3498db;">${stats.today}</div>
-                <div class="mega-stat-label">Сегодня</div>
-            </div>
-        </div>
-    `;
-}
-
-function getSormTableHTML() {
-    const sormData = systemData.sorm || [];
-    
-    return `
-        <table class="mega-data-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Объект</th>
-                    <th>Тип</th>
-                    <th>Статус</th>
-                    <th>Приоритет</th>
-                    <th>Начало</th>
-                    <th>Действия</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${sormData.map(sorm => `
-                    <tr>
-                        <td>${sorm.id}</td>
-                        <td>
-                            <div class="target-info">
-                                <strong>${sorm.target}</strong>
-                                <div class="target-meta">${sorm.targetType}</div>
-                            </div>
-                        </td>
-                        <td>${sorm.type}</td>
-                        <td>
-                            <span class="status-badge status-${sorm.status === 'Активен' ? 'active' : 'inactive'}">
-                                ${sorm.status}
-                            </span>
-                        </td>
-                        <td>
-                            <span class="priority-badge priority-${sorm.priority?.toLowerCase() || 'medium'}">
-                                ${sorm.priority}
-                            </span>
-                        </td>
-                        <td>${new Date(sorm.createdAt).toLocaleDateString()}</td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="btn-icon" onclick="viewSormDetails(${sorm.id})" title="Просмотр">👁️</button>
-                                <button class="btn-icon" onclick="editSorm(${sorm.id})" title="Редактировать">✏️</button>
-                                <button class="btn-icon btn-danger" onclick="deleteSorm(${sorm.id})" title="Удалить">🗑️</button>
-                            </div>
-                        </td>
-                    </tr>
-                `).join('')}
-            </tbody>
-        </table>
-    `;
-}
-
-function generateSormMap() {
-    return `
-        <div class="mock-map">
-            <div class="map-overlay">
-                <div class="map-point" style="top: 20%; left: 30%;">
-                    <div class="map-marker active"></div>
-                    <div class="map-tooltip">Центр города - 15 наблюдений</div>
-                </div>
-                <div class="map-point" style="top: 60%; left: 70%;">
-                    <div class="map-marker critical"></div>
-                    <div class="map-tooltip">Промзона - 8 критических</div>
-                </div>
-                <div class="map-point" style="top: 40%; left: 50%;">
-                    <div class="map-marker active"></div>
-                    <div class="map-tooltip">Спальный район - 22 наблюдения</div>
-                </div>
-            </div>
-            <div class="map-legend">
-                <div class="legend-item"><span class="legend-marker active"></span> Активные</div>
-                <div class="legend-item"><span class="legend-marker critical"></span> Критические</div>
-            </div>
-        </div>
-    `;
-}
-
-// 🚀 МЕГА-МОДУЛЬ ДЕЖУРСТВ
-function getDutyModule() {
-    return `
-        <div class="module">
-            <h1>🕐 МЕГА-СИСТЕМА ДЕЖУРСТВ</h1>
-            
-            <!-- МЕГА-ПЛАНИРОВЩИК -->
-            <div class="mega-scheduler">
-                <div class="scheduler-header">
-                    <h3>📅 МЕГА-ПЛАНИРОВЩИК ДЕЖУРСТВ</h3>
-                    <button class="mega-btn mega-btn-primary" onclick="showDutyWizard()">
-                        🧙‍♂️ Мастер планирования
-                    </button>
-                </div>
-                
-                <div class="scheduler-grid">
-                    <div class="scheduler-form">
-                        <h4>➕ Новое дежурство</h4>
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label>👮 Сотрудник</label>
-                                <input type="text" id="dutyOfficer" value="${currentUser.fullName}" readonly>
-                            </div>
-                            <div class="form-group">
-                                <label>🕐 Смена</label>
-                                <select id="dutyShift">
-                                    <option value="Дневная (08:00-16:00)">Дневная (08:00-16:00)</option>
-                                    <option value="Вечерняя (16:00-00:00)">Вечерняя (16:00-00:00)</option>
-                                    <option value="Ночная (00:00-08:00)">Ночная (00:00-08:00)</option>
-                                    <option value="Сутки (08:00-08:00)">Сутки (08:00-08:00)</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>📅 Дата</label>
-                                <input type="date" id="dutyDate" required>
-                            </div>
-                            <div class="form-group">
-                                <label>🎯 Роль</label>
-                                <select id="dutyRole">
-                                    <option value="Патрулирование">Патрулирование</option>
-                                    <option value="Дежурный по отделу">Дежурный по отделу</option>
-                                    <option value="Оперативный дежурный">Оперативный дежурный</option>
-                                    <option value="Начальник смены">Начальник смены</option>
-                                </select>
-                            </div>
-                        </div>
-                        <button class="mega-btn mega-btn-success" onclick="addMegaDuty()">
-                            ✅ Запланировать дежурство
-                        </button>
-                    </div>
-                    
-                    <div class="scheduler-calendar">
-                        <h4>📅 Текущий месяц</h4>
-                        <div class="mini-calendar">
-                            ${generateMiniCalendar()}
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- МЕГА-СТАТИСТИКА ДЕЖУРСТВ -->
-            <div class="mega-duty-stats">
-                ${getDutyStatsHTML()}
-            </div>
-
-            <!-- МЕГА-ТАБЛИЦА ДЕЖУРСТВ -->
-            <div class="mega-duty-table">
-                <div class="table-header">
-                    <h3>📋 График дежурств</h3>
-                    <div class="table-controls">
-                        <input type="text" placeholder="🔍 Поиск сотрудника..." class="mega-search">
-                        <select class="mega-filter">
-                            <option>Все смены</option>
-                            <option>Дневная</option>
-                            <option>Вечерняя</option>
-                            <option>Ночная</option>
-                        </select>
-                    </div>
-                </div>
-                ${getDutyTableHTML()}
-            </div>
-        </div>
-    `;
-}
-
-function getDutyStatsHTML() {
-    const duties = systemData.dutySchedule || [];
-    const stats = {
-        total: duties.length,
-        today: duties.filter(d => d.date === new Date().toISOString().split('T')[0]).length,
-        active: duties.filter(d => d.status === 'Запланировано').length,
-        completed: duties.filter(d => d.status === 'Выполнено').length
-    };
-
-    return `
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-number">${stats.total}</div>
-                <div class="stat-label">Всего дежурств</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" style="color: #e74c3c;">${stats.today}</div>
-                <div class="stat-label">Сегодня</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" style="color: #f39c12;">${stats.active}</div>
-                <div class="stat-label">Активных</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" style="color: #27ae60;">${stats.completed}</div>
-                <div class="stat-label">Выполнено</div>
-            </div>
-        </div>
-    `;
-}
-
-function getDutyTableHTML() {
-    const duties = systemData.dutySchedule || [];
-    
-    return `
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Дата</th>
-                    <th>Сотрудник</th>
-                    <th>Смена</th>
-                    <th>Роль</th>
-                    <th>Статус</th>
-                    <th>Действия</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${duties.map(duty => `
-                    <tr>
-                        <td>${duty.date}</td>
-                        <td>${duty.officer}</td>
-                        <td>${duty.shift}</td>
-                        <td>${duty.role}</td>
-                        <td>
-                            <span class="status-badge status-${duty.status === 'Запланировано' ? 'planned' : 'completed'}">
-                                ${duty.status}
-                            </span>
-                        </td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="btn-icon btn-success" onclick="completeDuty(${duty.id})" title="Завершить">✅</button>
-                                <button class="btn-icon btn-warning" onclick="editDuty(${duty.id})" title="Редактировать">✏️</button>
-                                <button class="btn-icon btn-danger" onclick="deleteDuty(${duty.id})" title="Удалить">🗑️</button>
-                            </div>
-                        </td>
-                    </tr>
-                `).join('')}
-            </tbody>
-        </table>
-    `;
-}
-
-function generateMiniCalendar() {
-    const today = new Date();
-    const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
-    
-    let calendarHTML = '<div class="calendar-header">';
-    calendarHTML += `<div class="calendar-month">${today.toLocaleString('ru', { month: 'long' })} ${today.getFullYear()}</div>`;
-    calendarHTML += '</div><div class="calendar-days">';
-    
-    for (let day = 1; day <= daysInMonth; day++) {
-        const dateStr = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-        const dutyCount = systemData.dutySchedule?.filter(d => d.date === dateStr).length || 0;
-        
-        calendarHTML += `
-            <div class="calendar-day ${dutyCount > 0 ? 'has-duty' : ''} ${day === today.getDate() ? 'today' : ''}">
-                <div class="day-number">${day}</div>
-                ${dutyCount > 0 ? `<div class="duty-indicator">${dutyCount}</div>` : ''}
-            </div>
-        `;
-    }
-    
-    calendarHTML += '</div>';
-    return calendarHTML;
-}
-
-// 🚀 МЕГА-ФУНКЦИИ ДЕЖУРСТВ
-function addMegaDuty() {
-    const officer = document.getElementById('dutyOfficer').value;
-    const shift = document.getElementById('dutyShift').value;
-    const date = document.getElementById('dutyDate').value;
-    const role = document.getElementById('dutyRole').value;
-
-    if (!date) {
-        showMegaNotification('❌ Выберите дату дежурства!', 'error');
-        return;
-    }
-
-    const duty = {
-        id: Date.now(),
-        officer,
-        shift,
-        date,
-        role,
-        status: 'Запланировано',
-        createdBy: currentUser.nickname,
-        createdAt: new Date().toISOString(),
-        assignedVehicle: getRandomVehicle(),
-        assignedWeapon: getRandomWeapon(),
-        patrolRoute: getRandomRoute(),
-        partner: getRandomPartner()
-    };
-
-    if (!systemData.dutySchedule) systemData.dutySchedule = [];
-    systemData.dutySchedule.push(duty);
-    
     saveAllData();
-    showMegaNotification('✅ МЕГА-ДЕЖУРСТВО ЗАПЛАНИРОВАНО!', 'success');
-    
-    // Обновляем интерфейс
-    document.getElementById('dutyDate').value = '';
-    showModule('duty');
+    loadMigrationTable();
+    document.querySelector('.modal-overlay').remove();
+    showNotification(`✅ Обработано ${processed} записей`, 'success');
 }
 
-function getRandomVehicle() {
-    const vehicles = ['Патрульный автомобиль 01', 'Патрульный автомобиль 02', 'Оперативный автомобиль', 'Мотоцикл', 'Внедорожник'];
-    return vehicles[Math.floor(Math.random() * vehicles.length)];
+// === ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ===
+function formatDate(dateString) {
+    if (!dateString) return '<span class="text-muted">—</span>';
+    try {
+        return new Date(dateString).toLocaleDateString('ru-RU');
+    } catch {
+        return dateString;
+    }
 }
 
-function getRandomWeapon() {
-    const weapons = ['Пистолет Макарова', 'Автомат Калашникова', 'Дробовик', 'Травмат', 'Электрошокер'];
-    return weapons[Math.floor(Math.random() * weapons.length)];
-}
-
-function getRandomRoute() {
-    const routes = ['Маршрут №1 - Центр', 'Маршрут №2 - Периферия', 'Маршрут №3 - Промзона', 'Маршрут №4 - Спальный район'];
-    return routes[Math.floor(Math.random() * routes.length)];
-}
-
-function getRandomPartner() {
-    const partners = ['Иванов И.И.', 'Петров П.П.', 'Сидоров С.С.', 'Кузнецов К.К.'];
-    return partners[Math.floor(Math.random() * partners.length)];
-}
-
-// 🚀 МЕГА-УВЕДОМЛЕНИЯ
-function showMegaNotification(message, type = 'info') {
-    const notification = document.createElement('div');
-    notification.className = `mega-notification mega-${type}`;
-    notification.innerHTML = `
-        <div class="mega-notification-content">
-            <span class="mega-notification-icon">${getNotificationIcon(type)}</span>
-            <span class="mega-notification-text">${message}</span>
-            <button class="mega-notification-close" onclick="this.parentElement.parentElement.remove()">×</button>
-        </div>
-    `;
-    
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-        notification.classList.add('mega-notification-hide');
-        setTimeout(() => notification.remove(), 300);
-    }, 5000);
-}
-
-function getNotificationIcon(type) {
-    const icons = {
-        success: '✅',
-        error: '❌',
-        warning: '⚠️',
-        info: 'ℹ️'
-    };
-    return icons[type] || '📢';
-}
-
-// 🚀 МЕГА-ИНИЦИАЛИЗАЦИЯ СИСТЕМЫ
-async function initMegaSystem() {
-    console.log('🚀 ЗАПУСК МЕГА-СИСТЕМЫ МВД...');
-    
+// === ИНИЦИАЛИЗАЦИЯ СИСТЕМЫ ===
+async function initSystem() {
+    console.log('🚀 Инициализация системы МВД...');
     if (!currentUser) {
         window.location.href = 'auth.html';
         return;
     }
-
+    
+    // Обновляем информацию о пользователе
+    const userInfo = document.getElementById('userInfo');
+    if (userInfo && currentUser) {
+        userInfo.innerHTML = `
+            <div class="user-info">
+                <strong>${currentUser.fullName}</strong>
+                <small>${currentUser.position} | ${currentUser.rank}</small>
+            </div>
+        `;
+    }
+    
     await loadAllData();
     showModule('dashboard');
-    initMegaTools();
     
-    showMegaNotification(`🎉 МЕГА-СИСТЕМА МВД ${SYSTEM_VERSION} ЗАПУЩЕНА!`, 'success');
+    // Добавляем инструменты отладки
+    addDebugTools();
+    
+    showNotification('✅ Система МВД готова к работе', 'success');
 }
 
-function initMegaTools() {
-    const tools = document.createElement('div');
-    tools.className = 'mega-tools-panel';
-    tools.innerHTML = `
-        <div class="mega-tools-header">🔧 МЕГА-ИНСТРУМЕНТЫ</div>
-        <div class="mega-tools-grid">
-            <button class="mega-tool-btn" onclick="generateMegaReport()">
-                📊 МЕГА-ОТЧЕТ
-            </button>
-            <button class="mega-tool-btn" onclick="runMegaAnalysis()">
-                🔍 МЕГА-АНАЛИЗ
-            </button>
-            <button class="mega-tool-btn" onclick="showMegaBackupManager()">
-                💾 МЕГА-БЭКАП
-            </button>
-            <button class="mega-tool-btn" onclick="systemMegaOptimize()">
-                ⚡ МЕГА-ОПТИМИЗАЦИЯ
-            </button>
+function addDebugTools() {
+    const debugDiv = document.createElement('div');
+    debugDiv.className = 'debug-tools';
+    debugDiv.innerHTML = `
+        <div style="position: fixed; bottom: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 10px; border-radius: 5px; font-size: 12px; z-index: 9999;">
+            <div style="margin-bottom: 10px;"><strong>🔧 Инструменты разработчика</strong></div>
+            <button onclick="showDataStats()" class="btn" style="margin: 2px; padding: 5px 10px; font-size: 12px; background: #3498db; color: white;">📊 Статистика</button>
+            <button onclick="exportToFile()" class="btn btn-success" style="margin: 2px; padding: 5px 10px; font-size: 12px;">💾 Экспорт</button>
+            <button onclick="document.getElementById('importFile').click()" class="btn btn-warning" style="margin: 2px; padding: 5px 10px; font-size: 12px;">📁 Импорт</button>
+            <button onclick="clearAllData()" class="btn btn-danger" style="margin: 2px; padding: 5px 10px; font-size: 12px;">🗑️ Очистить</button>
         </div>
     `;
-    document.body.appendChild(tools);
+    document.body.appendChild(debugDiv);
 }
 
-// 🚀 МЕГА-УТИЛИТЫ
-function generateMegaReport() {
-    const report = {
-        generated: new Date().toISOString(),
-        system: SYSTEM_VERSION,
-        modules: {},
-        statistics: {}
+function showDataStats() {
+    const stats = {
+        citizens: systemData.citizens.length,
+        drivers: systemData.drivers.length,
+        migration: systemData.migration.length,
+        pdn: systemData.pdn.length,
+        cusp: systemData.cusp.length,
+        adminProtocols: systemData.adminProtocols.length,
+        criminalCases: systemData.criminalCases.length,
+        wanted: systemData.wanted.length,
+        debtors: systemData.debtors.length,
+        journal: systemData.journal.length,
+        news: systemData.news.length,
+        operational: systemData.operational.length
     };
+    const total = Object.values(stats).reduce((a, b) => a + b, 0);
+    alert(`
+📊 СТАТИСТИКА СИСТЕМЫ МВД:
 
-    Object.keys(systemData).forEach(module => {
-        if (Array.isArray(systemData[module])) {
-            report.modules[module] = systemData[module].length;
-            report.statistics[module] = {
-                total: systemData[module].length,
-                active: systemData[module].filter(item => item.status === 'Активен').length,
-                today: systemData[module].filter(item => 
-                    new Date(item.createdAt).toDateString() === new Date().toDateString()
-                ).length
-            };
-        }
-    });
+👥 Граждане: ${stats.citizens}
+🚗 Водители: ${stats.drivers}
+🛂 Миграция: ${stats.migration}
+👶 ПДН: ${stats.pdn}
+📝 КУСП: ${stats.cusp}
+📄 Протоколы: ${stats.adminProtocols}
+🔍 Уголовные дела: ${stats.criminalCases}
+🕵️ Розыск: ${stats.wanted}
+💳 Должники: ${stats.debtors}
+📓 Журнал: ${stats.journal}
+📰 Новости: ${stats.news}
+📋 Оперативный учет: ${stats.operational}
 
-    const reportStr = JSON.stringify(report, null, 2);
-    const blob = new Blob([reportStr], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `mega_report_${new Date().toISOString().split('T')[0]}.json`;
-    a.click();
-    
-    showMegaNotification('📊 МЕГА-ОТЧЕТ СОЗДАН И СОХРАНЕН!', 'success');
+✅ Всего записей: ${total}
+    `);
 }
 
-function runMegaAnalysis() {
-    showMegaNotification('🔍 ЗАПУСК МЕГА-АНАЛИЗА...', 'info');
-    
-    setTimeout(() => {
-        const analysisResults = {
-            totalRecords: Object.values(systemData).reduce((sum, arr) => sum + (Array.isArray(arr) ? arr.length : 0), 0),
-            dataSize: new Blob([JSON.stringify(systemData)]).size,
-            recommendations: [
-                'Добавить больше данных в модуль СОРМ',
-                'Оптимизировать график дежурств',
-                'Проверить актуальность данных граждан'
-            ]
+async function clearAllData() {
+    if (confirm('❌ ОПАСНО! Удалить ВСЕ данные из системы? Это действие нельзя отменить!')) {
+        systemData = {
+            citizens: [], drivers: [], migration: [], pdn: [], cusp: [], adminProtocols: [], criminalCases: [], wanted: [],
+            stateSecret: {terrorists: [], terroristOrgs: [], extremists: [], unwanted: [], foreignAgents: [], sorm: []},
+            debtors: [], journal: [], news: [], operational: []
         };
-        
-        alert(`🎯 РЕЗУЛЬТАТЫ МЕГА-АНАЛИЗА:\n\n` +
-              `Всего записей: ${analysisResults.totalRecords}\n` +
-              `Размер данных: ${(analysisResults.dataSize / 1024 / 1024).toFixed(2)} MB\n\n` +
-              `Рекомендации:\n${analysisResults.recommendations.join('\n')}`);
-    }, 2000);
+        await saveAllData();
+        showModule(currentModule);
+        showNotification('🗑️ Все данные очищены', 'warning');
+    }
 }
 
-// 🚀 ЗАГЛУШКА FIREBASE
-const database = {
-    ref: (path) => ({
-        once: () => Promise.resolve({ 
-            val: () => {
-                try {
-                    return JSON.parse(localStorage.getItem(path));
-                } catch {
-                    return null;
-                }
-            }
-        }),
-        set: (data) => {
-            localStorage.setItem(path, JSON.stringify(data));
-            return Promise.resolve();
-        }
-    })
-};
+function logout() {
+    localStorage.removeItem('mvd_current_user');
+    window.location.href = 'auth.html';
+}
 
-// 🚀 ИНИЦИАЛИЗАЦИЯ
+// Инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', function() {
-    currentUser = JSON.parse(localStorage.getItem('mvd_current_user')) || {
-        nickname: 'MEGA_ADMIN',
-        fullName: 'МЕГА АДМИНИСТРАТОР',
-        position: 'ГЛАВНЫЙ КОМАНДИР МЕГА-СИСТЕМЫ',
-        rank: 'МЕГА-ГЕНЕРАЛ'
-    };
-    
-    initMegaSystem();
+    currentUser = JSON.parse(localStorage.getItem('mvd_current_user'));
+    if (!currentUser) {
+        window.location.href = 'auth.html';
+        return;
+    }
+    initSystem();
 });
 
-// 🚀 CSS СТИЛИ ДЛЯ МЕГА-СИСТЕМЫ
-const megaStyles = `
-    .mega-stats {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 20px;
-        margin: 20px 0;
-    }
-    
-    .mega-stat-card {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 30px 20px;
-        border-radius: 15px;
-        text-align: center;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    }
-    
-    .mega-stat-number {
-        font-size: 3em;
-        font-weight: bold;
-        margin-bottom: 10px;
-    }
-    
-    .mega-stat-label {
-        font-size: 1.1em;
-        opacity: 0.9;
-    }
-    
-    .mega-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 15px;
-        margin: 20px 0;
-    }
-    
-    .mega-card {
-        background: white;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        cursor: pointer;
-        transition: all 0.3s ease;
-        border-left: 5px solid #3498db;
-    }
-    
-    .mega-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    }
-    
-    .mega-card-icon {
-        font-size: 2em;
-        margin-bottom: 10px;
-    }
-    
-    .mega-card-title {
-        font-weight: bold;
-        margin-bottom: 5px;
-        text-transform: capitalize;
-    }
-    
-    .mega-card-count {
-        color: #7f8c8d;
-        font-size: 1.2em;
-    }
-    
-    .mega-notification {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: white;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        z-index: 10000;
-        max-width: 400px;
-        border-left: 5px solid #3498db;
-    }
-    
-    .mega-notification.mega-success { border-left-color: #27ae60; }
-    .mega-notification.mega-error { border-left-color: #e74c3c; }
-    .mega-notification.mega-warning { border-left-color: #f39c12; }
-    
-    .mega-btn {
-        padding: 12px 24px;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 14px;
-        font-weight: bold;
-        transition: all 0.3s ease;
-        margin: 5px;
-    }
-    
-    .mega-btn-primary {
-        background: linear-gradient(135deg, #3498db, #2980b9);
-        color: white;
-    }
-    
-    .mega-btn-success {
-        background: linear-gradient(135deg, #27ae60, #229954);
-        color: white;
-    }
-    
-    .mega-tools-panel {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: rgba(0,0,0,0.9);
-        color: white;
-        padding: 15px;
-        border-radius: 10px;
-        z-index: 9999;
-    }
-    
-    .mega-tools-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-        margin-top: 10px;
-    }
-    
-    .mega-tool-btn {
-        background: #34495e;
-        color: white;
-        border: none;
-        padding: 10px;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 12px;
-    }
-`;
+// === ДОПОЛНИТЕЛЬНЫЕ МОДУЛИ (кратко) ===
+function getPDNModule() {
+    return `<div class="module"><h2>👶 Учет в ПДН</h2><p>Модуль в разработке</p></div>`;
+}
 
-// Добавляем стили в документ
-const styleSheet = document.createElement('style');
-styleSheet.textContent = megaStyles;
-document.head.appendChild(styleSheet);
+function getOperationalModule() {
+    return `<div class="module"><h2>📋 Оперативный учет</h2><p>Модуль в разработке</p></div>`;
+}
+
+function getCUSPModule() {
+    return `<div class="module"><h2>📝 КУСП</h2><p>Модуль в разработке</p></div>`;
+}
+
+function getAdminProtocolsModule() {
+    return `<div class="module"><h2>📄 Административные протоколы</h2><p>Модуль в разработке</p></div>`;
+}
+
+function getCriminalCasesModule() {
+    return `<div class="module"><h2>🔍 Уголовные дела</h2><p>Модуль в разработке</p></div>`;
+}
+
+function getWantedModule() {
+    return `<div class="module"><h2>🕵️ Розыск</h2><p>Модуль в разработке</p></div>`;
+}
+
+function getStateSecretModule() {
+    return `<div class="module"><h2>🔐 Государственная тайна</h2><p>Модуль в разработке</p></div>`;
+}
+
+function getDebtorsModule() {
+    return `<div class="module"><h2>💳 База должников</h2><p>Модуль в разработке</p></div>`;
+}
+
+function getJournalModule() {
+    return `<div class="module"><h2>📓 Оперативный журнал</h2><p>Модуль в разработке</p></div>`;
+}
+
+function getNewsModule() {
+    return `<div class="module"><h2>📰 Новости</h2><p>Модуль в разработке</p></div>`;
+}
+
+function getGamesModule() {
+    return `<div class="module"><h2>🎮 Мини-игры</h2><p>Модуль в разработке</p></div>`;
+}
+
+function getDashboardModule() {
+    const stats = {
+        citizens: systemData.citizens.length,
+        drivers: systemData.drivers.length,
+        migration: systemData.migration.length,
+        cusp: systemData.cusp.length
+    };
+    
+    return `
+        <div class="module">
+            <h2>📊 Главная панель</h2>
+            
+            <div class="import-export-tools" style="margin-bottom: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                <h3>🔄 Управление данными</h3>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                    <div>
+                        <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importFromFile(event)">
+                        <button class="btn btn-success" onclick="document.getElementById('importFile').click()">
+                            📁 Импорт из файла
+                        </button>
+                    </div>
+                    <button class="btn btn-warning" onclick="exportToFile()">💾 Экспорт в файл</button>
+                    <button class="btn btn-info" onclick="showDataStats()">📊 Статистика</button>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-content">
+                        <div class="stat-number">${stats.citizens}</div>
+                        <div class="stat-label">Граждане</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🚗</div>
+                    <div class="stat-content">
+                        <div class="stat-number">${stats.drivers}</div>
+                        <div class="stat-label">Водители</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🛂</div>
+                    <div class="stat-content">
+                        <div class="stat-number">${stats.migration}</div>
+                        <div class="stat-label">Мигранты</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📝</div>
+                    <div class="stat-content">
+                        <div class="stat-number">${stats.cusp}</div>
+                        <div class="stat-label">КУСП</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// Функции загрузки таблиц для остальных модулей
+function loadPDNTable() {}
+function loadOperationalTable() {}
+function loadCUSPTable() {}
+function loadAdminProtocolsTable() {}
+function loadCriminalCasesTable() {}
+function loadWantedTable() {}
+function loadStateSecretData() {}
+function loadDebtorsTable() {}
+function loadJournalEntries() {}
+function loadNews() {}
